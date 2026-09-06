@@ -84,7 +84,7 @@ export async function getActivity(signal?: AbortSignal): Promise<ActivitySnapsho
       method: 'GET',
       headers: { Accept: 'application/json' },
       credentials: 'omit',
-      cache: 'default',
+      cache: 'no-cache',
       signal,
     })
   } catch (error) {

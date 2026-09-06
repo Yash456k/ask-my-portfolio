@@ -11,7 +11,7 @@ from pydantic import ValidationError
 
 from app.schemas import ActivitySnapshot
 
-ACTIVITY_CACHE_CONTROL = "public, max-age=900, stale-while-revalidate=86400"
+ACTIVITY_CACHE_CONTROL = "public, no-cache, must-revalidate"
 
 
 class ActivityCacheUnavailable(RuntimeError):

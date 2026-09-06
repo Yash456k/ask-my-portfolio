@@ -55,7 +55,7 @@ def test_activity_endpoint_sanitizes_and_caches(tmp_path: Path, pipeline) -> Non
     response = client.get("/v1/activity")
 
     assert response.status_code == 200
-    assert response.headers["cache-control"] == "public, max-age=900, stale-while-revalidate=86400"
+    assert response.headers["cache-control"] == "public, no-cache, must-revalidate"
     assert response.headers["etag"]
     assert response.json()["codex"]["days"][0] == {"date": "2026-07-15", "tokens": 123}
     rendered = response.text
@@ -66,6 +66,20 @@ def test_activity_endpoint_sanitizes_and_caches(tmp_path: Path, pipeline) -> Non
     cached = client.get("/v1/activity", headers={"If-None-Match": response.headers["etag"]})
     assert cached.status_code == 304
     assert cached.content == b""
+    assert cached.headers["cache-control"] == "public, no-cache, must-revalidate"
+
+    # The collector atomically replaces its file. An old ETag must now yield
+    # the new snapshot instead of trapping the browser on the previous data.
+    updated = _snapshot()
+    updated["generatedAt"] = "2026-07-17T05:55:09Z"
+    updated["codex"]["lifetimeTotal"] = 789
+    replacement = tmp_path / "replacement.json"
+    replacement.write_text(json.dumps(updated), encoding="utf-8")
+    replacement.replace(cache)
+    refreshed = client.get("/v1/activity", headers={"If-None-Match": response.headers["etag"]})
+    assert refreshed.status_code == 200
+    assert refreshed.headers["etag"] != response.headers["etag"]
+    assert refreshed.json()["codex"]["lifetimeTotal"] == 789
 
 
 def test_activity_endpoint_fails_closed(tmp_path: Path, pipeline) -> None:

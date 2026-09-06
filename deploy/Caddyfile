@@ -18,6 +18,12 @@
 		-Server
 	}
 
+	# Activity may change without a frontend deployment. Keep ETags, but
+	# require validation before a browser reuses a saved response.
+	header /v1/activity >Cache-Control "public, no-cache, must-revalidate" {
+		match status 200 304
+	}
+
 	reverse_proxy api:8000 {
 		transport http {
 			response_header_timeout 60s
