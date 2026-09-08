@@ -265,3 +265,36 @@
   .is-returning .reel-number,.is-returning .reel-item small,.is-returning .project-focus-header,
   .is-returning .project-focus-copy > p,.is-returning .project-focus-metrics,.is-returning .project-focus-highlights,.is-returning .project-focus-footer { animation: none; }
 }
+
+
+/* On phones, each tactile surface gets a full page of its own. */
+@media (max-width: 850px) {
+  .tactile-work { --mobile-work-padding: clamp(28px,4svh,44px); padding: 0; min-height: 0; scroll-snap-align: none; }
+  .tactile-work .split-work-layout { display: block; width: 100%; margin: 0; }
+  .tactile-work .work-mobile-panel { display: flex; flex-direction: column; width: 100%; min-height: 100svh; padding: var(--mobile-work-padding) clamp(20px,5vw,40px); scroll-snap-align: start; }
+  .tactile-work .work-mobile-panel > * { width: min(620px,100%); margin-inline: auto; }
+  .tactile-work .projects-panel { border-top: 1px solid #d4d8c9; }
+  .tactile-work .split-panel-intro { flex: 0 0 auto; margin-bottom: clamp(24px,4svh,36px); }
+  .tactile-work .career-deck { display: flex; flex: 1; flex-direction: column; padding-right: 14px; }
+  .tactile-work .career-stack { flex: 1; }
+  .tactile-work .career-card { min-height: 300px; }
+  .tactile-work .career-card h3 { font-size: clamp(32px,9vw,42px); }
+  .tactile-work .career-card p { font-size: clamp(13px,3.8vw,16px); }
+  .tactile-work .career-navigation { flex: 0 0 auto; }
+  .tactile-work .project-view-stack { position: relative; flex: 1; min-height: calc(100svh - 2 * var(--mobile-work-padding)); align-self: stretch; }
+  .tactile-work .project-selector-view { height: max(560px,calc(100svh - 2 * var(--mobile-work-padding))); align-self: start; grid-template-rows: auto minmax(0,1fr); align-content: stretch; }
+  .tactile-work .project-view-stack:not(.is-detail-open) .project-detail-view { position: absolute; inset: 0; }
+  .tactile-work .smooth-reel-stage { display: flex; flex-direction: column; min-height: 0; }
+  .tactile-work .smooth-reel { --reel-spacing: 145px; display: flex; flex: 1; flex-direction: column; min-height: 330px; }
+  .tactile-work .reel-aperture { flex: 1; width: 100%; height: auto; min-height: 330px; }
+  .tactile-work .reel-item strong { font-size: clamp(29px,7.8vw,38px); }
+  .tactile-work .reel-summary { flex: 0 0 auto; }
+  .tactile-work .reel-footer { flex: 0 0 auto; }
+}
+
+@media (max-width: 850px) and (max-height: 700px) {
+  .tactile-work .smooth-reel { --reel-spacing: 112px; }
+}
+@media (max-width: 850px) and (min-height: 900px) {
+  .tactile-work .smooth-reel { --reel-spacing: 164px; }
+}
