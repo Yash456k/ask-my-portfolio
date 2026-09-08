@@ -16,7 +16,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
   const physical = useRef({ position: activeIndex, velocity: 0, target: activeIndex })
   const frame = useRef<number | null>(null)
   const root = useRef<HTMLDivElement>(null)
-  const gesture = useRef<{ pointerId: number; startX: number; startY: number; origin: number; dragged: boolean } | null>(null)
+  const gesture = useRef<{ pointerId: number; startX: number; startY: number; origin: number; target: number; spacing: number; dragged: boolean } | null>(null)
   const suppressClick = useRef(false)
   const selectedProject = projects[activeIndex] ?? projects[0]
 
@@ -101,7 +101,8 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
   const pointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (event.button !== 0 || !event.isPrimary || gesture.current) return
     suppressClick.current = false
-    gesture.current = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, origin: physical.current.position, dragged: false }
+    const spacing = Number.parseFloat(getComputedStyle(event.currentTarget).getPropertyValue('--reel-spacing')) || 104
+    gesture.current = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, origin: physical.current.position, target: physical.current.target, spacing, dragged: false }
   }
   const pointerMove = (event: PointerEvent<HTMLDivElement>) => {
     const drag = gesture.current
@@ -111,14 +112,13 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
       const sideways = event.clientX - drag.startX
       if (Math.abs(sideways) > Math.abs(delta) && Math.abs(sideways) > 8) { gesture.current = null; return }
       if (Math.abs(delta) < 8) return
+      drag.dragged = true
+      suppressClick.current = true
+      event.currentTarget.setPointerCapture(event.pointerId)
     }
-    drag.dragged = true
-    suppressClick.current = true
-    event.currentTarget.setPointerCapture(event.pointerId)
     if (frame.current !== null) cancelAnimationFrame(frame.current)
     frame.current = null
-    const spacing = Number.parseFloat(getComputedStyle(event.currentTarget).getPropertyValue('--reel-spacing')) || 104
-    physical.current.position = drag.origin - delta / spacing
+    physical.current.position = drag.origin - delta / drag.spacing
     physical.current.velocity = 0
     setPosition(physical.current.position)
     onPositionChange(physical.current.position)
@@ -128,7 +128,17 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
     if (!drag || drag.pointerId !== event.pointerId) return
     gesture.current = null
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId)
-    if (drag.dragged) select(cancelled ? physical.current.target : Math.round(physical.current.position))
+    if (!drag.dragged) return
+    if (cancelled) { select(drag.target); return }
+    const delta = event.clientY - drag.startY
+    // A short intentional swipe advances a project; longer pulls retain their travel.
+    const steps = Math.abs(delta) < 20 ? 0 : Math.max(1, Math.round(Math.abs(delta) / drag.spacing))
+    select(drag.target - Math.sign(delta) * steps)
+  }
+  const lostPointerCapture = (event: PointerEvent<HTMLDivElement>) => {
+    // Touch starts with implicit capture on a child. Its capture-loss event bubbles
+    // when the aperture takes over; only losing the aperture's own capture cancels.
+    if (event.target === event.currentTarget) pointerEnd(event, true)
   }
   const openProject = () => {
     if (frame.current !== null) cancelAnimationFrame(frame.current)
@@ -144,7 +154,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
   return (
     <div className="smooth-reel-stage">
       <div ref={root} className="smooth-reel" role="group" aria-label="Project selector" aria-describedby="project-gesture" tabIndex={0} onKeyDown={keyboard}>
-        <div className="reel-aperture" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={(event) => pointerEnd(event)} onPointerCancel={(event) => pointerEnd(event, true)} onLostPointerCapture={(event) => pointerEnd(event, true)}>
+        <div className="reel-aperture" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={(event) => pointerEnd(event)} onPointerCancel={(event) => pointerEnd(event, true)} onLostPointerCapture={lostPointerCapture}>
           <div className="reel-seat" aria-hidden="true" />
           {[-2, -1, 0, 1, 2].map((slot) => {
             const absolute = center + slot
