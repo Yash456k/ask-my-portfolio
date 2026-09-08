@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, PointerEvent } from 'react'
 import { experienceItems } from '../data/experience'
 import { cardSwipeDirection, wrapIndex } from '../lib/revolver'
@@ -6,11 +6,39 @@ import type { ProjectItem } from './projectTypes'
 
 const chapters = [experienceItems[2], experienceItems[1], experienceItems[0]]
 const labels = ['2024', '2026', 'Now']
+const dragHintKey = 'portfolio:experience-drag-hint:v1'
 type Props = { project: ProjectItem; projectOpen: boolean }
 type Drag = { startX: number; startY: number; x: number; y: number; previousX: number; time: number; velocity: number; moved: boolean; width: number }
 
 export function ExperienceTimeline({ project, projectOpen }: Props) {
   const [active, setActive] = useState(2)
+  const [hint, setHint] = useState<'pending' | 'visible' | 'dismissed'>(() => {
+    try { return localStorage.getItem(dragHintKey) === 'seen' ? 'dismissed' : 'pending' }
+    catch { return 'pending' }
+  })
+  const stack = useRef<HTMLDivElement>(null)
+  const dismissHint = useCallback(() => {
+    setHint('dismissed')
+    try { localStorage.setItem(dragHintKey, 'seen') } catch { /* Storage can be unavailable in private browsing. */ }
+  }, [])
+
+  useEffect(() => {
+    if (hint === 'dismissed') return
+    if (hint === 'visible') {
+      const timer = window.setTimeout(dismissHint, 5600)
+      return () => window.clearTimeout(timer)
+    }
+    const element = stack.current
+    if (!element) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting || entry.intersectionRatio < .6) return
+      try { localStorage.setItem(dragHintKey, 'seen') } catch { /* Still show the hint once during this visit. */ }
+      setHint('visible')
+      observer.disconnect()
+    }, { threshold: .6 })
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [dismissHint, hint])
   const [drag, setDrag] = useState({ x: 0, y: 0 })
   const [dragging, setDragging] = useState(false)
   const [leaving, setLeaving] = useState<{ index: number; direction: number; distance: number } | null>(null)
@@ -28,6 +56,7 @@ export function ExperienceTimeline({ project, projectOpen }: Props) {
   const select = (index: number) => {
     if (peeling.current || gesture.current?.moved) return
     clearHover()
+    if (index !== active) dismissHint()
     setActive(wrapIndex(index, chapters.length))
   }
   const keyboard = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -55,6 +84,7 @@ export function ExperienceTimeline({ project, projectOpen }: Props) {
       if (Math.abs(y) > Math.abs(x) && Math.abs(y) > 10) { gesture.current = null; return }
       if (Math.abs(x) < 8) return
       current.moved = true
+      dismissHint()
       event.currentTarget.setPointerCapture(event.pointerId)
       setDragging(true)
     }
@@ -94,7 +124,7 @@ export function ExperienceTimeline({ project, projectOpen }: Props) {
           {chapters.map((chapter, index) => <button key={chapter.id} ref={(element) => { buttons.current[index] = element }} type="button" role="tab" id={`career-tab-${chapter.id}`} aria-controls={`career-${chapter.id}`} aria-selected={active === index} tabIndex={active === index ? 0 : -1} onClick={() => select(index)} onPointerEnter={(event) => { if (event.pointerType !== 'mouse') return; clearHover(); hoverTimer.current = window.setTimeout(() => select(index), 90) }} onPointerLeave={clearHover} onKeyDown={(event) => keyboard(event, index)}><span aria-hidden="true" />{labels[index]}</button>)}
         </div>
       </div>
-      <div className={`career-stack ${dragging ? 'is-dragging' : ''}`} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={(event) => finishDrag(event)} onPointerCancel={(event) => finishDrag(event, true)}>
+      <div ref={stack} className={`career-stack ${dragging ? 'is-dragging' : ''} ${hint === 'visible' ? 'is-hinting' : ''}`} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={(event) => finishDrag(event)} onPointerCancel={(event) => finishDrag(event, true)}>
         {chapters.map((chapter, index) => {
           const depth = wrapIndex(index - active, chapters.length)
           const isLeaving = leaving?.index === index
@@ -111,6 +141,10 @@ export function ExperienceTimeline({ project, projectOpen }: Props) {
             </div>
           </article>
         })}
+        {hint === 'visible' && <div className="career-swipe-invitation" aria-hidden="true">
+          <span className="swipe-invitation-icon"><span /></span>
+          <span><strong>Drag this card</strong><small>Left or right to explore</small></span>
+        </div>}
       </div>
       <div className="career-navigation"><span>{String(active + 1).padStart(2, '0')} <i>/ 03</i></span><span className="career-drag-hint" id="career-gesture"><span className="gesture-cue" aria-hidden="true" />Drag to explore</span></div>
     </div>

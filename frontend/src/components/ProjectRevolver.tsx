@@ -16,7 +16,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
   const physical = useRef({ position: activeIndex, velocity: 0, target: activeIndex })
   const frame = useRef<number | null>(null)
   const root = useRef<HTMLDivElement>(null)
-  const gesture = useRef<{ start: number; origin: number; dragged: boolean; touch: boolean } | null>(null)
+  const gesture = useRef<{ pointerId: number; startX: number; startY: number; origin: number; dragged: boolean } | null>(null)
   const suppressClick = useRef(false)
   const selectedProject = projects[activeIndex] ?? projects[0]
 
@@ -99,15 +99,19 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
     rotate(event.key === 'ArrowDown' ? 1 : -1)
   }
   const pointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.button !== 0) return
+    if (event.button !== 0 || !event.isPrimary || gesture.current) return
     suppressClick.current = false
-    gesture.current = { start: event.pointerType === 'touch' ? event.clientX : event.clientY, origin: physical.current.position, dragged: false, touch: event.pointerType === 'touch' }
+    gesture.current = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, origin: physical.current.position, dragged: false }
   }
   const pointerMove = (event: PointerEvent<HTMLDivElement>) => {
     const drag = gesture.current
-    if (!drag) return
-    const delta = (drag.touch ? event.clientX : event.clientY) - drag.start
-    if (!drag.dragged && Math.abs(delta) < 8) return
+    if (!drag || drag.pointerId !== event.pointerId) return
+    const delta = event.clientY - drag.startY
+    if (!drag.dragged) {
+      const sideways = event.clientX - drag.startX
+      if (Math.abs(sideways) > Math.abs(delta) && Math.abs(sideways) > 8) { gesture.current = null; return }
+      if (Math.abs(delta) < 8) return
+    }
     drag.dragged = true
     suppressClick.current = true
     event.currentTarget.setPointerCapture(event.pointerId)
@@ -119,11 +123,12 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
     setPosition(physical.current.position)
     onPositionChange(physical.current.position)
   }
-  const pointerEnd = (event: PointerEvent<HTMLDivElement>) => {
+  const pointerEnd = (event: PointerEvent<HTMLDivElement>, cancelled = false) => {
     const drag = gesture.current
+    if (!drag || drag.pointerId !== event.pointerId) return
     gesture.current = null
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId)
-    if (drag?.dragged) select(Math.round(physical.current.position))
+    if (drag.dragged) select(cancelled ? physical.current.target : Math.round(physical.current.position))
   }
   const openProject = () => {
     if (frame.current !== null) cancelAnimationFrame(frame.current)
@@ -139,7 +144,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
   return (
     <div className="smooth-reel-stage">
       <div ref={root} className="smooth-reel" role="group" aria-label="Project selector" aria-describedby="project-gesture" tabIndex={0} onKeyDown={keyboard}>
-        <div className="reel-aperture" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}>
+        <div className="reel-aperture" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={(event) => pointerEnd(event)} onPointerCancel={(event) => pointerEnd(event, true)} onLostPointerCapture={(event) => pointerEnd(event, true)}>
           <div className="reel-seat" aria-hidden="true" />
           {[-2, -1, 0, 1, 2].map((slot) => {
             const absolute = center + slot
@@ -164,7 +169,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
       </div>
       <p className="reel-summary">{selectedProject.summary}</p>
       <div className="reel-footer">
-        <span className="reel-hint" id="project-gesture"><span className="gesture-cue is-vertical" aria-hidden="true" /><span className="desktop-reel-hint">Scroll or drag to explore</span><span className="mobile-reel-hint">Swipe sideways to explore</span></span>
+        <span className="reel-hint" id="project-gesture"><span className="gesture-cue is-vertical" aria-hidden="true" /><span className="desktop-reel-hint">Scroll or drag to explore</span><span className="mobile-reel-hint">Swipe up or down to explore</span></span>
         <button type="button" className="reel-open" onClick={openProject} aria-label={`View ${selectedProject.title}`}>View project <span aria-hidden="true">↗</span></button>
       </div>
       <span className="visually-hidden" aria-live="polite">Selected: {selectedProject.title}</span>

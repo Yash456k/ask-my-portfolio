@@ -29,7 +29,7 @@
 .tactile-work .project-view-stack { height: auto; min-height: 480px; max-height: none; }
 .tactile-work .project-selector-view { grid-template-rows: auto auto; align-content: start; }
 .career-deck { padding-right: 22px; }
-.career-dates { display: flex; align-items: center; justify-content: space-between; margin-bottom: 33px; position: relative; }
+.career-dates { display: flex; align-items: center; justify-content: space-between; margin-bottom: 50px; position: relative; }
 .career-dates::before { content: ''; position: absolute; height: 1px; background: #cbcdbf; left: 5px; right: 5px; top: 9px; }
 .career-dates button { position: relative; display: flex; align-items: center; flex-direction: column; gap: 12px; border: 0; padding: 4px 0; color: #7a8070; background: transparent; font-size: 12px; min-width: 36px; }
 .career-dates button > span { width: 10px; height: 10px; border: 2px solid #f7f2e9; box-shadow: 0 0 0 1px #b7bcaa; border-radius: 50%; background: #f7f2e9; transition: background 250ms,box-shadow 250ms; }
@@ -50,7 +50,7 @@
 .career-navigation i { color: #939989; font-style: normal; margin-left: 5px; }
 .smooth-reel-stage { min-width: 0; }
 .smooth-reel { --reel-spacing: 110px; display: grid; grid-template-columns: minmax(0,1fr); align-items: center; min-width: 0; outline-offset: 8px; }
-.reel-aperture { height: 378px; position: relative; overflow: hidden; touch-action: pan-y; cursor: grab; user-select: none; mask-image: linear-gradient(transparent,#000 12%,#000 88%,transparent); }
+.reel-aperture { height: 378px; position: relative; overflow: hidden; touch-action: pan-x pinch-zoom; cursor: grab; user-select: none; mask-image: linear-gradient(transparent,#000 12%,#000 88%,transparent); }
 .reel-aperture:active { cursor: grabbing; }
 .reel-item { position: absolute; top: 50%; left: 0; width: 100%; display: grid; grid-template-columns: 27px minmax(0,1fr); align-items: center; gap: 14px; padding: 16px 4px; border: 0; background: transparent; text-align: left; transform-origin: center center; cursor: inherit; will-change: transform,opacity; }
 .reel-item[aria-hidden='true'] { pointer-events: none; }
@@ -186,10 +186,27 @@
 .career-deck:hover .gesture-cue::after,.career-deck:focus-within .gesture-cue::after,.smooth-reel-stage:hover .gesture-cue::after,.smooth-reel-stage:focus-within .gesture-cue::after { animation-play-state: paused; }
 @keyframes gesture-bop-x { 0%,60%,100% { transform: translateX(0); } 72% { transform: translateX(4px); } 86% { transform: translateX(-3px); } }
 @keyframes gesture-bop-y { 0%,60%,100% { transform: translateY(0); } 72% { transform: translateY(4px); } 86% { transform: translateY(-3px); } }
-@media (max-width: 550px) {
-  .gesture-cue.is-vertical { width: 20px; height: 10px; }
-  .gesture-cue.is-vertical::after { left: 7.5px; top: 2.5px; animation-name: gesture-bop-x; }
+
+
+/* Invite the first drag once, only after the initial card comes into view. */
+.career-stack { position: relative; }
+.career-swipe-invitation { position: absolute; top: -17px; left: 50%; z-index: 6; display: flex; align-items: center; gap: 13px; width: max-content; max-width: calc(100% - 12px); padding: 12px 18px; border: 1px solid #718163; border-radius: 14px; background: #35472d; color: #fffaf1; box-shadow: 0 10px 26px #28392328; pointer-events: none; transform: translate(-50%,-50%); }
+.career-swipe-invitation::after { content: ''; position: absolute; bottom: -5px; left: calc(50% - 5px); width: 9px; height: 9px; background: #35472d; border-right: 1px solid #718163; border-bottom: 1px solid #718163; transform: rotate(45deg); }
+.career-swipe-invitation strong { display: block; font-size: 14px; font-weight: 500; line-height: 1.3; }
+.career-swipe-invitation small { display: block; margin-top: 3px; font-size: 11px; line-height: 1.4; color: #dbe4d2; }
+.swipe-invitation-icon { position: relative; flex: 0 0 35px; height: 30px; }
+.swipe-invitation-icon::before,.swipe-invitation-icon span { content: ''; position: absolute; width: 22px; height: 28px; border: 1px solid #e1ead7; border-radius: 5px; }
+.swipe-invitation-icon::before { left: 7px; top: 3px; opacity: .4; transform: rotate(9deg); }
+.swipe-invitation-icon span { left: 4px; background: #526547; transform: rotate(-7deg); }
+@media (prefers-reduced-motion: no-preference) {
+  .career-swipe-invitation { animation: swipe-invitation-in 320ms cubic-bezier(.22,1,.36,1) both,swipe-invitation-out 240ms ease 5250ms forwards; }
+  .swipe-invitation-icon span { animation: swipe-card-icon 1600ms ease-in-out 450ms 2; }
+  .career-stack.is-hinting .career-card.is-current { animation: career-first-drag 1500ms cubic-bezier(.4,0,.2,1) 650ms 1; }
 }
+@keyframes swipe-invitation-in { from { opacity: 0; transform: translate(-50%,calc(-50% + 10px)) scale(.94); } to { opacity: 1; transform: translate(-50%,-50%) scale(1); } }
+@keyframes swipe-invitation-out { to { opacity: 0; transform: translate(-50%,calc(-50% - 5px)); } }
+@keyframes swipe-card-icon { 0%,100% { transform: translateX(0) rotate(-7deg); } 35% { transform: translateX(8px) rotate(5deg); } 70% { transform: translateX(-4px) rotate(-12deg); } }
+@keyframes career-first-drag { 0%,100% { transform: translate3d(0,0,0); } 35% { transform: translate3d(12px,-3px,8px) rotateZ(1deg); } 70% { transform: translate3d(-7px,-1px,4px) rotateZ(-.6deg); } }
 
 /* Clear the neighbouring rows first, then lift the chosen title and unfold details. */
 .tactile-work .project-selector-view,.tactile-work .project-detail-view { transform: none; transition: none; }
