@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: process.env.VITE_DEV_API_TARGET ?? 'https://178-104-56-243.sslip.io',
+        target: process.env.VITE_DEV_API_TARGET ?? 'https://api.yash456k.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
