@@ -4,6 +4,9 @@ services:
   db:
     image: pgvector/pgvector:pg16
     container_name: rag-playground-db
+    user: "999:999"
+    cap_drop:
+      - ALL
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -24,7 +27,13 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks:
-      - rag_internal
+      rag_db:
+        ipv4_address: 172.30.251.2
+    pids_limit: 128
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m
+      - /var/run/postgresql:rw,noexec,nosuid,nodev,size=16m,uid=999,gid=999,mode=0775
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -48,10 +57,9 @@ services:
     container_name: rag-playground-api
     restart: unless-stopped
     env_file:
-      - path: .env
-        required: false
+      - path: .env.runtime
+        required: true
     environment:
-      DATABASE_URL: ${DATABASE_URL}
       ACTIVITY_CACHE_PATH: /activity/activity.json
     depends_on:
       db:
@@ -59,11 +67,17 @@ services:
     ports:
       - "127.0.0.1:18080:8000"
     volumes:
-      - model_cache:/models
+      - model_cache:/models:ro
       - ./model-artifacts:/model-artifacts:ro
       - ${ACTIVITY_DATA_DIR:-./var/activity}:/activity:ro
     networks:
-      - rag_internal
+      rag_internal:
+        ipv4_address: 172.18.0.3
+      rag_db:
+        ipv4_address: 172.30.251.3
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=128m,uid=10001,gid=999
     mem_limit: 3500m
     cpus: 2.5
     pids_limit: 256
@@ -78,8 +92,14 @@ services:
         max-file: "3"
 
   proxy:
-    image: caddy:2.10-alpine
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.proxy
+    image: rag-playground-proxy:hardened
     container_name: rag-playground-proxy
+    user: "10002:10002"
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: "0"
     restart: unless-stopped
     depends_on:
       api:
@@ -97,7 +117,11 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     networks:
-      - rag_internal
+      rag_internal:
+        ipv4_address: 172.18.0.4
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=32m
     mem_limit: 96m
     cpus: 0.2
     pids_limit: 64
@@ -105,8 +129,6 @@ services:
       - no-new-privileges:true
     cap_drop:
       - ALL
-    cap_add:
-      - NET_BIND_SERVICE
     logging:
       driver: json-file
       options:
@@ -116,6 +138,17 @@ services:
 networks:
   rag_internal:
     name: rag-playground-internal
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+  rag_db:
+    name: rag-playground-db-private
+    internal: true
+    driver_opts:
+      com.docker.network.bridge.name: br-rag-db
+    ipam:
+      config:
+        - subnet: 172.30.251.0/29
 
 volumes:
   pg_data:

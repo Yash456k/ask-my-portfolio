@@ -1,0 +1,12 @@
+[Unit]
+Description=Isolate public portfolio containers from private host/tailnet
+Before=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/rag-firewall-apply
+ExecReload=/usr/local/sbin/rag-firewall-apply
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

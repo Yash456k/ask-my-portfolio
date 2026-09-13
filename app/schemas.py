@@ -5,6 +5,8 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class HistoryMessage(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     role: Literal["user", "assistant"]
     content: str = Field(min_length=1, max_length=700)
 
@@ -18,7 +20,7 @@ class HistoryMessage(BaseModel):
 
 
 class ChatRequest(BaseModel):
-    model_config = ConfigDict(populate_by_name=True)
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
 
     question: str = Field(min_length=2, max_length=500)
     embedder: str = Field(min_length=2, max_length=80)

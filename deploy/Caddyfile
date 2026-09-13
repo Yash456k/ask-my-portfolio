@@ -1,6 +1,14 @@
 {
 	email {$ACME_EMAIL}
 	admin off
+	servers {
+		timeouts {
+			read_header 5s
+			read_body 15s
+			write 120s
+			idle 30s
+		}
+	}
 }
 
 {$API_DOMAIN} {
@@ -24,11 +32,25 @@
 		match status 200 304
 	}
 
-	reverse_proxy api:8000 {
-		transport http {
-			response_header_timeout 60s
+	# Fail closed if new operator/admin routes are added to the application.
+	@public {
+		method GET HEAD POST OPTIONS
+		path /v1/health /v1/config /v1/activity /v1/chat
+	}
+	handle @public {
+		reverse_proxy api:8000 {
+			transport http {
+				dial_timeout 5s
+				response_header_timeout 60s
+				max_conns_per_host 16
+			}
+			header_up X-Real-IP {remote_host}
+			header_up -X-Verify-Evaluation
+			header_up -X-Verify-Fallback
 		}
-		header_up X-Real-IP {remote_host}
+	}
+	handle {
+		respond 404
 	}
 
 	log {

@@ -1,0 +1,5 @@
+FROM caddy:2.11.4-alpine
+# The container uses unprivileged ports internally via its network namespace
+# sysctl. Remove the upstream file capability so cap_drop=ALL + nonroot works.
+RUN setcap -r /usr/bin/caddy
+USER 10002:10002

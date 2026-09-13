@@ -126,7 +126,7 @@ async def test_forced_failure_attempt_is_visible_then_selected_model_streams(
             {
                 "model": "verification/forced-provider-error",
                 "status": 404,
-                "reason": "verification model intentionally missing",
+                "reason": "provider_model_unavailable",
             }
         ],
     }
@@ -166,7 +166,9 @@ async def test_retryable_provider_error_falls_back_in_configured_order(
     assert [call["json"]["model"] for call in transport.calls] == [selected, fallback]
     assert events[0]["servedModel"] == fallback
     assert events[0]["fallbackUsed"] is True
-    assert events[0]["attempts"] == [{"model": selected, "status": 429, "reason": "rate limited"}]
+    assert events[0]["attempts"] == [
+        {"model": selected, "status": 429, "reason": "provider_rate_limited"}
+    ]
 
 
 @pytest.mark.asyncio
@@ -191,7 +193,7 @@ async def test_non_retryable_rejection_does_not_spend_fallback_candidates(
 
     assert len(transport.calls) == 1
     assert captured.value.attempts == [
-        {"model": selected, "status": 400, "reason": "invalid request"}
+        {"model": selected, "status": 400, "reason": "provider_request_rejected"}
     ]
 
 

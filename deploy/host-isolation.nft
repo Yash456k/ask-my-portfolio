@@ -1,0 +1,33 @@
+# Dedicated table; never flush the host's other firewall/Tailscale rules.
+# Runs before iptables/UFW/Tailscale ACCEPT rules (priority 0).
+# Addresses are pinned by docker-compose.yml. IPv6 is disabled on both networks.
+table inet rag_isolation {
+    set container_networks {
+        type ipv4_addr
+        flags interval
+        elements = { 172.18.0.0/16, 172.30.251.0/29 }
+    }
+    set private_destinations {
+        type ipv4_addr
+        flags interval
+        elements = { 0.0.0.0/8, 10.0.0.0/8, 100.64.0.0/10, 127.0.0.0/8, 169.254.0.0/16, 172.16.0.0/12, 192.168.0.0/16, 224.0.0.0/4, 240.0.0.0/4 }
+    }
+    chain host_input {
+        type filter hook input priority -10; policy accept;
+        ip saddr @container_networks ct state established,related accept
+        ip saddr @container_networks counter reject with icmpx type admin-prohibited
+    }
+    chain container_forward {
+        type filter hook forward priority -10; policy accept;
+        ip saddr @container_networks ct state established,related accept
+        # Explicit application links. Database has a separate internal network.
+        ip saddr 172.18.0.4 ip daddr 172.18.0.3 tcp dport 8000 accept
+        ip saddr 172.30.251.3 ip daddr 172.30.251.2 tcp dport 5432 accept
+        ip saddr @container_networks ip daddr @private_destinations counter reject with icmpx type admin-prohibited
+        # App providers and proxy ACME need public HTTPS; DNS uses Docker's
+        # resolver, with public DNS permitted when Docker forwards the request.
+        ip saddr { 172.18.0.3, 172.18.0.4 } tcp dport { 443, 53 } accept
+        ip saddr { 172.18.0.3, 172.18.0.4 } udp dport 53 accept
+        ip saddr @container_networks counter reject with icmpx type admin-prohibited
+    }
+}

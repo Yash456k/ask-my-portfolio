@@ -121,11 +121,10 @@ class GroqClient:
                     json=self._payload(candidate, system_prompt, user_prompt, provider),
                 ) as response:
                     if response.status_code != 200:
-                        body = (await response.aread()).decode(errors="replace")[:300]
                         attempt = {
                             "model": candidate,
                             "status": response.status_code,
-                            "reason": _provider_error_message(body),
+                            "reason": _provider_error_reason(response.status_code),
                         }
                         attempts.append(attempt)
                         can_fallback = (
@@ -161,13 +160,9 @@ class GroqClient:
                             stream_failed = True
                             break
                         if chunk.get("error"):
-                            provider_error = chunk["error"]
-                            reason = (
-                                provider_error.get("message", "stream_error")
-                                if isinstance(provider_error, dict)
-                                else str(provider_error)
+                            attempts.append(
+                                {"model": candidate, "status": 200, "reason": "stream_error"}
                             )
-                            attempts.append({"model": candidate, "status": 200, "reason": reason})
                             if emitted_content:
                                 raise GroqStreamError(
                                     "Provider stream stopped after output began", attempts
@@ -213,7 +208,10 @@ class GroqClient:
             except GroqStreamError:
                 raise
             except httpx.TransportError as exc:
-                attempts.append({"model": candidate, "status": None, "reason": type(exc).__name__})
+                reason = (
+                    "provider_timeout" if isinstance(exc, httpx.TimeoutException) else "network_error"
+                )
+                attempts.append({"model": candidate, "status": None, "reason": reason})
                 if emitted_content:
                     raise GroqStreamError(
                         "Provider stream stopped after output began", attempts
@@ -223,10 +221,16 @@ class GroqClient:
         raise GroqStreamError("No configured generation model was available", attempts)
 
 
-def _provider_error_message(body: str) -> str:
-    try:
-        payload = json.loads(body)
-        message = payload.get("error", {}).get("message")
-        return str(message)[:180] if message else "provider_error"
-    except (json.JSONDecodeError, AttributeError):
-        return "provider_error"
+def _provider_error_reason(status_code: int) -> str:
+    """Public attempts never include provider-controlled bodies or diagnostics."""
+    reasons = {
+        401: "provider_authentication_failed",
+        403: "provider_access_denied",
+        404: "provider_model_unavailable",
+        408: "provider_timeout",
+        409: "provider_conflict",
+        429: "provider_rate_limited",
+    }
+    if status_code >= 500:
+        return "provider_unavailable"
+    return reasons.get(status_code, "provider_request_rejected")

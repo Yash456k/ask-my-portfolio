@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     groq_api_key: str = Field(min_length=20)
     openrouter_api_key: str | None = Field(default=None, min_length=20)
     database_url: str = Field(min_length=20)
+    database_bootstrap_schema: bool = True
     frontend_origins: Annotated[list[str], NoDecode]
     frontend_origin_regex: str | None = None
     public_api_url: str
@@ -31,6 +32,17 @@ class Settings(BaseSettings):
         le=100_000_000,
     )
     budget_input_token_reserve: int = Field(default=32_000, ge=1_000, le=100_000)
+    # Process-local guardrails ahead of body parsing and durable database quotas.
+    admission_window_seconds: int = Field(default=10, ge=1, le=60)
+    admission_global_burst: int = Field(default=120, ge=1, le=10000)
+    admission_per_ip_burst: int = Field(default=30, ge=1, le=1000)
+    admission_max_clients: int = Field(default=4096, ge=1, le=65536)
+    admission_max_concurrent: int = Field(default=64, ge=1, le=256)
+    chat_global_burst: int = Field(default=12, ge=1, le=1000)
+    chat_per_ip_burst: int = Field(default=4, ge=1, le=100)
+    chat_max_concurrent: int = Field(default=4, ge=1, le=32)
+    chat_per_ip_concurrent: int = Field(default=2, ge=1, le=8)
+    health_cache_seconds: float = Field(default=3.0, ge=1, le=30)
     activity_cache_path: Path = Path("var/activity/activity.json")
     log_level: str = "INFO"
 
