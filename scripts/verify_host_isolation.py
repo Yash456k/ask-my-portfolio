@@ -26,6 +26,21 @@ def main():
     assert set(containers[1]['NetworkSettings']['Networks'])=={'rag-playground-db-private'}
     assert 'rag-playground-db-private' not in containers[2]['NetworkSettings']['Networks']
     print('PASS: all containers nonroot, readonly rootfs, zero capabilities; DB network and credential separation')
+    for c in containers:
+        for bindings in (c['HostConfig'].get('PortBindings') or {}).values():
+            assert all(b['HostIp']=='127.0.0.1' for b in (bindings or []))
+    for key in ['is-active','is-enabled']:
+        assert run('sudo','-n','systemctl',key,'cloudflared-portfolio.service').strip() in ('active','enabled')
+    assert run('sudo','-n','systemctl','show','cloudflared-portfolio.service','-p','Restart','--value').strip()=='always'
+    firewall=run('sudo','-n','ufw','status')
+    assert '80/tcp' not in firewall and '443/tcp' not in firewall
+    check="import socket; s=socket.socket(); s.settimeout(1); assert s.connect_ex(('172.18.0.1',18081))!=0; s.close()"
+    run('sudo','-n','docker','exec','rag-playground-api','python','-c',check)
+    # Same-bridge TCP is possible, but only host-gateway requests may use the tunnel route.
+    check="import http.client; c=http.client.HTTPConnection('172.18.0.4',8081,timeout=3); c.request('GET','/v1/config',headers={'Host':'api.yash456k.com','CF-Connecting-IP':'203.0.113.77'}); assert c.getresponse().status==404; c.close()"
+    run('sudo','-n','docker','exec','rag-playground-api','python','-c',check)
+    print('PASS: all published ports loopback-only; public firewall closed; tunnel enabled/restarting; container requests to the tunnel route are denied')
+
     probe='''import socket,os,psycopg,json
 for host,port in [('172.18.0.1',22),('178.104.56.243',22),('100.79.43.0',443),('100.79.43.0',9120),('172.18.0.1',18814),('172.30.251.1',22),('169.254.169.254',80)]:
  s=socket.socket();s.settimeout(1)
@@ -57,7 +72,7 @@ print('PASS: required public HTTPS provider connections still work')
     assert run('sudo','-n','systemctl','is-active','rag-isolation.service').strip()=='active'
     assert run('sudo','-n','systemctl','is-enabled','rag-isolation.service').strip()=='enabled'
     for path in ['/v1/health','/v1/config','/v1/activity']:
-        with urllib.request.urlopen('https://178-104-56-243.sslip.io'+path,timeout=20) as r:
+        with urllib.request.urlopen(urllib.request.Request('https://api.yash456k.com'+path, headers={'User-Agent': 'portfolio-isolation-verifier/1.0'}),timeout=20) as r:
             assert r.status==200
             data=json.load(r)
             if path.endswith('health'):assert data['status']=='ok'
