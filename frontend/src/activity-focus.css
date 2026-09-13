@@ -17,7 +17,20 @@
 .activity-focus .activity-switch-glider { background: #332d27; box-shadow: none; }
 .activity-focus .activity-card-stack { display: grid; height: auto; min-height: 408px; }
 .activity-focus .activity-card { --activity-bg: #292623; --activity-border: #4b443d; --activity-text: #fffaf0; --activity-muted: #c8beb3; --activity-empty: #3c3731; --activity-one: #713e31; --activity-two: #a1533b; --activity-three: #ca6b46; --activity-four: #e58c60; --activity-five: #ffb984; position: relative; inset: auto; grid-area: 1/1; display: flex; flex-direction: column; min-height: 408px; padding: 25px; border: 1px solid #4b443d; border-radius: 22px; background: #292623; color: var(--activity-text); overflow: visible; box-shadow: 0 18px 45px #513a2520, 0 7px 0 -2px #453b31, 0 14px 0 -4px #645443; }
-.activity-focus .activity-card--github { --activity-one: #335239; --activity-two: #477750; --activity-three: #66a361; --activity-four: #90c780; --activity-five: #b4e0a1; }
+/* Four activity shades: empty, low, medium, and rare peaks. */
+.activity-focus .activity-card--codex {
+  --activity-empty: #322e2a;
+  --activity-one: #4b3b31;
+  --activity-two: #926044;
+  --activity-three: #ffb984;
+}
+.activity-focus .activity-card--github {
+  --activity-empty: #322e2a;
+  --activity-one: #0e4429;
+  --activity-two: #238636;
+  --activity-three: #39d353;
+  --activity-four: #39d353;
+}
 .activity-focus .activity-card.is-behind { visibility: hidden; }
 .activity-focus .activity-card.is-swapping-in { animation: instrument-in 300ms ease both; }
 .activity-focus .activity-card.is-swapping-out { animation: instrument-out 200ms ease both; }

@@ -68,12 +68,9 @@ function buildCalendar(activity: ActivitySnapshot, kind: ActivityKind, range: Ac
     ? activity.codex.days.map((day) => ({ date: day.date, count: day.tokens }))
     : activity.github.days
   const counts = sourceDays.map((day) => day.count).filter(Boolean).sort((a, b) => a - b)
-  const thresholds = [
-    quantile(counts, 0.2),
-    quantile(counts, 0.45),
-    quantile(counts, 0.7),
-    quantile(counts, 0.9),
-  ]
+  // Keep ordinary days quiet and reserve the brightest shade for rare peaks.
+  const bands = [0.5, 0.95]
+  const thresholds = bands.map((fraction) => quantile(counts, fraction))
   const byDate = new Map(sourceDays.map((day) => [day.date, day.count]))
   const lastDataDay = dateAtNoon(activity.period.end)
   const calendarEnd = new Date(lastDataDay)
