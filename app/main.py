@@ -16,6 +16,7 @@ from fastapi.responses import JSONResponse, Response, StreamingResponse
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app.activity import ActivityCacheUnavailable, activity_response
+from app.admission import AdmissionLimiter, AdmissionMiddleware
 from app.config import PipelineConfig, load_pipeline
 from app.database import Database
 from app.embeddings import EmbeddingRegistry
@@ -153,7 +154,11 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        database = Database(active_settings.database_url, active_pipeline.embedders)
+        database = Database(
+            active_settings.database_url,
+            active_pipeline.embedders,
+            bootstrap_schema=active_settings.database_bootstrap_schema,
+        )
         await database.open()
         await database.cleanup_retention()
         embeddings = EmbeddingRegistry(active_pipeline)
@@ -184,6 +189,9 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
         openapi_url=None,
         lifespan=lifespan,
     )
+    admission = AdmissionLimiter(active_settings)
+    application.state.admission = admission
+    application.add_middleware(AdmissionMiddleware, settings=active_settings, limiter=admission)
     application.add_middleware(
         TrustedHostMiddleware,
         allowed_hosts=active_settings.allowed_hosts,
@@ -195,13 +203,30 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
         allow_credentials=False,
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["Content-Type"],
-        expose_headers=["ETag", "X-Request-ID", "X-RateLimit-Remaining"],
+        expose_headers=["ETag", "X-Request-ID", "X-RateLimit-Remaining", "Retry-After"],
         max_age=86400,
     )
 
+    health_lock = asyncio.Lock()
+    health_cache: dict[str, Any] | None = None
+    health_expires = 0.0
+
     @application.get("/v1/health")
     async def health(request: Request) -> JSONResponse:
-        database_health = await request.app.state.database.health()
+        nonlocal health_cache, health_expires
+        # Coalesce cold/expired probes as well as caching warm ones. No DB
+        # aggregates are repeated by concurrent public health requests.
+        if health_cache is None or time.monotonic() >= health_expires:
+            async with health_lock:
+                if health_cache is None or time.monotonic() >= health_expires:
+                    try:
+                        health_cache = await request.app.state.database.health()
+                    except Exception:  # noqa: BLE001
+                        logger.exception("Database health check failed")
+                        health_cache = {"ok": False}
+                    health_expires = time.monotonic() + active_settings.health_cache_seconds
+        database_health = health_cache
+        assert database_health is not None
         loaded = request.app.state.embeddings.loaded_ids
         expected = [item.id for item in active_pipeline.embedders]
         ready = database_health["ok"] and loaded == expected

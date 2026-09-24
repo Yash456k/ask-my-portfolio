@@ -15,7 +15,8 @@ RUN apt-get update \
 
 WORKDIR /app
 COPY requirements.txt ./
-RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.7.1 \
+RUN pip install --no-cache-dir --upgrade pip==26.2.1 setuptools==84.0.0 \
+    && pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.7.1 \
     && pip install --no-cache-dir -r requirements.txt
 
 COPY app ./app

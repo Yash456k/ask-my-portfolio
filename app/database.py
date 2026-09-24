@@ -25,8 +25,11 @@ class Database:
         self,
         database_url: str,
         embedders: Sequence[EmbedderConfig] | None = None,
+        *,
+        bootstrap_schema: bool = True,
     ) -> None:
         self.database_url = database_url
+        self.bootstrap_schema = bootstrap_schema
         self.embedders = tuple(embedders or load_pipeline().embedders)
         self.pool = AsyncConnectionPool(
             conninfo=database_url,
@@ -38,12 +41,14 @@ class Database:
         )
 
     async def open(self) -> None:
-        schema_path = Path(__file__).parents[1] / "sql" / "schema.sql"
-        schema = schema_path.read_text(encoding="utf-8")
-        # Bootstrap pgvector before pool connection hooks try to register its OIDs.
-        connection = await AsyncConnection.connect(self.database_url, autocommit=True)
-        async with connection:
-            await connection.execute(schema)
+        if self.bootstrap_schema:
+            # Operator/development path only. Public runtime uses a restricted
+            # account with bootstrap_schema=False against a pre-migrated DB.
+            schema_path = Path(__file__).parents[1] / "sql" / "schema.sql"
+            schema = schema_path.read_text(encoding="utf-8")
+            connection = await AsyncConnection.connect(self.database_url, autocommit=True)
+            async with connection:
+                await connection.execute(schema)
         await self.pool.open(wait=True, timeout=30)
 
     async def close(self) -> None:

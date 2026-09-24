@@ -1,10 +1,30 @@
 {
 	email {$ACME_EMAIL}
 	admin off
+	servers {
+		timeouts {
+			read_header 5s
+			read_body 15s
+			write 120s
+			idle 30s
+		}
+	}
+	servers :8081 {
+		trusted_proxies static 172.18.0.1/32
+		trusted_proxies_strict
+		client_ip_headers CF-Connecting-IP
+		timeouts {
+			read_header 5s
+			read_body 15s
+			write 120s
+			idle 30s
+		}
+	}
 }
 
-{$API_DOMAIN} {
-	encode zstd gzip
+# Tunnel-only listener, published on host loopback.
+http://api.yash456k.com:8081 {
+	# Cloudflare handles compression; preserve the activity validator end to end.
 
 	request_body {
 		max_size 32KB
@@ -20,15 +40,32 @@
 
 	# Activity may change without a frontend deployment. Keep ETags, but
 	# require validation before a browser reuses a saved response.
-	header /v1/activity >Cache-Control "public, no-cache, must-revalidate" {
+	header /v1/activity >Cache-Control "public, no-cache, must-revalidate, no-transform" {
 		match status 200 304
 	}
 
-	reverse_proxy api:8000 {
-		transport http {
-			response_header_timeout 60s
+	# Fail closed if new operator/admin routes are added to the application.
+	@public {
+		remote_ip 172.18.0.1/32
+		method GET HEAD POST OPTIONS
+		path /v1/health /v1/config /v1/activity /v1/chat
+	}
+	handle @public {
+		reverse_proxy api:8000 {
+			transport http {
+				dial_timeout 5s
+				response_header_timeout 60s
+				max_conns_per_host 16
+			}
+			header_up Host {$API_DOMAIN}
+			header_up X-Real-IP {client_ip}
+			flush_interval -1
+			header_up -X-Verify-Evaluation
+			header_up -X-Verify-Fallback
 		}
-		header_up X-Real-IP {remote_host}
+	}
+	handle {
+		respond 404
 	}
 
 	log {
