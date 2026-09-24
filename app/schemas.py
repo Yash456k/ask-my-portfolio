@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 
 class HistoryMessage(BaseModel):
@@ -19,6 +19,21 @@ class HistoryMessage(BaseModel):
         return clean
 
 
+UUID_PATTERN = r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+
+
+class ClientContext(BaseModel):
+    """Pseudonymous browser context recorded with each question (no raw identifiers)."""
+
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
+
+    visitor_id: str = Field(pattern=UUID_PATTERN, alias="visitorId")
+    session_id: str = Field(pattern=UUID_PATTERN, alias="sessionId")
+    timezone: str | None = Field(default=None, max_length=64, pattern=r"^[A-Za-z0-9_+\-/]+$")
+    language: str | None = Field(default=None, max_length=35, pattern=r"^[A-Za-z0-9-]+$")
+    screen: str | None = Field(default=None, max_length=11, pattern=r"^\d{2,5}x\d{2,5}$")
+
+
 class ChatRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
 
@@ -28,6 +43,16 @@ class ChatRequest(BaseModel):
     history: list[HistoryMessage] = Field(default_factory=list, max_length=6)
     top_k: Literal[3, 5, 7] = Field(default=3, alias="topK")
     use_history: bool = Field(default=True, alias="useHistory")
+    client: ClientContext | None = None
+
+    @field_validator("client", mode="wrap")
+    @classmethod
+    def drop_invalid_client(cls, value, handler):
+        # Logging context is optional: a malformed block must never block a question.
+        try:
+            return handler(value)
+        except ValidationError:
+            return None
 
     @field_validator("question")
     @classmethod

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import hmac
 import json
 import logging
 import time
@@ -21,12 +23,19 @@ from app.config import PipelineConfig, load_pipeline
 from app.database import Database
 from app.embeddings import EmbeddingRegistry
 from app.groq_client import GroqClient, GroqStreamError
+from app.jev import (
+    JEV_MODEL,
+    JEV_RETRIEVER_ID,
+    NONE_REFUSAL_THRESHOLD,
+    JevClient,
+    JevUnavailable,
+)
 from app.retrieval_context import format_source_excerpts
 from app.retrieval_protocol import retrieval_candidate_depth
 from app.retrieval_query import build_retrieval_query
 from app.retrieval_selection import select_diverse_chunks as _select_diverse_chunks
 from app.schemas import ChatRequest
-from app.security import get_client_ip, hash_ip, valid_verification_token
+from app.security import get_client_country, get_client_ip, hash_ip, valid_verification_token
 from app.settings import Settings, get_settings
 
 logger = logging.getLogger(__name__)
@@ -112,6 +121,38 @@ def _build_retrieval_query(request: ChatRequest) -> str:
     )
 
 
+def _log_details(request: Request, body: ChatRequest, settings: Settings) -> dict[str, Any]:
+    """Pseudonymous context for the question log. No raw IP or cross-site identifier."""
+    client = body.client
+    user_agent = request.headers.get("user-agent", "")[:400]
+    signature = "|".join(
+        [
+            user_agent,
+            (client.language if client else None) or "",
+            (client.timezone if client else None) or "",
+            (client.screen if client else None) or "",
+        ]
+    )
+    return {
+        "history": [item.model_dump() for item in body.history],
+        "top_k": body.top_k,
+        "use_history": body.use_history,
+        "visitor_id": client.visitor_id if client else None,
+        "session_id": client.session_id if client else None,
+        # Salted, so the signature groups one device here but cannot be matched elsewhere.
+        "device_hash": hmac.new(
+            settings.ip_hash_salt.encode(), signature.encode(), hashlib.sha256
+        ).hexdigest()[:32],
+        "user_agent": user_agent or None,
+        "country": get_client_country(request, settings),
+        "client": (
+            client.model_dump(include={"timezone", "language", "screen"}, exclude_none=True)
+            if client
+            else {}
+        ),
+    }
+
+
 async def _reserve_request_limits(
     database: Database,
     settings: Settings,
@@ -135,11 +176,11 @@ async def _reserve_request_limits(
     )
 
 
-async def _retention_loop(database: Database) -> None:
+async def _retention_loop(database: Database, query_log_days: int) -> None:
     while True:
         await asyncio.sleep(86400)
         try:
-            await database.cleanup_retention()
+            await database.cleanup_retention(query_log_days)
         except Exception:  # noqa: BLE001
             logger.exception("Database retention cleanup failed")
 
@@ -160,7 +201,7 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
             bootstrap_schema=active_settings.database_bootstrap_schema,
         )
         await database.open()
-        await database.cleanup_retention()
+        await database.cleanup_retention(active_settings.query_log_retention_days)
         embeddings = EmbeddingRegistry(active_pipeline)
         await embeddings.load_all()
         provider = GroqClient(
@@ -168,11 +209,22 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
             active_pipeline,
             active_settings.openrouter_api_key,
         )
-        retention_task = asyncio.create_task(_retention_loop(database))
+        jev = None
+        if active_settings.typesafe_api_key:
+            active_pipeline.embedder(active_settings.jev_fallback_embedder)  # fail fast
+            jev = JevClient(active_settings.typesafe_api_key, active_settings.jev_timeout_seconds)
+            # Jev reads the whole corpus; ingestion already restarts the API.
+            app.state.jev_chunks = await database.all_chunks()
+        retention_task = asyncio.create_task(
+            _retention_loop(database, active_settings.query_log_retention_days)
+        )
         app.state.database = database
         app.state.embeddings = embeddings
         app.state.provider = provider
+        app.state.jev = jev
         yield
+        if jev is not None:
+            await jev.close()
         retention_task.cancel()
         try:
             await retention_task
@@ -241,8 +293,29 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
         )
 
     @application.get("/v1/config")
-    async def public_config() -> dict[str, Any]:
-        return active_pipeline.public_dict()
+    async def public_config(request: Request) -> dict[str, Any]:
+        config = active_pipeline.public_dict()
+        for item in config["embedders"]:
+            item["kind"] = "embedding"
+        if getattr(request.app.state, "jev", None) is not None:
+            config["embedders"].append(
+                {
+                    "id": JEV_RETRIEVER_ID,
+                    "label": "Jev 1.13 · no embeddings",
+                    "description": (
+                        "TypeSafe Jev reads every chunk as text, picks the best one, and "
+                        "decides whether the portfolio can answer at all."
+                    ),
+                    "dimensions": 0,
+                    "kind": "jev",
+                    "optimization": {
+                        "portfolioTuned": False,
+                        "queryTransform": "reads raw chunk text",
+                        "minimumScore": NONE_REFUSAL_THRESHOLD,
+                    },
+                }
+            )
+        return config
 
     @application.get("/v1/activity")
     async def public_activity(request: Request) -> Response:
@@ -258,8 +331,13 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
 
     @application.post("/v1/chat")
     async def chat(body: ChatRequest, request: Request) -> StreamingResponse:
+        use_jev = body.embedder == JEV_RETRIEVER_ID
         try:
-            embedder = active_pipeline.embedder(body.embedder)
+            if use_jev and getattr(request.app.state, "jev", None) is None:
+                raise KeyError(JEV_RETRIEVER_ID)
+            embedder = active_pipeline.embedder(
+                active_settings.jev_fallback_embedder if use_jev else body.embedder
+            )
             active_pipeline.llm(body.model)
         except KeyError as exc:
             raise HTTPException(
@@ -293,7 +371,12 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
 
         request_id = uuid4()
         await request.app.state.database.start_query_log(
-            request_id, ip_digest, body.question, body.embedder, body.model
+            request_id,
+            ip_digest,
+            body.question,
+            body.embedder,
+            body.model,
+            _log_details(request, body, active_settings),
         )
         force_failure = valid_verification_token(
             request.headers.get("x-verify-fallback"), active_settings.verify_fallback_token
@@ -307,6 +390,7 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
             fallback_used = False
             attempts: list[dict[str, Any]] = []
             answer_parts: list[str] = []
+            retrieval: dict[str, Any] = {"retriever": body.embedder}
             try:
                 yield _sse(
                     {
@@ -322,31 +406,69 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
                         },
                     }
                 )
-                embedding_started = time.perf_counter()
-                vector = await request.app.state.embeddings.encode_query(
-                    body.embedder, _build_retrieval_query(body)
-                )
-                latencies["embeddingMs"] = _milliseconds(embedding_started)
-                yield _sse(
-                    {
-                        "type": "embedding",
-                        "embedder": embedder.id,
-                        "label": embedder.label,
-                        "dimensions": embedder.dimensions,
-                        "vectorDimensions": len(vector),
-                        "embeddingMs": latencies["embeddingMs"],
-                    }
-                )
-
-                retrieval_started = time.perf_counter()
-                candidates = await request.app.state.database.retrieve(
-                    embedder, vector, retrieval_candidate_depth(body.top_k)
-                )
-                chunks = _select_diverse_chunks(candidates, body.top_k)
-                latencies["retrievalMs"] = _milliseconds(retrieval_started)
+                query = _build_retrieval_query(body)
+                depth = retrieval_candidate_depth(body.top_k)
+                refuse = False
+                ranked = None
+                if use_jev:
+                    retrieval_started = time.perf_counter()
+                    try:
+                        ranking, usage = await request.app.state.jev.rank(
+                            query, request.app.state.jev_chunks
+                        )
+                        ranked = ranking.ordered
+                        refuse = ranking.none_probability >= NONE_REFUSAL_THRESHOLD
+                        retrieval.update(
+                            model=JEV_MODEL,
+                            noneProbability=round(ranking.none_probability, 5),
+                            pickChunkId=ranking.pick,
+                            pickConfidence=round(ranking.pick_confidence, 5),
+                            inputTokens=usage.get("input_tokens"),
+                        )
+                    except JevUnavailable as exc:
+                        retrieval.update(fallback=embedder.id, fallbackReason=str(exc))
+                    latencies["jevMs"] = _milliseconds(retrieval_started)
+                if ranked is not None:
+                    latencies["embeddingMs"] = 0.0
+                    yield _sse(
+                        {
+                            "type": "embedding",
+                            "embedder": JEV_RETRIEVER_ID,
+                            "kind": "jev",
+                            "label": "Jev 1.13",
+                            "dimensions": 0,
+                            "vectorDimensions": 0,
+                            "embeddingMs": 0.0,
+                            "chunksRead": len(ranked),
+                            "noneProbability": retrieval["noneProbability"],
+                        }
+                    )
+                    chunks = _select_diverse_chunks(ranked[:depth], body.top_k)
+                    latencies["retrievalMs"] = latencies["jevMs"]
+                else:
+                    embedding_started = time.perf_counter()
+                    vector = await request.app.state.embeddings.encode_query(embedder.id, query)
+                    latencies["embeddingMs"] = _milliseconds(embedding_started)
+                    yield _sse(
+                        {
+                            "type": "embedding",
+                            "embedder": embedder.id,
+                            "kind": "embedding",
+                            "label": embedder.label,
+                            "dimensions": embedder.dimensions,
+                            "vectorDimensions": len(vector),
+                            "embeddingMs": latencies["embeddingMs"],
+                            **({"fallbackFrom": JEV_RETRIEVER_ID} if use_jev else {}),
+                        }
+                    )
+                    retrieval_started = time.perf_counter()
+                    candidates = await request.app.state.database.retrieve(embedder, vector, depth)
+                    chunks = _select_diverse_chunks(candidates, body.top_k)
+                    latencies["retrievalMs"] = _milliseconds(retrieval_started)
+                    refuse = not chunks or chunks[0]["score"] < embedder.minimum_score
                 yield _sse({"type": "sources", "chunks": chunks, "latencies": latencies})
 
-                if not chunks or chunks[0]["score"] < embedder.minimum_score:
+                if refuse:
                     first_token_at = time.perf_counter()
                     latencies["firstTokenMs"] = _milliseconds(started, first_token_at)
                     generation_started = time.perf_counter()
@@ -401,6 +523,8 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
                     chunks=chunks,
                     latencies=latencies,
                     answer_characters=len("".join(answer_parts)),
+                    answer="".join(answer_parts),
+                    retrieval=retrieval,
                 )
             except asyncio.CancelledError:
                 await request.app.state.database.finish_query_log(
@@ -412,6 +536,8 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
                     chunks=chunks,
                     latencies=latencies,
                     answer_characters=len("".join(answer_parts)),
+                    answer="".join(answer_parts),
+                    retrieval=retrieval,
                     error_type="client_disconnected",
                 )
                 raise
@@ -438,6 +564,8 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
                     chunks=chunks,
                     latencies=latencies,
                     answer_characters=len("".join(answer_parts)),
+                    answer="".join(answer_parts),
+                    retrieval=retrieval,
                     error_type="provider_unavailable",
                 )
             except Exception as exc:  # noqa: BLE001
@@ -459,6 +587,8 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
                     chunks=chunks,
                     latencies=latencies,
                     answer_characters=len("".join(answer_parts)),
+                    answer="".join(answer_parts),
+                    retrieval=retrieval,
                     error_type=type(exc).__name__,
                 )
 

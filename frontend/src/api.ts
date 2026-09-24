@@ -108,6 +108,44 @@ type ChatInput = {
   useHistory: boolean
 }
 
+const VISITOR_KEY = 'portfolio:visitor:v1'
+const SESSION_KEY = 'portfolio:session:v1'
+
+function randomId(): string {
+  if (typeof crypto.randomUUID === 'function') return crypto.randomUUID()
+  const bytes = crypto.getRandomValues(new Uint8Array(16))
+  bytes[6] = (bytes[6] & 0x0f) | 0x40
+  bytes[8] = (bytes[8] & 0x3f) | 0x80
+  const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('')
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
+}
+
+function storedId(storage: () => Storage, key: string): string {
+  try {
+    const existing = storage().getItem(key)
+    if (existing && /^[0-9a-f-]{36}$/.test(existing)) return existing
+    const created = randomId()
+    storage().setItem(key, created)
+    return created
+  } catch {
+    return randomId()
+  }
+}
+
+// Pseudonymous context recorded with each question: a random visitor id kept in this
+// browser, a per-tab session id, and coarse device hints. Nothing here identifies a person.
+function clientContext() {
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const screen = `${Math.round(window.screen.width)}x${Math.round(window.screen.height)}`
+  return {
+    visitorId: storedId(() => localStorage, VISITOR_KEY),
+    sessionId: storedId(() => sessionStorage, SESSION_KEY),
+    timezone: /^[A-Za-z0-9_+\-/]{1,64}$/.test(timezone ?? '') ? timezone : undefined,
+    language: /^[A-Za-z0-9-]{1,35}$/.test(navigator.language) ? navigator.language : undefined,
+    screen: /^\d{2,5}x\d{2,5}$/.test(screen) ? screen : undefined,
+  }
+}
+
 export async function streamChat(
   input: ChatInput,
   onEvent: (event: StreamEvent) => void,
@@ -121,7 +159,7 @@ export async function streamChat(
         Accept: 'text/event-stream',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(input),
+      body: JSON.stringify({ ...input, client: clientContext() }),
       signal,
     })
   } catch (error) {

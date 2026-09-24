@@ -12,6 +12,10 @@ class Settings(BaseSettings):
 
     groq_api_key: str = Field(min_length=20)
     openrouter_api_key: str | None = Field(default=None, min_length=20)
+    # Jev retrieval is offered only when this key is configured.
+    typesafe_api_key: str | None = Field(default=None, min_length=20)
+    jev_timeout_seconds: float = Field(default=8.0, ge=1, le=30)
+    jev_fallback_embedder: str = "portfolio-e5-small"
     database_url: str = Field(min_length=20)
     database_bootstrap_schema: bool = True
     frontend_origins: Annotated[list[str], NoDecode]
@@ -42,6 +46,8 @@ class Settings(BaseSettings):
     chat_per_ip_burst: int = Field(default=4, ge=1, le=100)
     chat_max_concurrent: int = Field(default=4, ge=1, le=32)
     chat_per_ip_concurrent: int = Field(default=2, ge=1, le=8)
+    # 0 keeps question logs indefinitely; they are the source for answer grading.
+    query_log_retention_days: int = Field(default=0, ge=0, le=3650)
     health_cache_seconds: float = Field(default=3.0, ge=1, le=30)
     activity_cache_path: Path = Path("var/activity/activity.json")
     log_level: str = "INFO"

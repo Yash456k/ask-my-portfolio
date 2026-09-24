@@ -78,11 +78,13 @@ class Database:
             "vectorCoverage": coverage,
         }
 
-    async def cleanup_retention(self) -> None:
+    async def cleanup_retention(self, query_log_days: int = 0) -> None:
         async with self.pool.connection() as connection:
-            await connection.execute(
-                "DELETE FROM query_logs WHERE created_at < now() - interval '30 days'"
-            )
+            if query_log_days > 0:
+                await connection.execute(
+                    "DELETE FROM query_logs WHERE created_at < now() - make_interval(days => %s)",
+                    (query_log_days,),
+                )
             await connection.execute(
                 "DELETE FROM rate_limit_buckets WHERE bucket_date < current_date - 3"
             )
@@ -90,6 +92,24 @@ class Database:
                 "DELETE FROM monthly_budget_buckets "
                 "WHERE bucket_month < date_trunc('month', current_date)::date - interval '3 months'"
             )
+
+    async def all_chunks(self) -> list[dict[str, Any]]:
+        async with self.pool.connection() as connection:
+            cursor = await connection.execute(
+                "SELECT id, source, title, chunk_index, content FROM chunks "
+                "ORDER BY source, chunk_index"
+            )
+            rows = await cursor.fetchall()
+        return [
+            {
+                "id": str(row["id"]),
+                "source": row["source"],
+                "title": row["title"],
+                "chunkIndex": row["chunk_index"],
+                "content": row["content"],
+            }
+            for row in rows
+        ]
 
     async def retrieve(
         self,
@@ -215,15 +235,34 @@ class Database:
         question: str,
         embedder: str,
         model: str,
+        details: dict[str, Any] | None = None,
     ) -> None:
+        details = details or {}
         async with self.pool.connection() as connection:
             await connection.execute(
                 """
                 INSERT INTO query_logs
-                    (id, ip_hash, question, requested_embedder, requested_model)
-                VALUES (%s, %s, %s, %s, %s)
+                    (id, ip_hash, question, requested_embedder, requested_model,
+                     history, top_k, use_history, visitor_id, session_id, device_hash,
+                     user_agent, country, client)
+                VALUES (%s, %s, %s, %s, %s, %s::jsonb, %s, %s, %s, %s, %s, %s, %s, %s::jsonb)
                 """,
-                (request_id, ip_hash, question, embedder, model),
+                (
+                    request_id,
+                    ip_hash,
+                    question,
+                    embedder,
+                    model,
+                    json.dumps(details.get("history", [])),
+                    details.get("top_k"),
+                    details.get("use_history"),
+                    details.get("visitor_id"),
+                    details.get("session_id"),
+                    details.get("device_hash"),
+                    details.get("user_agent"),
+                    details.get("country"),
+                    json.dumps(details.get("client", {})),
+                ),
             )
 
     async def finish_query_log(
@@ -238,9 +277,16 @@ class Database:
         latencies: dict[str, Any] | None = None,
         answer_characters: int | None = None,
         error_type: str | None = None,
+        answer: str | None = None,
+        retrieval: dict[str, Any] | None = None,
     ) -> None:
         chunk_log = [
-            {"id": item["id"], "source": item["source"], "score": item["score"]}
+            {
+                "id": item["id"],
+                "source": item["source"],
+                "chunkIndex": item.get("chunkIndex"),
+                "score": item["score"],
+            }
             for item in (chunks or [])
         ]
         async with self.pool.connection() as connection:
@@ -250,7 +296,8 @@ class Database:
                 SET completed_at = now(), status = %s, actual_model = %s,
                     fallback_used = %s, fallback_attempts = %s::jsonb,
                     retrieved_chunks = %s::jsonb, latencies = %s::jsonb,
-                    answer_characters = %s, error_type = %s
+                    answer_characters = %s, error_type = %s,
+                    answer = %s, retrieval = %s::jsonb
                 WHERE id = %s
                 """,
                 (
@@ -262,6 +309,8 @@ class Database:
                     json.dumps(latencies or {}),
                     answer_characters,
                     error_type,
+                    answer,
+                    json.dumps(retrieval or {}),
                     request_id,
                 ),
             )

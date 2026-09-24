@@ -1046,6 +1046,14 @@ a:focus-visible {
   stroke-width: 1.5;
 }
 
+.composer-notice {
+  margin: 7px 0 0;
+  color: rgb(var(--theme-muted-rgb, 133 128 123));
+  font-size: 10.5px;
+  line-height: 1.3;
+  text-align: center;
+}
+
 .composer-meta {
   position: absolute;
   width: 1px;

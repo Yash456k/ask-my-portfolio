@@ -6,6 +6,7 @@ export type ModelOption = {
 }
 
 export type EmbedderOption = ModelOption & {
+  kind?: 'embedding' | 'jev'
   dimensions: number
   optimization: {
     portfolioTuned: boolean
@@ -44,10 +45,13 @@ export type RetrievedChunk = {
 
 export type EmbeddingConfirmation = {
   embedder: string
+  kind?: 'embedding' | 'jev'
   label: string
   dimensions: number
   vectorDimensions: number
   embeddingMs: number
+  chunksRead?: number
+  fallbackFrom?: string
 }
 
 export type Latencies = {

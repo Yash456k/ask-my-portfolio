@@ -29,6 +29,15 @@ def get_client_ip(request: Request, settings: Settings) -> str:
     return peer
 
 
+def get_client_country(request: Request, settings: Settings) -> str | None:
+    """Cloudflare's visitor country, trusted only when the request came through the proxy."""
+    peer = request.client.host if request.client else "unknown"
+    if not _trusted_peer(peer, settings.trusted_proxy_cidrs):
+        return None
+    country = request.headers.get("cf-ipcountry", "").strip().upper()
+    return country if len(country) == 2 and country.isalnum() else None
+
+
 def hash_ip(ip: str, salt: str) -> str:
     return hmac.new(salt.encode(), ip.encode(), hashlib.sha256).hexdigest()
 

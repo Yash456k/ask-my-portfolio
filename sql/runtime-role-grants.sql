@@ -7,7 +7,10 @@ REVOKE ALL ON DATABASE rag_playground FROM PUBLIC;
 GRANT CONNECT ON DATABASE rag_playground TO rag_runtime;
 GRANT USAGE ON SCHEMA public TO rag_runtime;
 GRANT SELECT ON documents, chunks TO rag_runtime;
-GRANT SELECT, INSERT, UPDATE, DELETE ON rate_limit_buckets, monthly_budget_buckets, query_logs TO rag_runtime;
+GRANT SELECT, INSERT, UPDATE, DELETE ON rate_limit_buckets, monthly_budget_buckets TO rag_runtime;
+-- Question logs are kept for answer grading: the public API may add and complete rows, never delete them.
+GRANT SELECT, INSERT, UPDATE ON query_logs TO rag_runtime;
+REVOKE DELETE ON query_logs FROM rag_runtime;
 ALTER ROLE rag_runtime SET statement_timeout = '15s';
 ALTER ROLE rag_runtime SET lock_timeout = '3s';
 ALTER ROLE rag_runtime SET idle_in_transaction_session_timeout = '15s';

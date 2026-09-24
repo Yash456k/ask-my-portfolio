@@ -366,12 +366,18 @@ function RetrievedRail({
   const visibleChunks = chunks
   const retrievalLabel = retrievalMs === undefined ? undefined : `${Math.round(retrievalMs)} ms retrieval`
   const confirmationLabel = embedding
-    ? 'Embedding confirmed'
+    ? embedding.kind === 'jev'
+      ? 'Retrieval confirmed'
+      : embedding.fallbackFrom
+        ? 'Jev unavailable · fallback'
+        : 'Embedding confirmed'
     : pendingEmbedding
       ? 'Request received'
       : 'Ready for a query'
   const confirmationValue = embedding
-    ? `${embedding.label} · ${embedding.vectorDimensions}D`
+    ? embedding.kind === 'jev'
+      ? `${embedding.label} · read ${embedding.chunksRead ?? 0} chunks`
+      : `${embedding.label} · ${embedding.vectorDimensions}D`
     : pendingEmbedding
       ? `${pendingEmbedding} · embedding queued`
       : 'Vector receipt appears here'
@@ -601,7 +607,7 @@ function Composer({ value, disabled, expanded, onChange, onSubmit, onEngage, inp
           rows={1}
           maxLength={QUESTION_LIMIT}
           disabled={disabled}
-          aria-describedby="composer-help composer-count"
+          aria-describedby="composer-help composer-count composer-notice"
         />
         <button type="submit" disabled={!canSubmit} aria-label="Send question">
           <span className="visually-hidden">{disabled ? 'Working' : 'Send'}</span>
@@ -610,6 +616,9 @@ function Composer({ value, disabled, expanded, onChange, onSubmit, onEngage, inp
           </svg>
         </button>
       </div>
+      <p id="composer-notice" className="composer-notice">
+        Questions and answers are saved to improve this portfolio.
+      </p>
       <div className="composer-meta">
         <span id="composer-help">Enter to send · Shift + Enter for a new line</span>
         <span id="composer-count" className={value.length > QUESTION_LIMIT * 0.9 ? 'near-limit' : ''}>
@@ -887,9 +896,12 @@ function App() {
                 embedding: {
                   embedder: event.embedder,
                   label: event.label,
+                  kind: event.kind,
                   dimensions: event.dimensions,
                   vectorDimensions: event.vectorDimensions,
                   embeddingMs: event.embeddingMs,
+                  chunksRead: event.chunksRead,
+                  fallbackFrom: event.fallbackFrom,
                 },
                 latencies: { ...answer.latencies, embeddingMs: event.embeddingMs },
               }
