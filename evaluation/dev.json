@@ -53,49 +53,6 @@
       }
     },
     {
-      "id": "dev-future-ai-leadership",
-      "category": "experience",
-      "question": "Give me evidence that Yash has led a frontend team and improved its engineering practices.",
-      "history": [],
-      "required_evidence": [
-        {
-          "label": "Future AI Power leadership",
-          "any_of": [
-            {
-              "source": "about-and-experience.md",
-              "chunk_indexes": [
-                2
-              ],
-              "content_any_of": [
-                "led a four-person frontend team"
-              ]
-            }
-          ]
-        }
-      ],
-      "answer_expectation": {
-        "refusal": false,
-        "claim_groups": [
-          {
-            "label": "team size",
-            "any_of": [
-              "four[- ]person frontend team",
-              "frontend team of four"
-            ]
-          },
-          {
-            "label": "practice improvement",
-            "any_of": [
-              "code[- ]review workflows?",
-              "TypeScript practices?"
-            ]
-          }
-        ],
-        "forbidden_claims": [],
-        "min_citations": 1
-      }
-    },
-    {
       "id": "dev-nsk-concurrency-proof",
       "category": "projects",
       "question": "Which project best demonstrates correctness under concurrency, and what proof was reported?",
@@ -321,7 +278,7 @@
             {
               "source": "about-and-experience.md",
               "chunk_indexes": [
-                4
+                3
               ],
               "content_any_of": [
                 "more than 150 problems[\\s\\S]*1619"

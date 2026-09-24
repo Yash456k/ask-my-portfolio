@@ -66,54 +66,6 @@
       }
     },
     {
-      "id": "heldout-leadership-signal",
-      "category": "experience",
-      "question": "What is the strongest documented signal that Yash can raise the quality of a small engineering team?",
-      "history": [],
-      "required_evidence": [
-        {
-          "label": "Future AI Power team practices",
-          "any_of": [
-            {
-              "source": "about-and-experience.md",
-              "chunk_indexes": [
-                2
-              ],
-              "content_any_of": [
-                "four-person frontend team[\\s\\S]*code-review workflows"
-              ]
-            }
-          ]
-        }
-      ],
-      "answer_expectation": {
-        "refusal": false,
-        "claim_groups": [
-          {
-            "label": "led small team",
-            "any_of": [
-              "led a four[- ]person frontend team",
-              "led a frontend team of four"
-            ]
-          },
-          {
-            "label": "raised practices",
-            "any_of": [
-              "introduced code[- ]review workflows?[\\s\\S]*TypeScript practices?",
-              "TypeScript practices?[\\s\\S]*code[- ]review workflows?"
-            ]
-          }
-        ],
-        "forbidden_claims": [
-          {
-            "label": "invented large team",
-            "pattern": "(?:led|managed) (?:a team of )?(?:20|twenty|50|fifty)"
-          }
-        ],
-        "min_citations": 1
-      }
-    },
-    {
       "id": "heldout-booking-correctness",
       "category": "projects",
       "question": "A hiring manager cares about race conditions. What concrete design and test result from Yash's work should they examine?",

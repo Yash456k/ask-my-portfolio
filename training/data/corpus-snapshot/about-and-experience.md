@@ -14,6 +14,11 @@ Yash worked at AIVID Techvision from September 2024 through September 2025. He p
 
 He shipped end-to-end features handling more than 100,000 database records per day, including API endpoints for Elasticsearch aggregations and customizable Kibana dashboards. He delivered more than 20 React and TypeScript frontend features and built or improved more than 10 reusable components for a shared component library.
 
+<!-- rag-chunk: future-ai-leadership | Future AI Power frontend leadership and engineering practices -->
+### Future AI Power - React Web Development Intern
+
+Yash worked at Future AI Power from April through June 2024. He led a four-person frontend team, introduced code-review workflows and TypeScript practices, and built a React and Redux AI product-discovery interface with search filtering.
+
 <!-- rag-chunk: technical-skills | Programming languages, frontend, backend, data, cloud, and tooling skills -->
 ## Skills and achievements
 

@@ -12,12 +12,6 @@ const experience = [
     detail: 'Built multi-tenant notification, Microsoft Graph, analytics, and reusable frontend systems.',
   },
   {
-    period: '2024',
-    role: 'React Web Development Intern',
-    company: 'Future AI Power',
-    detail: 'Led a four-person frontend team and shipped an AI product-discovery interface.',
-  },
-  {
     period: '2022 — 2026',
     role: 'B.Tech, Computer Engineering',
     company: 'Indus University',

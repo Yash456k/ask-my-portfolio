@@ -57,10 +57,17 @@ def _read_jsonl(path: Path) -> list[dict[str, Any]]:
     return records
 
 
+# The corpus exactly as the training data was reviewed against it (git f16acb2). Training
+# stays pinned to this copy, so editing the live corpus/ neither breaks nor silently
+# redefines the passages the existing fine-tunes learned. Retraining on newer content means
+# refreshing this snapshot and corpus-lock.json, then re-reviewing every example.
+TRAINING_CORPUS = Path("training") / "data" / "corpus-snapshot"
+
+
 def build_chunk_snapshot(
     repo_root: Path, locked_chunking: dict[str, Any] | None = None
 ) -> dict[str, str]:
-    corpus_path = repo_root / "corpus"
+    corpus_path = repo_root / TRAINING_CORPUS
     pipeline = load_pipeline(repo_root / "config" / "pipeline.yaml")
     if locked_chunking is not None:
         pipeline = pipeline.model_copy(
@@ -189,8 +196,8 @@ def load_and_validate(repo_root: Path) -> DatasetBundle:
         raise ValueError("hard negatives must be manually reviewed against the locked corpus")
     expected_source_hashes = corpus_lock.get("source_file_sha256", {})
     actual_source_hashes = {
-        path.relative_to(repo_root).as_posix(): sha256_file(path)
-        for path in sorted((repo_root / "corpus").glob("*"))
+        f"corpus/{path.name}": sha256_file(path)
+        for path in sorted((repo_root / TRAINING_CORPUS).glob("*"))
         if path.is_file()
     }
     if expected_source_hashes != actual_source_hashes:
