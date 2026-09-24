@@ -1,14 +1,19 @@
 <!-- rag-chunk: profile-education | Profile, education, location, and engineering focus -->
 # About Yash Khambhatta
 
-Yash Khambhatta is a software developer based in Ahmedabad, Gujarat, India. He is pursuing a B.Tech in Computer Engineering at Indus Institute of Technology and Engineering from 2022 to 2026. His resume reports a CGPA of 9.66 out of 10.
+Yash Khambhatta is a software developer based in Ahmedabad, Gujarat, India. He completed a B.Tech in Computer Engineering at Indus Institute of Technology and Engineering (2022 to 2026), graduating in June 2026 with a CGPA of 9.66 out of 10.
 
 Yash focuses on clean architecture, maintainable code, production reliability, performance, and calm, intuitive user experiences. His technical interests span full-stack product engineering, real-time systems, search and analytics, and applied AI.
 
-<!-- rag-chunk: aivid-impact | AIVID Techvision role dates, systems, scale, and measurable delivery -->
+<!-- rag-chunk: aivid-current | AIVID Techvision current full-time role, start date, and scope -->
 ## Experience
 
-### AIVID Techvision - Full Stack Developer Intern
+### AIVID Techvision - Full-stack Engineer (current role)
+
+Yash currently works at AIVID Techvision as a full-stack engineer. He rejoined the company in March 2026 as an intern and converted to a full-time role in June 2026. He works across frontend systems, backend services, platform reliability, and developer experience.
+
+<!-- rag-chunk: aivid-impact | AIVID Techvision internship dates, systems, scale, and measurable delivery -->
+### AIVID Techvision - Full Stack Developer Intern (earlier internship)
 
 Yash worked at AIVID Techvision from September 2024 through September 2025. He programmed a scalable Expo and Node.js push-notification system for targeted delivery across more than 1,000 user roles per day in a multi-tenant organization. He built a Microsoft Graph API workflow that uploaded user-selected images to OneDrive while managing Azure access tokens.
 

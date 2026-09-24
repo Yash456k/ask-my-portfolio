@@ -15,7 +15,7 @@
             {
               "source": "about-and-experience.md",
               "chunk_indexes": [
-                1
+                2
               ],
               "content_any_of": [
                 "AIVID Techvision[\\s\\S]*1,000 user roles",
@@ -245,7 +245,7 @@
           {
             "label": "degree",
             "any_of": [
-              "pursuing a B\\.?Tech in Computer Engineering",
+              "(?:completed|earned|graduated)[^.]{0,80}B\\.?Tech",
               "B\\.?Tech in Computer Engineering[\\s\\S]*(?:2022|2026)"
             ]
           },
@@ -278,7 +278,7 @@
             {
               "source": "about-and-experience.md",
               "chunk_indexes": [
-                3
+                4
               ],
               "content_any_of": [
                 "more than 150 problems[\\s\\S]*1619"
@@ -481,7 +481,7 @@
             {
               "source": "about-and-experience.md",
               "chunk_indexes": [
-                1
+                2
               ],
               "content_any_of": [
                 "push-notification system[\\s\\S]*1,000 user roles"
@@ -495,7 +495,7 @@
             {
               "source": "about-and-experience.md",
               "chunk_indexes": [
-                1
+                2
               ],
               "content_any_of": [
                 "100,000 database records"
@@ -585,7 +585,7 @@
       "history": [],
       "required_evidence": [
         {
-          "label": "AIVID dated role",
+          "label": "AIVID current role",
           "any_of": [
             {
               "source": "about-and-experience.md",
@@ -593,7 +593,7 @@
                 1
               ],
               "content_any_of": [
-                "September 2024 through September 2025"
+                "currently works at AIVID Techvision as a full-stack engineer"
               ]
             }
           ]
@@ -603,18 +603,18 @@
         "refusal": false,
         "claim_groups": [
           {
-            "label": "bounded dates",
+            "label": "current role",
             "any_of": [
-              "September 2024 (?:through|to|[-–]) September 2025"
+              "(?:currently|now)\\s+(?:works?|working|employed)[^.]{0,60}AIVID",
+              "full[- ]time[^.]{0,60}(?:June 2026|since June)",
+              "(?:yes|yes,)[^.]{0,80}AIVID"
             ]
           },
           {
-            "label": "not documented as current",
+            "label": "precise dates",
             "any_of": [
-              "(?:not|doesn.t) (?:document|show|establish)[^.]{0,50}(?:current|still)",
-              "role (?:ended|has an end date)[^.]{0,30}September 2025",
-              "worked at AIVID[\\s\\S]*through September 2025",
-              "not currently working there"
+              "March 2026",
+              "June 2026"
             ]
           }
         ],

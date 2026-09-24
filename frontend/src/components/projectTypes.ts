@@ -2,6 +2,7 @@ export type ProjectItem = {
   id: string
   number: string
   date: string
+  startedOn: string
   title: string
   eyebrow: string
   role: string

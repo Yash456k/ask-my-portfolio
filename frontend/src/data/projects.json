@@ -2,7 +2,8 @@
   {
     "id": "nsk",
     "number": "01",
-    "date": "2025",
+    "date": "Aug 2025",
+    "startedOn": "2025-08-14",
     "title": "Nashik Sports Klub",
     "eyebrow": "Live product",
     "role": "Full-stack engineering",
@@ -23,7 +24,8 @@
   {
     "id": "portfolio-rag",
     "number": "02",
-    "date": "2026 → Now",
+    "date": "Jul 2026",
+    "startedOn": "2026-07-11",
     "title": "This portfolio + RAG",
     "eyebrow": "Current build",
     "role": "Retrieval and product engineering",
@@ -44,7 +46,8 @@
   {
     "id": "realtime-chat",
     "number": "03",
-    "date": "2024",
+    "date": "Jun 2024",
+    "startedOn": "2024-06-27",
     "title": "Real-time MERN Chat",
     "eyebrow": "Shipped application",
     "role": "Real-time product engineering",

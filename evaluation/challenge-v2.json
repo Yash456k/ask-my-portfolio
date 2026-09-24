@@ -76,7 +76,7 @@
                 "Microsoft Graph API workflow[\\s\\S]*OneDrive[\\s\\S]*Azure access tokens"
               ],
               "chunk_indexes": [
-                1
+                2
               ]
             }
           ]
@@ -127,7 +127,7 @@
                 "100,000 database records per day[\\s\\S]*Elasticsearch aggregations[\\s\\S]*Kibana dashboards"
               ],
               "chunk_indexes": [
-                1
+                2
               ]
             }
           ]
@@ -668,7 +668,7 @@
                 "Microsoft Graph API workflow[\\s\\S]*user-selected images[\\s\\S]*Azure access tokens"
               ],
               "chunk_indexes": [
-                1
+                2
               ]
             }
           ]

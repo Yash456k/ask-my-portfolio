@@ -27,18 +27,26 @@ describe('continuous project rotation', () => {
 
 
 describe('project pointer and card gestures', () => {
-  const dates = ['2025', '2026 → Now', '2024']
-  it('places projects against the dated timeline stops', () => {
-    expect(projectDatePosition('2024')).toBe(0)
-    expect(projectDatePosition('2025')).toBe(.25)
-    expect(projectDatePosition('2026')).toBe(.5)
-    expect(projectDatePosition('2026 → Now')).toBe(1)
+  const today = Date.UTC(2026, 8, 24)
+  const dates = ['2025-08-14', '2026-07-11', '2024-06-27']
+  it('places projects on a real time axis ending today', () => {
+    expect(projectDatePosition('2024-01-01', today)).toBe(0)
+    expect(projectDatePosition('2026-01-01', today)).toBe(.5)
+    expect(projectDatePosition('2026-09-24', today)).toBe(1)
+    expect(projectDatePosition('2025-01-01', today)).toBeCloseTo(.25, 2)
+    expect(projectDatePosition('2026-07-11', today)).toBeCloseTo(.859, 3)
+  })
+  it('lets recent work drift back as days pass', () => {
+    const later = Date.UTC(2026, 11, 24)
+    expect(projectDatePosition('2026-07-11', later)).toBeLessThan(projectDatePosition('2026-07-11', today))
+    expect(projectDatePosition('2025-08-14', later)).toBe(projectDatePosition('2025-08-14', today))
   })
   it('tracks fractional barrel movement, including reverse and wraparound', () => {
-    expect(projectPointerPosition(.5, dates)).toBe(.625)
-    expect(projectPointerPosition(1.5, dates)).toBe(.5)
-    expect(projectPointerPosition(2.5, dates)).toBe(.125)
-    expect(projectPointerPosition(-.5, dates)).toBe(.125)
+    const [nsk, rag, chat] = dates.map((date) => projectDatePosition(date, today))
+    expect(projectPointerPosition(.5, dates, today)).toBeCloseTo((nsk + rag) / 2)
+    expect(projectPointerPosition(1.5, dates, today)).toBeCloseTo((rag + chat) / 2)
+    expect(projectPointerPosition(2.5, dates, today)).toBeCloseTo((chat + nsk) / 2)
+    expect(projectPointerPosition(-.5, dates, today)).toBeCloseTo((chat + nsk) / 2)
   })
   it('commits deliberate horizontal pulls and quick flicks in both directions', () => {
     expect(cardSwipeDirection(-100, 8, -.1, 500)).toBe(1)

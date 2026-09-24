@@ -301,6 +301,7 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
         for item in config["embedders"]:
             item["kind"] = "embedding"
         if getattr(request.app.state, "jev", None) is not None:
+            config["defaults"]["embedder"] = JEV_RETRIEVER_ID
             config["embedders"].append(
                 {
                     "id": JEV_RETRIEVER_ID,

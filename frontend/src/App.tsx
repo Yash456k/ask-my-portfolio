@@ -356,6 +356,7 @@ function RetrievedRail({
   embedding,
   pendingEmbedding,
   retrievalMs,
+  emotions,
   collapsed = false,
   onToggle,
 }: {
@@ -363,6 +364,7 @@ function RetrievedRail({
   embedding?: EmbeddingConfirmation
   pendingEmbedding?: string
   retrievalMs?: number
+  emotions?: ConversationSignals['emotions']
   collapsed?: boolean
   onToggle?: () => void
 }) {
@@ -433,6 +435,12 @@ function RetrievedRail({
           <strong>{confirmationValue}</strong>
         </div>
       </div>
+      {emotions && emotions.length > 0 && (
+        <div className="emotion-reading" role="status">
+          <small>Visitor emotion</small>
+          <EmotionTags emotions={emotions} />
+        </div>
+      )}
       <header className="rail-heading">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M3.5 5.5c3-.8 5.8-.2 8.5 1.7v12c-2.7-1.9-5.5-2.5-8.5-1.7zM20.5 5.5c-3-.8-5.8-.2-8.5 1.7v12c2.7-1.9 5.5-2.5 8.5-1.7z" />
@@ -499,7 +507,7 @@ function AnswerSignals({ signals }: { signals: ConversationSignals }) {
   )
 }
 
-// The emotions Jev read in a visitor's message, pinned to that message's corner.
+// The emotions Jev read in the visitor's latest message.
 function EmotionTags({ emotions }: { emotions: ConversationSignals['emotions'] }) {
   return (
     <span className="emotion-tags" aria-label={`Jev read: ${emotions.map((e) => e.name).join(' and ')}`}>
@@ -599,18 +607,15 @@ function ChatTranscript({ messages, onShowSources }: { messages: ChatMessage[]; 
 
   return (
     <div className="transcript">
-      {messages.map((message, index) => {
-        const reply = messages[index + 1]
-        const emotions = reply?.role === 'assistant' ? reply.signals?.emotions : undefined
-        return message.role === 'user' ? (
+      {messages.map((message) =>
+        message.role === 'user' ? (
           <article className="message user-message" key={message.id} aria-label="Your question">
-            {emotions && emotions.length > 0 && <EmotionTags emotions={emotions} />}
             <p>{message.content}</p>
           </article>
         ) : (
           <AssistantAnswer key={message.id} message={message} onShowSources={onShowSources} />
-        )
-      })}
+        ),
+      )}
     </div>
   )
 }
@@ -1149,6 +1154,7 @@ function App() {
               embedding={latestAssistant?.embedding}
               pendingEmbedding={latestAssistant && !latestAssistant.embedding ? latestAssistant.embedderLabel : undefined}
               retrievalMs={latestAssistant?.latencies.retrievalMs}
+              emotions={latestAssistant?.signals?.emotions}
               collapsed={!evidenceOpen}
               onToggle={toggleEvidence}
             />

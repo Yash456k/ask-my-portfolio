@@ -14,18 +14,24 @@ export function springStep(position: number, velocity: number, target: number, s
   }
 }
 
-// The dated stops are 2024, 2026 and Now; project dates stay in the JSON corpus.
-export function projectDatePosition(date: string) {
-  if (/now|present/i.test(date)) return 1
-  const year = Number(date.match(/20\d{2}/)?.[0] ?? 2024)
-  return Math.max(0, Math.min(.5, (year - 2024) / 4))
+const AXIS_START = Date.UTC(2024, 0, 1)
+const AXIS_MIDDLE = Date.UTC(2026, 0, 1)
+
+// The timeline stops are 2024, 2026 and Now, where Now is today. Work started after 2026
+// spreads across the last half up to today, so a project drifts back as days pass.
+export function projectDatePosition(isoDate: string, today: number = Date.now()) {
+  const time = Date.parse(isoDate)
+  if (Number.isNaN(time)) return 1
+  if (time <= AXIS_START) return 0
+  if (time <= AXIS_MIDDLE) return ((time - AXIS_START) / (AXIS_MIDDLE - AXIS_START)) * .5
+  return .5 + .5 * Math.min(1, (time - AXIS_MIDDLE) / Math.max(1, today - AXIS_MIDDLE))
 }
 
-export function projectPointerPosition(position: number, dates: readonly string[]) {
+export function projectPointerPosition(position: number, dates: readonly string[], today: number = Date.now()) {
   const lower = Math.floor(position)
   const fraction = position - lower
-  const from = projectDatePosition(dates[wrapIndex(lower, dates.length)])
-  const to = projectDatePosition(dates[wrapIndex(lower + 1, dates.length)])
+  const from = projectDatePosition(dates[wrapIndex(lower, dates.length)], today)
+  const to = projectDatePosition(dates[wrapIndex(lower + 1, dates.length)], today)
   return from + (to - from) * fraction
 }
 

@@ -15,7 +15,7 @@
             {
               "source": "about-and-experience.md",
               "chunk_indexes": [
-                1
+                2
               ],
               "content_any_of": [
                 "1,000 user roles per day"
@@ -29,7 +29,7 @@
             {
               "source": "about-and-experience.md",
               "chunk_indexes": [
-                1
+                2
               ],
               "content_any_of": [
                 "100,000 database records per day"

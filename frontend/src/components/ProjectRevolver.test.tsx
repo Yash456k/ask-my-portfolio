@@ -6,7 +6,7 @@ import { ProjectRevolver } from './ProjectRevolver'
 import type { ProjectItem } from './projectTypes'
 
 const projects: ProjectItem[] = ['First', 'Second', 'Third'].map((title, index) => ({
-  id: title, number: String(index + 1), date: '2026', title,
+  id: title, number: String(index + 1), date: 'Jan 2026', startedOn: '2026-01-15', title,
   eyebrow: '', role: '', summary: '', detail: '', highlights: [], metrics: [], tags: [],
   href: '/', repository: '', linkLabel: '', external: false,
 }))

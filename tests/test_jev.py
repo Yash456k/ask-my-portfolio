@@ -270,3 +270,13 @@ def test_signals_parse_maps_labels_mood_and_coverage() -> None:
     result["answers"]["intent"]["choice"] = "unknown"
     with pytest.raises(ValueError):
         parse_signals(result)
+
+
+async def test_jev_is_the_default_route_when_configured(pipeline) -> None:
+    application = _jev_app(pipeline, AsyncMock())
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=application), base_url="http://testserver"
+    ) as client:
+        config = (await client.get("/v1/config")).json()
+    assert config["defaults"]["embedder"] == "jev"
+    assert config["embedders"][-1]["id"] == "jev"

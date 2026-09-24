@@ -7,7 +7,7 @@ import { ExperienceTimeline } from './ExperienceTimeline'
 import { projectPointerPosition } from '../lib/revolver'
 
 const projectItems = projectsData as readonly ProjectItem[]
-const projectDates = projectItems.map((project) => project.date)
+const projectDates = projectItems.map((project) => project.startedOn)
 const sweepDuration = 310
 const titleDuration = 420
 

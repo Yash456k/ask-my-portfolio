@@ -15,16 +15,16 @@
     "requireNoForbiddenClaims": true,
     "globalForbiddenClaims": [
       {
-        "label": "AIVID presented as current employment",
-        "pattern": "(?:currently|presently|now)\\s+(?:works?|employed|working).*AIVID|works\\s+(?:currently\\s+)?at\\s+AIVID|AIVID[^.]{0,60}\\b(?:present|ongoing)\\b"
+        "label": "AIVID internship presented as ongoing",
+        "pattern": "intern(?:ship)?\\b[^.]{0,60}AIVID[^.]{0,60}\\b(?:present|ongoing|currently)\\b|AIVID[^.]{0,60}\\bintern(?:ship)?\\b[^.]{0,40}\\b(?:present|ongoing|currently)\\b"
       },
       {
-        "label": "Future AI Power presented as current employment",
-        "pattern": "(?:currently|presently|now)\\s+(?:works?|employed|working).*Future AI Power|works\\s+(?:currently\\s+)?at\\s+Future AI Power"
+        "label": "Future AI Power mentioned (removed from the portfolio)",
+        "pattern": "Future AI Power"
       },
       {
-        "label": "completed degree invented",
-        "pattern": "(?:has|had)\\s+(?:already\\s+)?graduated|holds?\\s+(?:a\\s+)?B\\.?Tech"
+        "label": "degree presented as still in progress",
+        "pattern": "(?:is|currently)\\s+(?:still\\s+)?pursuing\\s+(?:a\\s+)?B\\.?Tech|(?:is|currently)\\s+(?:still\\s+)?studying"
       }
     ]
   }
