@@ -1521,8 +1521,13 @@ a:focus-visible {
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  margin: 11px 0 0 6px;
+  margin-top: 11px;
   vertical-align: top;
+}
+
+/* The gap lives on the pill so wrapped signals start flush with it. */
+.answer-sources {
+  margin-right: 6px;
 }
 
 .signal-chip,
