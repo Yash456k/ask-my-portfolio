@@ -1,6 +1,10 @@
-[![The home page of yash456k.com: "I build stuff I find interesting" beside a year of daily coding activity](docs/assets/home.png)](https://www.yash456k.com)
+<div align="center">
 
-# Ask my portfolio
+<a href="https://www.yash456k.com"><img src="docs/assets/home.png" alt="The home page of yash456k.com: &quot;I build stuff I find interesting&quot; beside a year of daily coding activity" width="100%"></a>
+
+<h1>Ask my portfolio</h1>
+
+<p>My portfolio site, with a chat that answers questions about my work and shows the sources behind every answer.</p>
 
 [![Live demo](https://img.shields.io/badge/Live_demo-yash456k.com-C74634?style=for-the-badge)](https://www.yash456k.com/#playground)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](Dockerfile)
@@ -10,15 +14,23 @@
 [![CI](https://github.com/Yash456k/ask-my-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/Yash456k/ask-my-portfolio/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-black?style=flat-square)](LICENSE)
 
-My portfolio site, with a chat that answers questions about my work and shows the sources behind every answer.
+</div>
+
+<br>
+
+The site at [yash456k.com](https://www.yash456k.com) holds my experience, my projects, and a chat you can ask about any of it. The home page pairs a short introduction with a graph of my daily coding activity, refreshed every night from Codex and GitHub, where you can switch between the last three months and the full year.
+
+## Experience and projects
+
+Scrolling down, experience and projects sit side by side. The role cards stack like a deck you can drag through, the timeline above them marks where each role and the selected project fall, and the project wheel turns through my projects and opens each one with its details, metrics, and links. On a phone the same sections work with swipes.
 
 [![Experience and projects side by side, with a timeline above the role cards](docs/assets/work.png)](https://www.yash456k.com/#work)
 
-Experience and projects sit side by side: drag through the role cards, or scroll the project wheel and open a project for its details and links.
+## The chat
+
+The chat answers from a small set of documents about me, split into hand-reviewed passages. Every answer streams in with citations, and the panel beside it shows which passages were used, how closely each one matched, which model wrote the answer, and how long each step took.
 
 [![The chat answering a question about Yash's work, with the passages it used listed beside the answer](docs/assets/chat.png)](https://www.yash456k.com/#playground)
-
-The chat answers from a small set of documents about me, split into hand-reviewed passages, and every answer streams in with citations while the panel beside it shows which passages were used, how closely each one matched, which model wrote the answer, and how long each step took.
 
 ## How it finds answers
 
