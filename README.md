@@ -7,7 +7,7 @@
 [![React](https://img.shields.io/badge/React-19-20232A?style=flat-square&logo=react)](frontend/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat-square&logo=fastapi)](app/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL_%2B_pgvector-4169E1?style=flat-square&logo=postgresql&logoColor=white)](sql/schema.sql)
-[![CI](https://github.com/Yash456k/rag-playground/actions/workflows/ci.yml/badge.svg)](https://github.com/Yash456k/rag-playground/actions/workflows/ci.yml)
+[![CI](https://github.com/Yash456k/ask-my-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/Yash456k/ask-my-portfolio/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-black?style=flat-square)](LICENSE)
 
 My portfolio site, with a chat that answers questions about my work and shows the sources behind every answer.
@@ -38,8 +38,8 @@ The site is hosted on Vercel and the API runs on a single Hetzner server that ca
 With Node.js 22 you can run the site against the live API, which needs no models or keys (the public rate limits still apply):
 
 ```bash
-git clone https://github.com/Yash456k/rag-playground.git
-cd rag-playground/frontend
+git clone https://github.com/Yash456k/ask-my-portfolio.git
+cd ask-my-portfolio/frontend
 npm ci
 VITE_API_URL=/api npm run dev
 ```

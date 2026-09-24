@@ -39,7 +39,7 @@
     "metrics": ["6 embedding routes", "Streamed responses", "Visible retrieval evidence"],
     "tags": ["React", "FastAPI", "pgvector", "RAG"],
     "href": "/#playground",
-    "repository": "https://github.com/Yash456k/rag-playground",
+    "repository": "https://github.com/Yash456k/ask-my-portfolio",
     "linkLabel": "View live",
     "external": false
   },
