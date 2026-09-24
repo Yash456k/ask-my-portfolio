@@ -280,3 +280,15 @@ async def test_jev_is_the_default_route_when_configured(pipeline) -> None:
         config = (await client.get("/v1/config")).json()
     assert config["defaults"]["embedder"] == "jev"
     assert config["embedders"][-1]["id"] == "jev"
+
+
+async def test_small_talk_gets_a_greeting_instead_of_a_refusal(pipeline) -> None:
+    ranking = rank(_result("none", 0.93, [0.1, 0.1, 0.1]), CHUNKS)
+    greeting = AsyncMock(return_value={**SIGNALS, "intent": "small_talk", "coverage": "none"})
+    application = _jev_app(pipeline, AsyncMock(return_value=(ranking, {})), greeting)
+    application.state.pipeline_for_test = pipeline
+    events = await _chat(application, question="yo")
+    answer = "".join(event.get("token", "") for event in events if event["type"] == "token")
+    assert answer.startswith("Hey! I'm Yash's portfolio assistant.")
+    assert events[-1]["localRefusal"] is True
+    assert application.state.provider.prompts == []

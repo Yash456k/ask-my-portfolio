@@ -59,6 +59,17 @@
   .pair .answer { height: 100%; }
   .reveal { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
   .empty { text-align: center; color: var(--muted); padding: 50px 0; }
+  .live { display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; padding: 3px 10px; border-radius: 999px; background: var(--good-soft); color: var(--good); font: 600 11px 'DM Sans', sans-serif; vertical-align: middle; }
+  .live i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulse 2s infinite; }
+  .live.off { background: var(--bad-soft); color: var(--bad); }
+  .live.off i { animation: none; }
+  @keyframes pulse { 50% { opacity: .35; } }
+  .card.is-new { animation: arrive .6s cubic-bezier(.22,1,.36,1); border-color: #e7b9ab; }
+  @keyframes arrive { from { opacity: 0; transform: translateY(-8px); } }
+  .new-badge { padding: 2px 8px; border-radius: 999px; background: var(--red); color: #fff; font-size: 10.5px; font-weight: 600; }
+  .answer.pending { color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .answer.pending i { width: 7px; height: 7px; border-radius: 50%; background: var(--red); animation: pulse 1.2s infinite; }
+  .grade button:disabled { opacity: .45; cursor: not-allowed; }
   .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 9px 16px; border-radius: 999px; font-size: 13px; opacity: 0; transition: .25s; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateX(-50%); }
   @media (max-width: 640px) { .pair { grid-template-columns: 1fr; } header h1 { font-size: 32px; } .card { padding: 16px; } }
@@ -68,7 +79,7 @@
 <div class="wrap">
   <header>
     <h1>Grade the <em>answers</em></h1>
-    <p>Private to your tailnet. Every grade is saved the moment you tap it.</p>
+    <p>Private to your tailnet. Every grade is saved the moment you tap it.<span class="live" id="live"><i></i>Live</span></p>
   </header>
   <div class="tabs" role="tablist">
     <button role="tab" aria-selected="true" data-tab="answers">Answers</button>
@@ -86,7 +97,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const state = { tab: 'answers', view: 'todo', answers: [], pairs: [], older: 0 };
+const state = { tab: 'answers', view: 'todo', answers: [], pairs: [], older: 0, version: null, known: null, fresh: new Set() };
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const cap = (s) => s ? s[0].toUpperCase() + s.slice(1).replace('_', ' ') : '';
@@ -130,14 +141,16 @@ function answerCard(a) {
   const sources = a.sources.length ? `<details><summary>Sources the answer used (${a.sources.length})</summary>${a.sources.map((s) => `<div class="source"><b>S${s.n}</b> · ${esc(s.source)} #${s.chunkIndex ?? '?'} · score ${Number(s.score ?? 0).toFixed(2)}<pre>${esc(s.content)}</pre></div>`).join('')}</details>` : '';
   const timing = a.totalMs ? `${(a.totalMs / 1000).toFixed(1)} s` : '';
   const fallback = a.retrieval && a.retrieval.fallback ? '<span class="chip warn">Jev fallback</span>' : '';
-  return `<article class="card" data-id="${a.id}">
-    <div class="meta"><span>${when(a.askedAt)}</span><span>·</span><span>${esc(a.model || '')}</span>${timing ? `<span>· ${timing}</span>` : ''}${a.country ? `<span>· ${esc(a.country)}</span>` : ''}${a.session ? `<span>· session ${esc(a.session)}</span>` : ''}${fallback}</div>
+  const pending = a.status === 'started';
+  const isNew = state.fresh.has(a.id);
+  return `<article class="card${isNew ? ' is-new' : ''}" data-id="${a.id}">
+    <div class="meta">${isNew ? '<span class="new-badge">New</span>' : ''}<span>${when(a.askedAt)}</span><span>·</span><span>${esc(a.model || '')}</span>${timing ? `<span>· ${timing}</span>` : ''}${a.country ? `<span>· ${esc(a.country)}</span>` : ''}${a.session ? `<span>· session ${esc(a.session)}</span>` : ''}${fallback}</div>
     <div class="meta">${signalChips(a.signals)}</div>
     <div class="q">${esc(a.question)}</div>
     ${history}
-    <div class="answer">${md(a.answer)}</div>
+    ${pending ? '<div class="answer pending"><i></i>Answering…</div>' : `<div class="answer">${md(a.answer)}</div>`}
     ${sources}
-    <div class="grade">${['good', 'ok', 'bad'].map((g) => `<button class="${g}" aria-pressed="${a.grade === g}" data-grade="${g}">${{ good: 'Good', ok: 'OK', bad: 'Bad' }[g]}</button>`).join('')}</div>
+    <div class="grade">${['good', 'ok', 'bad'].map((g) => `<button class="${g}" aria-pressed="${a.grade === g}" data-grade="${g}"${pending ? ' disabled' : ''}>${{ good: 'Good', ok: 'OK', bad: 'Bad' }[g]}</button>`).join('')}</div>
     <textarea class="note" placeholder="Note (optional): what was wrong, missing, or great?">${esc(a.note)}</textarea>
     <div class="saved">${a.gradedAt ? `Saved ${when(a.gradedAt)}${a.gradedBy ? ' by ' + esc(a.gradedBy) : ''}` : ''}</div>
   </article>`;
@@ -157,6 +170,11 @@ function pairCard(p) {
 
 function render() {
   const list = $('#list');
+  // Live updates re-render the list; keep anything being typed and where the cursor was.
+  const drafts = new Map([...list.querySelectorAll('.card')].map((c) => [c.dataset.id || 'p' + c.dataset.pair, c.querySelector('.note').value]));
+  const active = document.activeElement?.classList.contains('note') ? document.activeElement : null;
+  const activeKey = active && (active.closest('.card').dataset.id || 'p' + active.closest('.card').dataset.pair);
+  const caret = active ? [active.selectionStart, active.selectionEnd] : null;
   let items;
   if (state.tab === 'answers') {
     items = state.answers.filter((a) => state.view === 'all' || (state.view === 'todo' ? !a.grade : a.grade));
@@ -165,14 +183,38 @@ function render() {
     items = state.pairs.filter((p) => state.view === 'all' || (state.view === 'todo' ? !p.choice : p.choice));
     list.innerHTML = items.length ? items.map(pairCard).join('') : `<div class="empty">${state.view === 'todo' ? 'All pairs compared.' : 'No pairs here yet.'}</div>`;
   }
+  list.querySelectorAll('.card').forEach((card) => {
+    const key = card.dataset.id || 'p' + card.dataset.pair;
+    if (drafts.has(key)) card.querySelector('.note').value = drafts.get(key);
+    if (key === activeKey) { const note = card.querySelector('.note'); note.focus({ preventScroll: true }); note.setSelectionRange(...caret); }
+  });
   progress();
 }
 
 async function load() {
   const [answers, pairs] = await Promise.all([api('/api/answers'), api('/api/pairs')]);
+  const arrived = state.known ? answers.items.filter((a) => !state.known.has(a.id)) : [];
+  arrived.forEach((a) => state.fresh.add(a.id));
+  state.known = new Set(answers.items.map((a) => a.id));
   state.answers = answers.items; state.older = answers.unrecordedOlder; state.pairs = pairs.items;
   render();
+  if (arrived.length) toast(arrived.length === 1 ? `New question: “${arrived[0].question.slice(0, 48)}”` : `${arrived.length} new questions`);
 }
+
+// Poll a cheap version stamp every few seconds and reload only when something changed.
+async function watch() {
+  if (document.visibilityState === 'visible') {
+    try {
+      const { version } = await api('/api/version');
+      $('#live').classList.remove('off'); $('#live').lastChild.textContent = 'Live';
+      if (version !== state.version) { const first = state.version === null; state.version = version; if (!first) await load(); }
+    } catch {
+      $('#live').classList.add('off'); $('#live').lastChild.textContent = 'Reconnecting';
+    }
+  }
+  setTimeout(watch, 4000);
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') api('/api/version').then(({ version }) => { if (version !== state.version) { state.version = version; load(); } }).catch(() => {}); });
 
 $('#list').addEventListener('click', async (event) => {
   const button = event.target.closest('button');
@@ -215,7 +257,7 @@ document.querySelectorAll('#filters button').forEach((b) => b.addEventListener('
   document.querySelectorAll('#filters button').forEach((x) => x.setAttribute('aria-pressed', x === b));
   render();
 }));
-load().catch((error) => { $('#list').innerHTML = `<div class="empty">Could not load: ${esc(error.message)}</div>`; });
+load().then(watch).catch((error) => { $('#list').innerHTML = `<div class="empty">Could not load: ${esc(error.message)}</div>`; });
 </script>
 </body>
 </html>

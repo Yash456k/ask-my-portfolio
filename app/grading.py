@@ -33,14 +33,23 @@ class Preference(BaseModel):
     note: str = Field(default="", max_length=2000)
 
 
+# Cheap change detector the page polls; it reloads the full list only when this moves.
+VERSION_SQL = """
+SELECT concat_ws('|',
+    (SELECT count(*) FROM query_logs), (SELECT max(completed_at) FROM query_logs),
+    (SELECT count(*) FROM answer_grades), (SELECT max(graded_at) FROM answer_grades),
+    (SELECT max(decided_at) FROM model_pairs)) AS version
+"""
+
 ANSWERS_SQL = """
 SELECT q.id::text, q.created_at, q.question, q.answer, q.history, q.requested_embedder,
        q.requested_model, q.actual_model, q.retrieved_chunks, q.latencies, q.signals,
-       q.retrieval, q.country, left(q.session_id, 8) AS session,
+       q.retrieval, q.country, left(q.session_id, 8) AS session, q.status,
        g.grade, g.note, g.graded_at, g.graded_by
 FROM query_logs q
 LEFT JOIN answer_grades g ON g.query_log_id = q.id
-WHERE q.answer IS NOT NULL AND q.status = 'completed'
+WHERE (q.status = 'completed' AND q.answer IS NOT NULL)
+   OR (q.status = 'started' AND q.created_at > now() - interval '10 minutes')
 ORDER BY q.created_at DESC
 LIMIT 300
 """
@@ -86,7 +95,8 @@ def _answer_item(row: dict[str, Any], texts: dict[str, dict[str, Any]]) -> dict[
         "askedAt": row["created_at"].isoformat(),
         "question": row["question"],
         "history": row["history"] or [],
-        "answer": row["answer"],
+        "answer": row["answer"] or "",
+        "status": row["status"],
         "retriever": row["requested_embedder"],
         "model": row["actual_model"] or ("local refusal" if row["answer"] else None),
         "firstTokenMs": latencies.get("firstTokenMs"),
@@ -136,6 +146,11 @@ def create_app(pool: ConnectionPool | None = None) -> FastAPI:
     @app.get("/", response_class=HTMLResponse)
     def page() -> HTMLResponse:
         return HTMLResponse(PAGE.read_text(encoding="utf-8"))
+
+    @app.get("/api/version")
+    def version() -> dict[str, str]:
+        with db().connection() as connection:
+            return {"version": connection.execute(VERSION_SQL).fetchone()["version"] or ""}
 
     @app.get("/api/answers")
     def answers() -> dict[str, Any]:

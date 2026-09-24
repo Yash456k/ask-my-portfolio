@@ -77,6 +77,12 @@ LOCAL_REFUSAL = (
     "I can only answer questions supported by Yash's portfolio corpus. "
     "Try asking about his experience, skills, education, or projects."
 )
+# Greetings and chit-chat get a warm welcome instead of a refusal; still no model call.
+SMALL_TALK_REPLY = (
+    "Hey! I'm Yash's portfolio assistant. Ask me about his full-stack work at AIVID "
+    "Techvision, projects like the Nashik Sports Klub booking platform or this RAG "
+    "playground, his skills, or how to reach him."
+)
 
 
 def _sse(payload: dict[str, Any]) -> str:
@@ -495,10 +501,18 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
                     yield frame
 
                 if refuse:
+                    reply = LOCAL_REFUSAL
+                    if signals_task is not None:
+                        # Jev's reading is already running; a greeting deserves a welcome.
+                        await asyncio.wait({signals_task}, timeout=1.5)
+                        if frame := ready_signals():
+                            yield frame
+                    if signals and signals.get("intent") == "small_talk":
+                        reply = SMALL_TALK_REPLY
                     first_token_at = time.perf_counter()
                     latencies["firstTokenMs"] = _milliseconds(started, first_token_at)
                     generation_started = time.perf_counter()
-                    for word in LOCAL_REFUSAL.split(" "):
+                    for word in reply.split(" "):
                         token = f"{word} "
                         answer_parts.append(token)
                         yield _sse({"type": "token", "token": token})

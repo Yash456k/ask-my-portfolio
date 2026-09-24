@@ -53,6 +53,7 @@ def test_answer_items_number_sources_and_fall_back_to_archived_text() -> None:
         "retrieval": {},
         "country": "IN",
         "session": "1234abcd",
+        "status": "completed",
         "grade": None,
         "note": None,
         "graded_at": None,
