@@ -100,9 +100,22 @@ class _Provider:
         yield {"type": "token", "token": "Ahmedabad [S1]"}
 
 
-def _jev_app(pipeline, jev_rank):
+SIGNALS = {
+    "intent": "facts",
+    "intentConfidence": 0.96,
+    "tone": "curious",
+    "toneConfidence": 0.7,
+    "mood": 0.5,
+    "coverage": "direct",
+    "noneProbability": 0.02,
+}
+
+
+def _jev_app(pipeline, jev_rank, jev_signals=None):
     application = _app(pipeline)
-    application.state.jev = SimpleNamespace(rank=jev_rank)
+    application.state.jev = SimpleNamespace(
+        rank=jev_rank, signals=jev_signals or AsyncMock(return_value=SIGNALS)
+    )
     application.state.jev_chunks = CHUNKS
     application.state.provider = _Provider()
     fallback_rows = [{**CHUNKS[2], "score": 0.91}]
@@ -111,7 +124,8 @@ def _jev_app(pipeline, jev_rank):
 
 
 async def _chat(application, **extra) -> list[dict]:
-    body = {**_body(application.state.pipeline_for_test), "embedder": "jev", **extra}
+    body = {"embedder": "jev", **extra}
+    body = {**_body(application.state.pipeline_for_test), **body}
     async with httpx.AsyncClient(
         transport=httpx.ASGITransport(app=application, client=("127.0.0.1", 9)),
         base_url="http://testserver",
@@ -194,3 +208,58 @@ async def test_jev_is_rejected_when_not_configured(pipeline) -> None:
 
 def test_ranking_type_is_frozen() -> None:
     assert JevRanking.__dataclass_params__.frozen
+
+
+async def test_signals_stream_before_done_and_are_logged(pipeline) -> None:
+    ranking = rank(_result("c01", 0.01, [0.2, 0.1, 0.3]), CHUNKS)
+    application = _jev_app(pipeline, AsyncMock(return_value=(ranking, {})))
+    application.state.pipeline_for_test = pipeline
+    events = await _chat(application)
+    types = [event["type"] for event in events]
+    assert types.index("signals") < types.index("done")
+    assert next(e for e in events if e["type"] == "signals")["intent"] == "facts"
+    logged = application.state.database.finish_query_log.await_args.kwargs["signals"]
+    assert logged == SIGNALS
+
+
+async def test_signals_run_on_embedding_routes_too(pipeline) -> None:
+    signals = AsyncMock(return_value=SIGNALS)
+    application = _jev_app(pipeline, AsyncMock(), signals)
+    application.state.pipeline_for_test = pipeline
+    events = await _chat(application, embedder=pipeline.embedders[0].id)
+    application.state.jev.rank.assert_not_awaited()
+    signals.assert_awaited_once()
+    assert any(event["type"] == "signals" for event in events)
+
+
+async def test_signals_failure_never_breaks_the_answer(pipeline) -> None:
+    ranking = rank(_result("c01", 0.01, [0.2, 0.1, 0.3]), CHUNKS)
+    failing = AsyncMock(side_effect=JevUnavailable("http_503"))
+    application = _jev_app(pipeline, AsyncMock(return_value=(ranking, {})), failing)
+    application.state.pipeline_for_test = pipeline
+    events = await _chat(application)
+    assert events[-1]["type"] == "done"
+    assert all(event["type"] != "signals" for event in events)
+    assert application.state.database.finish_query_log.await_args.kwargs["signals"] is None
+
+
+def test_signals_parse_maps_labels_mood_and_coverage() -> None:
+    from app.jev import parse_signals
+
+    def choice(label, confidence, probabilities=None):
+        return {"choice": label, "confidence": confidence, "probabilities": probabilities or {}}
+
+    result = {
+        "answers": {
+            "intent": choice("challenge", 0.94),
+            "tone": choice("skeptical", 0.9),
+            "mood": {"score": 0.5, "confidence": 0.8},
+            "pick": choice("none", 0.7, {"c01": 0.3, "none": 0.7}),
+        }
+    }
+    parsed = parse_signals(result)
+    assert (parsed["intent"], parsed["tone"], parsed["mood"]) == ("challenge", "skeptical", 0.25)
+    assert parsed["coverage"] == "none"
+    result["answers"]["intent"]["choice"] = "unknown"
+    with pytest.raises(ValueError):
+        parse_signals(result)

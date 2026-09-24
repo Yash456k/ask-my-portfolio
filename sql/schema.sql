@@ -81,6 +81,7 @@ ALTER TABLE query_logs ADD COLUMN IF NOT EXISTS user_agent text;
 ALTER TABLE query_logs ADD COLUMN IF NOT EXISTS country text;
 ALTER TABLE query_logs ADD COLUMN IF NOT EXISTS client jsonb NOT NULL DEFAULT '{}'::jsonb;
 ALTER TABLE query_logs ADD COLUMN IF NOT EXISTS retrieval jsonb NOT NULL DEFAULT '{}'::jsonb;
+ALTER TABLE query_logs ADD COLUMN IF NOT EXISTS signals jsonb;
 CREATE INDEX IF NOT EXISTS query_logs_visitor_idx ON query_logs (visitor_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS rate_limit_updated_at_idx ON rate_limit_buckets (updated_at);
 CREATE INDEX IF NOT EXISTS monthly_budget_updated_at_idx ON monthly_budget_buckets (updated_at);

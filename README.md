@@ -27,7 +27,7 @@ The result is both a usable portfolio interface and an inspectable applied-AI sy
 ## What is live
 
 - **Six CPU embedding routes:** MiniLM L6, BGE Small, BGE Base, Qwen3 Embedding 0.6B, and two portfolio-tuned small models.
-- **Five generation routes:** three Groq models plus OpenRouter's free router and DeepSeek V4 Flash.
+- **Five generation routes:** three Groq models plus OpenRouter's free router and DeepSeek V4.1 Flash.
 - **Real SSE streaming:** the browser consumes token events from a POST request with `fetch` and `ReadableStream`.
 - **Inspectable retrieval:** source excerpts, cosine scores, selected route, query transform, and retrieval depth.
 - **Observable generation:** requested/served model, fallback attempts, token usage, cost estimate, and stage latency.

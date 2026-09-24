@@ -20,6 +20,7 @@ import { SectionNavigator } from './components/SectionNavigator'
 import { WorkSection } from './components/WorkSection'
 import type {
   AssistantMessage,
+  ConversationSignals,
   ChatMessage,
   EmbeddingConfirmation,
   HistoryItem,
@@ -458,6 +459,56 @@ function RetrievedRail({
   )
 }
 
+const INTENT_LABELS: Record<ConversationSignals['intent'], string> = {
+  facts: 'Factual',
+  judgment: 'Evaluative',
+  challenge: 'Challenging',
+  contact: 'Contact',
+  small_talk: 'Small talk',
+  off_topic: 'Off-topic',
+  manipulation: 'Manipulation',
+}
+const COVERAGE_LABELS: Record<ConversationSignals['coverage'], string> = {
+  direct: 'In portfolio',
+  partial: 'Partly in portfolio',
+  none: 'Not in portfolio',
+}
+const TONE_FEELING: Record<ConversationSignals['tone'], 'positive' | 'neutral' | 'negative'> = {
+  curious: 'positive',
+  impressed: 'positive',
+  neutral: 'neutral',
+  skeptical: 'negative',
+  frustrated: 'negative',
+  hostile: 'negative',
+}
+
+const confidence = (value: number) => `Jev · ${Math.round(value * 100)}% confident`
+
+// Jev reads each visitor message on its own request: what they want, how they sound,
+// whether the portfolio covers it, and how the conversation is going so far.
+function AnswerSignals({ signals }: { signals: ConversationSignals }) {
+  const mood = signals.mood < 0.35 ? 'low' : signals.mood < 0.65 ? 'mid' : 'high'
+  const moodLabel = mood === 'low' ? 'going badly' : mood === 'mid' ? 'neutral' : 'going well'
+  return (
+    <span className="answer-signals" aria-label="Conversation signals from Jev">
+      <span className="signal-chip" title={confidence(signals.intentConfidence)}>
+        {INTENT_LABELS[signals.intent]}
+      </span>
+      <span className={`signal-chip tone-${TONE_FEELING[signals.tone]}`} title={confidence(signals.toneConfidence)}>
+        <i aria-hidden="true" />
+        {signals.tone[0].toUpperCase() + signals.tone.slice(1)}
+      </span>
+      <span className={`signal-chip coverage-${signals.coverage}`} title={`Jev · ${Math.round(signals.noneProbability * 100)}% not covered`}>
+        {COVERAGE_LABELS[signals.coverage]}
+      </span>
+      <span className={`signal-mood mood-${mood}`} title={`Chat mood: ${moodLabel}`} aria-label={`Chat mood: ${moodLabel}`}>
+        Mood
+        <i aria-hidden="true"><b style={{ width: `${Math.max(6, signals.mood * 100)}%` }} /></i>
+      </span>
+    </span>
+  )
+}
+
 function AssistantAnswer({ message, onShowSources }: { message: AssistantMessage; onShowSources?: () => void }) {
   const isWorking = message.status === 'retrieving' || message.status === 'streaming'
   const servedLabel =
@@ -505,6 +556,7 @@ function AssistantAnswer({ message, onShowSources }: { message: AssistantMessage
             {message.chunks.length} sources · {message.chunks[0]?.score.toFixed(2)}
           </button>
         )}
+        {message.signals && <AnswerSignals signals={message.signals} />}
       </div>
     </article>
   )
@@ -916,6 +968,19 @@ function App() {
                 fallbackUsed: event.fallbackUsed,
                 attempts: event.attempts,
               }
+            case 'signals':
+              return {
+                ...answer,
+                signals: {
+                  intent: event.intent,
+                  intentConfidence: event.intentConfidence,
+                  tone: event.tone,
+                  toneConfidence: event.toneConfidence,
+                  mood: event.mood,
+                  coverage: event.coverage,
+                  noneProbability: event.noneProbability,
+                },
+              }
             case 'token':
               return { ...answer, status: 'streaming', content: answer.content + event.token }
             case 'done':
@@ -935,6 +1000,9 @@ function App() {
             case 'error':
               return { ...answer, status: 'error', error: event.message }
             case 'usage':
+              return answer
+            default:
+              // Newer servers may add event types; an unknown one must never drop the answer.
               return answer
           }
         }),

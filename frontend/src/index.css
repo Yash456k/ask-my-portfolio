@@ -1516,6 +1516,66 @@ a:focus-visible {
   stroke-width: 1.5;
 }
 
+.answer-signals {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 11px 0 0 6px;
+  vertical-align: top;
+}
+
+.signal-chip,
+.signal-mood {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 9px;
+  border: 1px solid rgb(var(--theme-line-rgb, 174 139 117) / 0.2);
+  border-radius: 999px;
+  color: rgb(var(--theme-muted-rgb, 120 110 102));
+  background: rgb(var(--theme-surface-rgb, 255 251 246) / 0.5);
+  font: 500 10px/1 'DM Sans', sans-serif;
+  cursor: default;
+}
+
+.signal-chip > i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.signal-chip.tone-positive > i,
+.signal-mood.mood-high b {
+  background: rgb(var(--theme-secondary-rgb, 88 107 75));
+}
+
+.signal-chip.tone-negative > i,
+.signal-mood.mood-low b {
+  background: var(--red);
+}
+
+.signal-chip.coverage-none {
+  color: var(--red-dark);
+}
+
+.signal-mood > i {
+  width: 34px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgb(var(--theme-line-rgb, 174 139 117) / 0.22);
+}
+
+.signal-mood b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: rgb(var(--theme-muted-rgb, 133 128 123));
+  transition: width 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .portfolio-card.is-active .composer {
   padding-top: 10px;
 }

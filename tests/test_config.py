@@ -40,7 +40,7 @@ def test_public_registry_defaults_and_fallbacks_only_reference_visible_choices(
 
     assert 3 <= len(llm_ids) <= 5
     assert public["defaults"]["embedder"] in embedder_ids
-    assert public["defaults"]["llm"] == "deepseek/deepseek-v4-flash"
+    assert public["defaults"]["llm"] == "deepseek/deepseek-v4.1-flash"
     assert {item["id"] for item in public["embedders"]} == embedder_ids
     assert {item["id"] for item in public["llms"]} == llm_ids
     assert set(pipeline.fallback_order).issubset(llm_ids)
@@ -55,13 +55,13 @@ def test_public_registry_defaults_and_fallbacks_only_reference_visible_choices(
 
 
 def test_deepseek_flash_and_model_weighted_budget_reserves(pipeline: PipelineConfig) -> None:
-    deepseek = pipeline.llm("deepseek/deepseek-v4-flash")
+    deepseek = pipeline.llm("deepseek/deepseek-v4.1-flash")
 
     assert deepseek.provider == "openrouter"
-    assert deepseek.input_usd_per_million == 0.09
-    assert deepseek.output_usd_per_million == 0.18
+    assert deepseek.input_usd_per_million == 0.14
+    assert deepseek.output_usd_per_million == 0.42
     # Only the selected OpenRouter model is charged; the Groq fallback is free here.
-    assert pipeline.request_cost_reserve_micro_usd(deepseek.id, 32_000) == 2_988
+    assert pipeline.request_cost_reserve_micro_usd(deepseek.id, 32_000) == 4_732
     assert pipeline.request_cost_reserve_micro_usd("qwen/qwen3.6-27b", 32_000) == 0
     assert pipeline.request_cost_reserve_micro_usd("openrouter/free", 32_000) == 0
 

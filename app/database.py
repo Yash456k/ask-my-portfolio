@@ -279,6 +279,7 @@ class Database:
         error_type: str | None = None,
         answer: str | None = None,
         retrieval: dict[str, Any] | None = None,
+        signals: dict[str, Any] | None = None,
     ) -> None:
         chunk_log = [
             {
@@ -297,7 +298,7 @@ class Database:
                     fallback_used = %s, fallback_attempts = %s::jsonb,
                     retrieved_chunks = %s::jsonb, latencies = %s::jsonb,
                     answer_characters = %s, error_type = %s,
-                    answer = %s, retrieval = %s::jsonb
+                    answer = %s, retrieval = %s::jsonb, signals = %s::jsonb
                 WHERE id = %s
                 """,
                 (
@@ -311,6 +312,7 @@ class Database:
                     error_type,
                     answer,
                     json.dumps(retrieval or {}),
+                    None if signals is None else json.dumps(signals),
                     request_id,
                 ),
             )

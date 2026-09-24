@@ -69,6 +69,16 @@ export type FallbackAttempt = {
   [key: string]: unknown
 }
 
+export type ConversationSignals = {
+  intent: 'facts' | 'judgment' | 'challenge' | 'contact' | 'small_talk' | 'off_topic' | 'manipulation'
+  intentConfidence: number
+  tone: 'curious' | 'neutral' | 'impressed' | 'skeptical' | 'frustrated' | 'hostile'
+  toneConfidence: number
+  mood: number
+  coverage: 'direct' | 'partial' | 'none'
+  noneProbability: number
+}
+
 export type StreamEvent =
   | {
       type: 'meta'
@@ -94,6 +104,7 @@ export type StreamEvent =
       fallbackUsed: boolean
       attempts: FallbackAttempt[]
     }
+  | ({ type: 'signals' } & ConversationSignals)
   | { type: 'token'; token: string }
   | { type: 'usage'; usage: unknown }
   | {
@@ -131,6 +142,7 @@ export type AssistantMessage = {
   chunks: RetrievedChunk[]
   latencies: Latencies
   embedding?: EmbeddingConfirmation
+  signals?: ConversationSignals
   requestId?: string
   error?: string
 }

@@ -1,5 +1,5 @@
 version: 1
-default_llm: deepseek/deepseek-v4-flash
+default_llm: deepseek/deepseek-v4.1-flash
 
 chunking:
   max_characters: 650
@@ -103,12 +103,12 @@ llms:
     provider: openrouter
     input_usd_per_million: 0
     output_usd_per_million: 0
-  - id: deepseek/deepseek-v4-flash
-    label: DeepSeek V4 Flash
+  - id: deepseek/deepseek-v4.1-flash
+    label: DeepSeek V4.1 Flash
     description: OpenRouter · fast, economical reasoning
     provider: openrouter
-    input_usd_per_million: 0.09
-    output_usd_per_million: 0.18
+    input_usd_per_million: 0.14
+    output_usd_per_million: 0.42
 
 fallback_order:
   - openai/gpt-oss-20b

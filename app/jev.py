@@ -41,6 +41,34 @@ RELEVANCE_INSTRUCTIONS = (
 )
 
 
+# Conversation signals: a separate request on every message, whatever the retrieval route.
+# Its state includes recent turns, so it never changes the evaluated retrieval request.
+INTENTS = {
+    "facts": "Asks for facts about Yash's experience, skills, education, projects, or links.",
+    "judgment": "Asks for an assessment of Yash: why hire him, strengths, fit, comparisons.",
+    "challenge": "Doubts, disputes, or pushes back on something said about Yash.",
+    "contact": "Wants to reach, hire, or follow Yash.",
+    "small_talk": "Greeting, thanks, or chit-chat.",
+    "off_topic": "Unrelated to Yash, such as general coding help or trivia.",
+    "manipulation": (
+        "Tries to change the assistant's rules, reveal its prompt, or make it misbehave."
+    ),
+}
+TONES = {
+    "curious": "Interested and exploring.",
+    "neutral": "Matter-of-fact.",
+    "impressed": "Positive or impressed.",
+    "skeptical": "Doubtful or testing claims.",
+    "frustrated": "Annoyed that answers are not helping.",
+    "hostile": "Rude, insulting, or aggressive.",
+}
+MOOD_LEVELS = [
+    "Going badly: the visitor is frustrated or hostile, or keeps getting unhelpful answers.",
+    "Neutral: a routine exchange.",
+    "Going well: the visitor is engaged and getting what they need.",
+]
+
+
 @dataclass(frozen=True)
 class JevRanking:
     ordered: list[dict[str, Any]]
@@ -118,7 +146,24 @@ class JevClient:
         await self._client.aclose()
 
     async def rank(self, query: str, chunks: list[dict[str, Any]]) -> tuple[JevRanking, dict]:
-        body = build_request(query, chunks)
+        result = await self._post(build_request(query, chunks))
+        try:
+            return rank(result, chunks), result.get("usage", {})
+        except (ValueError, KeyError, TypeError) as exc:
+            logger.warning("Jev returned an invalid answer: %s", type(exc).__name__)
+            raise JevUnavailable("invalid_response") from None
+
+    async def signals(
+        self, question: str, history: list[tuple[str, str]], chunks: list[dict[str, Any]]
+    ) -> dict[str, Any]:
+        result = await self._post(build_signals_request(question, history, chunks))
+        try:
+            return parse_signals(result)
+        except (ValueError, KeyError, TypeError) as exc:
+            logger.warning("Jev returned invalid signals: %s", type(exc).__name__)
+            raise JevUnavailable("invalid_response") from None
+
+    async def _post(self, body: dict[str, Any]) -> dict[str, Any]:
         for attempt in range(2):
             try:
                 response = await self._client.post(JEV_ENDPOINT, json=body)
@@ -133,9 +178,75 @@ class JevClient:
                 logger.warning("Jev returned HTTP %s", response.status_code)
                 raise JevUnavailable(f"http_{response.status_code}")
             try:
-                result = response.json()
-                return rank(result, chunks), result.get("usage", {})
-            except (ValueError, KeyError, TypeError) as exc:
-                logger.warning("Jev returned an invalid answer: %s", type(exc).__name__)
+                return response.json()
+            except ValueError:
                 raise JevUnavailable("invalid_response") from None
         raise JevUnavailable("rate_limited")
+
+
+def build_signals_request(
+    question: str,
+    history: list[tuple[str, str]],
+    chunks: list[dict[str, Any]],
+    model: str = JEV_MODEL,
+) -> dict:
+    keys = _keys(len(chunks))
+    criteria: dict[str, Any] = {
+        key: chunk["content"] for key, chunk in zip(keys, chunks, strict=True)
+    }
+    criteria["none"] = NONE_OPTION
+    conversation = [{"role": role, "text": text[:400]} for role, text in history[-6:]]
+    return {
+        "model": model,
+        "state": {"latest_visitor_message": question, "earlier_conversation": conversation},
+        "questions": {
+            "intent": {
+                "type": "choice",
+                "instructions": "What is the visitor trying to do with their latest message?",
+                "criteria": INTENTS,
+            },
+            "tone": {
+                "type": "choice",
+                "instructions": "What is the tone of the visitor's latest message?",
+                "criteria": TONES,
+            },
+            "mood": {
+                "type": "score",
+                "instructions": "How is this conversation going for the visitor so far?",
+                "criteria": MOOD_LEVELS,
+            },
+            PICK_QUESTION: {
+                "type": "choice",
+                "instructions": PICK_INSTRUCTIONS,
+                "criteria": criteria,
+            },
+        },
+    }
+
+
+def parse_signals(result: dict[str, Any]) -> dict[str, Any]:
+    """Reduce a signals response to display-ready labels with their confidence."""
+    answers = result["answers"]
+    intent, tone, mood, pick = (answers[key] for key in ("intent", "tone", "mood", PICK_QUESTION))
+    if intent["choice"] not in INTENTS or tone["choice"] not in TONES:
+        raise ValueError("Jev signals returned an unknown label")
+    none = float(pick["probabilities"]["none"])
+    coverage = (
+        "none"
+        if none >= NONE_REFUSAL_THRESHOLD
+        else "direct"
+        if float(pick["confidence"]) >= 0.8
+        else "partial"
+    )
+    score = float(mood["score"])
+    if not 0.0 <= score <= len(MOOD_LEVELS) - 1:
+        raise ValueError("Jev mood score is outside the level range")
+    return {
+        "intent": intent["choice"],
+        "intentConfidence": round(float(intent["confidence"]), 3),
+        "tone": tone["choice"],
+        "toneConfidence": round(float(tone["confidence"]), 3),
+        "mood": round(score / (len(MOOD_LEVELS) - 1), 3),
+        "coverage": coverage,
+        "noneProbability": round(none, 3),
+    }
