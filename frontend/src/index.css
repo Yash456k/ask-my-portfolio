@@ -1148,6 +1148,7 @@ a:focus-visible {
 .rail-heading h2 {
   margin: 0;
   font: 400 17px/1 'Newsreader', serif;
+  white-space: nowrap;
 }
 
 .retrieval-time {
