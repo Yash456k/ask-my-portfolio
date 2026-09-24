@@ -91,6 +91,47 @@ services:
         max-size: 10m
         max-file: "3"
 
+  grading:
+    # Private grading page (app/grading.py), reachable only through Tailscale Serve.
+    image: rag-playground-api:local
+    container_name: rag-playground-grading
+    restart: unless-stopped
+    command: ["uvicorn", "app.grading:app", "--host", "0.0.0.0", "--port", "8090", "--workers", "1", "--no-server-header"]
+    env_file:
+      - path: .env.grading
+        required: true
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:18090:8090"
+    networks:
+      rag_db:
+        ipv4_address: 172.30.251.4
+      rag_grading:
+        ipv4_address: 172.30.252.2
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 64
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8090/healthz', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: "2"
+
   proxy:
     build:
       context: .
@@ -139,6 +180,12 @@ networks:
     ipam:
       config:
         - subnet: 172.18.0.0/16
+  rag_grading:
+    # Only publishes the grading port to host loopback; the grader needs no egress.
+    name: rag-playground-grading
+    ipam:
+      config:
+        - subnet: 172.30.252.0/29
   rag_db:
     name: rag-playground-db-private
     internal: true

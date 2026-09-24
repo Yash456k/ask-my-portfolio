@@ -5,7 +5,7 @@ table inet rag_isolation {
     set container_networks {
         type ipv4_addr
         flags interval
-        elements = { 172.18.0.0/16, 172.30.251.0/29 }
+        elements = { 172.18.0.0/16, 172.30.251.0/29, 172.30.252.0/29 }
     }
     set private_destinations {
         type ipv4_addr
@@ -23,6 +23,8 @@ table inet rag_isolation {
         # Explicit application links. Database has a separate internal network.
         ip saddr 172.18.0.4 ip daddr 172.18.0.3 tcp dport 8000 accept
         ip saddr 172.30.251.3 ip daddr 172.30.251.2 tcp dport 5432 accept
+        # Private grading service (Tailscale Serve only) reads logs and writes grades.
+        ip saddr 172.30.251.4 ip daddr 172.30.251.2 tcp dport 5432 accept
         ip saddr @container_networks ip daddr @private_destinations counter reject with icmpx type admin-prohibited
         # App providers and proxy ACME need public HTTPS; DNS uses Docker's
         # resolver, with public DNS permitted when Docker forwards the request.

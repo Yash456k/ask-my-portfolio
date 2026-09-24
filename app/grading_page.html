@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Grading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+  :root {
+    --paper: #fbf6f0; --card: #fffdfa; --ink: #2a2521; --muted: #857a72; --line: #eadfd4;
+    --red: #b8513d; --red-soft: #f6e4dc; --good: #4e8a5e; --good-soft: #e3efe4;
+    --ok: #c08a2e; --ok-soft: #f6ecd6; --bad: #b04a3a; --bad-soft: #f5e0db;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 15px/1.5 'DM Sans', system-ui, sans-serif; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: calc(28px + env(safe-area-inset-top)) 18px 80px; }
+  header h1 { margin: 0; font: 400 38px/1.05 'Newsreader', Georgia, serif; letter-spacing: -.02em; }
+  header h1 em { color: var(--red); }
+  header p { margin: 8px 0 0; color: var(--muted); }
+  .tabs { display: flex; gap: 6px; margin: 24px 0 14px; }
+  .tabs button, .filters button { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 8px 14px; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; }
+  .tabs button[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; justify-content: space-between; margin-bottom: 16px; }
+  .filters { display: flex; gap: 6px; }
+  .filters button[aria-pressed="true"] { border-color: var(--red); color: var(--red); background: var(--red-soft); }
+  .progress { color: var(--muted); font-size: 13px; }
+  .progress b { color: var(--ink); font-weight: 600; }
+  .bar { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; margin-top: 6px; width: 160px; }
+  .bar i { display: block; height: 100%; background: var(--red); transition: width .4s; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 14px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border: 1px solid var(--line); border-radius: 999px; font-size: 11.5px; color: var(--muted); background: #fff; }
+  .chip.warn { color: var(--bad); border-color: #ebc8bf; }
+  .q { font: 400 21px/1.3 'Newsreader', Georgia, serif; margin: 2px 0 12px; }
+  details { margin: 8px 0; }
+  summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+  .history { border-left: 2px solid var(--line); padding-left: 12px; margin-top: 6px; font-size: 13.5px; color: var(--muted); }
+  .history div { margin: 4px 0; }
+  .answer { background: var(--paper); border-radius: 12px; padding: 14px 16px; font-size: 15px; }
+  .answer p { margin: 0 0 10px; } .answer p:last-child { margin: 0; }
+  .answer ul { margin: 4px 0 10px; padding-left: 20px; }
+  .cite { display: inline-block; padding: 0 5px; border-radius: 5px; background: var(--red-soft); color: var(--red); font-size: 11.5px; font-weight: 600; }
+  .source { border-top: 1px solid var(--line); padding: 10px 0; font-size: 13px; }
+  .source b { color: var(--red); }
+  .source pre { white-space: pre-wrap; font: 13px/1.5 'DM Sans', sans-serif; margin: 6px 0 0; color: var(--ink); }
+  .grade { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px; }
+  .grade button { flex: 1 1 0; min-width: 80px; padding: 10px; border-radius: 12px; border: 1px solid var(--line); background: #fff; font: 600 14px 'DM Sans', sans-serif; cursor: pointer; transition: transform .1s; }
+  .grade button:active { transform: scale(.97); }
+  .grade button.good[aria-pressed="true"] { background: var(--good-soft); border-color: var(--good); color: var(--good); }
+  .grade button.ok[aria-pressed="true"] { background: var(--ok-soft); border-color: var(--ok); color: #8a6320; }
+  .grade button.bad[aria-pressed="true"] { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
+  .note { width: 100%; margin-top: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; font: 14px 'DM Sans', sans-serif; resize: vertical; min-height: 42px; background: #fff; }
+  .saved { font-size: 12px; color: var(--muted); margin-top: 6px; min-height: 16px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pair h3 { margin: 0 0 6px; font: 600 12px 'DM Sans', sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .pair .answer { height: 100%; }
+  .reveal { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+  .empty { text-align: center; color: var(--muted); padding: 50px 0; }
+  .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 9px 16px; border-radius: 999px; font-size: 13px; opacity: 0; transition: .25s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%); }
+  @media (max-width: 640px) { .pair { grid-template-columns: 1fr; } header h1 { font-size: 32px; } .card { padding: 16px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Grade the <em>answers</em></h1>
+    <p>Private to your tailnet. Every grade is saved the moment you tap it.</p>
+  </header>
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="answers">Answers</button>
+    <button role="tab" aria-selected="false" data-tab="pairs">Blind compare</button>
+  </div>
+  <div class="toolbar">
+    <div class="filters" id="filters">
+      <button aria-pressed="true" data-view="todo">To grade</button>
+      <button aria-pressed="false" data-view="done">Graded</button>
+      <button aria-pressed="false" data-view="all">All</button>
+    </div>
+    <div class="progress"><span id="progress-text"></span><div class="bar"><i id="progress-bar" style="width:0"></i></div></div>
+  </div>
+  <main id="list"></main>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const state = { tab: 'answers', view: 'todo', answers: [], pairs: [], older: 0 };
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const cap = (s) => s ? s[0].toUpperCase() + s.slice(1).replace('_', ' ') : '';
+
+// Small, safe Markdown: escape first, then bold, code, bullets, citations, paragraphs.
+function md(text) {
+  const blocks = esc(text).split(/\n{2,}/);
+  return blocks.map((block) => {
+    const lines = block.split('\n');
+    const inline = (l) => l.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\[S(\d+)\]/g, '<span class="cite">S$1</span>');
+    if (lines.every((l) => /^\s*[-*] /.test(l))) return '<ul>' + lines.map((l) => '<li>' + inline(l.replace(/^\s*[-*] /, '')) + '</li>').join('') + '</ul>';
+    return '<p>' + lines.map(inline).join('<br>') + '</p>';
+  }).join('');
+}
+
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 1600); }
+const when = (iso) => new Date(iso).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+
+async function api(path, options) {
+  const response = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...options });
+  if (!response.ok) throw new Error((await response.json().catch(() => ({}))).detail || response.status);
+  return response.json();
+}
+
+function progress() {
+  const items = state.tab === 'answers' ? state.answers : state.pairs;
+  const done = items.filter((i) => state.tab === 'answers' ? i.grade : i.choice).length;
+  $('#progress-text').innerHTML = `<b>${done}</b> of ${items.length} ${state.tab === 'answers' ? 'graded' : 'compared'}` + (state.tab === 'answers' && state.older ? ` · ${state.older} older without saved answers` : '');
+  $('#progress-bar').style.width = items.length ? (100 * done / items.length) + '%' : '0';
+}
+
+function signalChips(s) {
+  if (!s) return '';
+  const emotions = (s.emotions || []).map((e) => `<span class="chip">${cap(e.name)} ${Math.round(e.probability * 100)}%</span>`).join('');
+  const coverage = { direct: 'In portfolio', partial: 'Partly in portfolio', none: 'Not in portfolio' }[s.coverage] || '';
+  return `<span class="chip">${cap(s.intent)}</span>${emotions}<span class="chip ${s.coverage === 'none' ? 'warn' : ''}">${coverage}</span>`;
+}
+
+function answerCard(a) {
+  const history = a.history.length ? `<details><summary>Earlier in this conversation (${a.history.length})</summary><div class="history">${a.history.map((h) => `<div><b>${h.role === 'user' ? 'Visitor' : 'Bot'}:</b> ${esc(h.content)}</div>`).join('')}</div></details>` : '';
+  const sources = a.sources.length ? `<details><summary>Sources the answer used (${a.sources.length})</summary>${a.sources.map((s) => `<div class="source"><b>S${s.n}</b> · ${esc(s.source)} #${s.chunkIndex ?? '?'} · score ${Number(s.score ?? 0).toFixed(2)}<pre>${esc(s.content)}</pre></div>`).join('')}</details>` : '';
+  const timing = a.totalMs ? `${(a.totalMs / 1000).toFixed(1)} s` : '';
+  const fallback = a.retrieval && a.retrieval.fallback ? '<span class="chip warn">Jev fallback</span>' : '';
+  return `<article class="card" data-id="${a.id}">
+    <div class="meta"><span>${when(a.askedAt)}</span><span>·</span><span>${esc(a.model || '')}</span>${timing ? `<span>· ${timing}</span>` : ''}${a.country ? `<span>· ${esc(a.country)}</span>` : ''}${a.session ? `<span>· session ${esc(a.session)}</span>` : ''}${fallback}</div>
+    <div class="meta">${signalChips(a.signals)}</div>
+    <div class="q">${esc(a.question)}</div>
+    ${history}
+    <div class="answer">${md(a.answer)}</div>
+    ${sources}
+    <div class="grade">${['good', 'ok', 'bad'].map((g) => `<button class="${g}" aria-pressed="${a.grade === g}" data-grade="${g}">${{ good: 'Good', ok: 'OK', bad: 'Bad' }[g]}</button>`).join('')}</div>
+    <textarea class="note" placeholder="Note (optional): what was wrong, missing, or great?">${esc(a.note)}</textarea>
+    <div class="saved">${a.gradedAt ? `Saved ${when(a.gradedAt)}${a.gradedBy ? ' by ' + esc(a.gradedBy) : ''}` : ''}</div>
+  </article>`;
+}
+
+function pairCard(p) {
+  const revealed = p.models ? `<div class="reveal">A was <b>${esc(p.models.a)}</b> · B was <b>${esc(p.models.b)}</b></div>` : '';
+  return `<article class="card" data-pair="${p.id}">
+    <div class="meta"><span>Test question · run ${esc(p.run)}</span></div>
+    <div class="q">${esc(p.question)}</div>
+    <div class="pair"><div><h3>Answer A</h3><div class="answer">${md(p.answerA)}</div></div><div><h3>Answer B</h3><div class="answer">${md(p.answerB)}</div></div></div>
+    <div class="grade">${[['a', 'A is better'], ['b', 'B is better'], ['tie', 'Tie'], ['both_bad', 'Both bad']].map(([c, l]) => `<button class="${c === 'both_bad' ? 'bad' : c === 'tie' ? 'ok' : 'good'}" aria-pressed="${p.choice === c}" data-choice="${c}">${l}</button>`).join('')}</div>
+    <textarea class="note" placeholder="Note (optional)">${esc(p.note || '')}</textarea>
+    ${revealed}
+  </article>`;
+}
+
+function render() {
+  const list = $('#list');
+  let items;
+  if (state.tab === 'answers') {
+    items = state.answers.filter((a) => state.view === 'all' || (state.view === 'todo' ? !a.grade : a.grade));
+    list.innerHTML = items.length ? items.map(answerCard).join('') : `<div class="empty">${state.view === 'todo' ? 'Nothing left to grade. New questions appear here automatically.' : 'No answers here yet.'}</div>`;
+  } else {
+    items = state.pairs.filter((p) => state.view === 'all' || (state.view === 'todo' ? !p.choice : p.choice));
+    list.innerHTML = items.length ? items.map(pairCard).join('') : `<div class="empty">${state.view === 'todo' ? 'All pairs compared.' : 'No pairs here yet.'}</div>`;
+  }
+  progress();
+}
+
+async function load() {
+  const [answers, pairs] = await Promise.all([api('/api/answers'), api('/api/pairs')]);
+  state.answers = answers.items; state.older = answers.unrecordedOlder; state.pairs = pairs.items;
+  render();
+}
+
+$('#list').addEventListener('click', async (event) => {
+  const button = event.target.closest('button');
+  if (!button) return;
+  const card = button.closest('.card');
+  const note = card.querySelector('.note').value;
+  try {
+    if (button.dataset.grade) {
+      const item = state.answers.find((a) => a.id === card.dataset.id);
+      const saved = await api(`/api/answers/${item.id}/grade`, { method: 'PUT', body: JSON.stringify({ grade: button.dataset.grade, note }) });
+      Object.assign(item, { grade: button.dataset.grade, note, gradedAt: saved.gradedAt });
+      card.querySelectorAll('[data-grade]').forEach((b) => b.setAttribute('aria-pressed', b === button));
+      card.querySelector('.saved').textContent = 'Saved just now';
+    } else if (button.dataset.choice) {
+      const item = state.pairs.find((p) => String(p.id) === card.dataset.pair);
+      const saved = await api(`/api/pairs/${item.id}`, { method: 'PUT', body: JSON.stringify({ choice: button.dataset.choice, note }) });
+      Object.assign(item, { choice: button.dataset.choice, note, models: saved.models });
+      card.outerHTML = pairCard(item);
+    }
+    progress();
+    toast('Saved');
+  } catch (error) { toast('Could not save: ' + error.message); }
+});
+
+// Notes save with the grade; editing a note on an already graded card saves it too.
+$('#list').addEventListener('change', async (event) => {
+  if (!event.target.classList.contains('note')) return;
+  const card = event.target.closest('.card');
+  const pressed = card.querySelector('button[aria-pressed="true"]');
+  if (pressed) pressed.click();
+});
+
+document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => {
+  state.tab = b.dataset.tab;
+  document.querySelectorAll('.tabs button').forEach((x) => x.setAttribute('aria-selected', x === b));
+  render();
+}));
+document.querySelectorAll('#filters button').forEach((b) => b.addEventListener('click', () => {
+  state.view = b.dataset.view;
+  document.querySelectorAll('#filters button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+  render();
+}));
+load().catch((error) => { $('#list').innerHTML = `<div class="empty">Could not load: ${esc(error.message)}</div>`; });
+</script>
+</body>
+</html>
