@@ -3,12 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Theme selection is disabled for now; restore this with the ThemePicker.
     <script>
       try {
         const theme = localStorage.getItem('portfolio:theme:v1');
         document.documentElement.dataset.theme = ['warm', 'midnight', 'forest'].includes(theme) ? theme : 'warm';
       } catch { document.documentElement.dataset.theme = 'warm'; }
     </script>
+    -->
+    <script>document.documentElement.dataset.theme = 'warm';</script>
     <meta name="theme-color" content="#f5e8dc" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="author" content="Yash Khambhatta" />

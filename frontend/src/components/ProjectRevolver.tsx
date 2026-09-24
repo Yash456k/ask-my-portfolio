@@ -162,7 +162,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
             const project = projects[index]
             const offset = absolute - position
             const distance = Math.abs(offset)
-            const opacity = distance <= 1 ? 1 - distance * .55 : Math.max(0, .45 * (2 - distance))
+            const opacity = distance <= 1 ? 1 - distance * .4 : Math.max(0, .6 * (2 - distance))
             return (
               <button type="button" className="reel-item" key={absolute}
                 style={{ '--offset': offset, opacity, transform: `translateY(calc(-50% + ${offset} * var(--reel-spacing))) perspective(900px) rotateX(${-Math.sign(offset) * Math.min(distance, 2) * 18}deg) scale(${1 - Math.min(distance, 2) * .055})` } as CSSProperties}

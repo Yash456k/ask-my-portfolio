@@ -299,6 +299,7 @@ a:focus-visible {
 
 .header-stage {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   min-width: 0;
 }
 
@@ -1863,7 +1864,7 @@ a:focus-visible {
   .sparkle-mark { font-size: 29px; }
   .clear-chat span { display: none; }
   .card-intro h1,
-  .chat-heading h1 { margin-top: 4px; font-size: 35px; }
+  .chat-heading h1 { margin-top: 4px; font-size: min(35px, 8.2vw); }
   .card-intro > p,
   .chat-subtitle { max-width: 320px; margin-inline: auto; font-size: 15px; }
   .model-panel { margin-top: 18px; }

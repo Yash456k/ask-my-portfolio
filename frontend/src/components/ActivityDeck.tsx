@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import type { KeyboardEvent } from 'react'
 import { getActivity } from '../api'
 import { readCachedActivity } from '../activity'
 import type { ActivitySnapshot } from '../activity'
@@ -158,6 +159,11 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
     }
   }, [kind, weeks])
   const [hovered, setHovered] = useState<HoveredDay | null>(null)
+  const days = useMemo(() => weeks.flat(), [weeks])
+  const lastDayIndex = days.reduce((last, day, index) => (day.isFuture ? last : index), 0)
+  // One tab stop for the whole calendar; arrow keys move between days.
+  const [focusedDay, setFocusedDay] = useState<string | null>(null)
+  const focusIndex = Math.max(0, focusedDay ? days.findIndex((day) => day.date === focusedDay) : lastDayIndex)
   const isCodex = kind === 'codex'
   const displayTotal = isCodex && range === 'year'
     ? activity.codex.lifetimeTotal
@@ -182,6 +188,17 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
       top: cellBounds.top - calendarBounds.top,
       alignment: left < edgeSpace ? 'start' : left > calendarBounds.width - edgeSpace ? 'end' : 'center',
     })
+  }
+
+  const moveFocus = (event: KeyboardEvent<HTMLDivElement>) => {
+    const step = { ArrowLeft: -7, ArrowRight: 7, ArrowUp: -1, ArrowDown: 1 }[event.key]
+    const next = event.key === 'Home' ? 0
+      : event.key === 'End' ? lastDayIndex
+        : step === undefined ? null : Math.min(lastDayIndex, Math.max(0, focusIndex + step))
+    if (next === null) return
+    event.preventDefault()
+    setFocusedDay(days[next].date)
+    event.currentTarget.querySelectorAll<HTMLButtonElement>('.activity-cell')[next]?.focus()
   }
 
   return (
@@ -229,17 +246,21 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
           ))}
         </div>
         <div className="activity-weekdays" aria-hidden="true"><span>Mon</span><span>Wed</span><span>Fri</span></div>
-        <div className="activity-grid" style={{ gridTemplateColumns: columnTemplate }}>
-          {weeks.flat().map((day) => (
+        <div className="activity-grid" style={{ gridTemplateColumns: columnTemplate }} onKeyDown={moveFocus}>
+          {days.map((day, index) => (
             <button
               type="button"
               className={`activity-cell level-${day.level} ${day.isFuture ? 'is-future' : ''}`}
               key={day.date}
               disabled={day.isFuture}
+              tabIndex={index === focusIndex ? 0 : -1}
               aria-label={`${formatDate(day.date)}: ${formatTooltipValue(day.count, isCodex)} ${isCodex ? 'tokens' : 'contributions'}`}
               onMouseEnter={(event) => showTooltip(event.currentTarget, day)}
               onMouseLeave={() => setHovered(null)}
-              onFocus={(event) => showTooltip(event.currentTarget, day)}
+              onFocus={(event) => {
+                setFocusedDay(day.date)
+                showTooltip(event.currentTarget, day)
+              }}
               onBlur={() => setHovered(null)}
             />
           ))}

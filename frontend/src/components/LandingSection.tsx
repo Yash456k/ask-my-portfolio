@@ -1,5 +1,6 @@
 import { ActivityDeck } from './ActivityDeck'
-import { ThemePicker } from './ThemePicker'
+// Theme picker disabled for now; restore with the <ThemePicker /> line below.
+// import { ThemePicker } from './ThemePicker'
 
 
 
@@ -22,7 +23,7 @@ export function LandingSection({ onNavigate }: LandingSectionProps) {
           <a href="/projects" onClick={(event) => { event.preventDefault(); onNavigate('/projects') }}>Projects</a>
           <a href="/about" onClick={(event) => { event.preventDefault(); onNavigate('/about') }}>About</a>
           <a className="nav-contact" href="mailto:yash456k@gmail.com">Let&apos;s talk</a>
-          <ThemePicker />
+          {/* <ThemePicker /> */}
         </nav>
       </header>
 
