@@ -1,4 +1,4 @@
-[![Ask my portfolio answering a question about Yash's work, with the passages it used listed beside the answer](docs/assets/ask-my-portfolio.png)](https://www.yash456k.com/#playground)
+[![The home page of yash456k.com: "I build stuff I find interesting" beside a year of daily coding activity](docs/assets/home.png)](https://www.yash456k.com)
 
 # Ask my portfolio
 
@@ -12,7 +12,13 @@
 
 My portfolio site, with a chat that answers questions about my work and shows the sources behind every answer.
 
-The site at [yash456k.com](https://www.yash456k.com) holds my experience, my projects, and a graph of my daily coding activity. The chat answers from a small set of documents about me, split into hand-reviewed passages, and every answer streams in with citations while the panel beside it shows which passages were used, how closely each one matched, which model wrote the answer, and how long each step took.
+[![Experience and projects side by side, with a timeline above the role cards](docs/assets/work.png)](https://www.yash456k.com/#work)
+
+Experience and projects sit side by side: drag through the role cards, or scroll the project wheel and open a project for its details and links.
+
+[![The chat answering a question about Yash's work, with the passages it used listed beside the answer](docs/assets/chat.png)](https://www.yash456k.com/#playground)
+
+The chat answers from a small set of documents about me, split into hand-reviewed passages, and every answer streams in with citations while the panel beside it shows which passages were used, how closely each one matched, which model wrote the answer, and how long each step took.
 
 ## How it finds answers
 
