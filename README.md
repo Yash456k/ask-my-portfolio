@@ -12,7 +12,7 @@
 
 My portfolio site, with a chat that answers questions about my work and shows the sources behind every answer.
 
-The site at [yash456k.com](https://www.yash456k.com) holds my experience, my projects, and a graph of my daily coding activity. The chat answers from a small set of documents about me, split into reviewed passages, and every answer streams in with citations while the panel beside it shows which passages were used, how closely each one matched, which model wrote the answer, and how long each step took.
+The site at [yash456k.com](https://www.yash456k.com) holds my experience, my projects, and a graph of my daily coding activity. The chat answers from a small set of documents about me, split into hand-reviewed passages, and every answer streams in with citations while the panel beside it shows which passages were used, how closely each one matched, which model wrote the answer, and how long each step took.
 
 ## How it finds answers
 
@@ -25,7 +25,7 @@ You can choose how the chat looks for its sources: one of six embedding models, 
 | BGE Base | 0.78 | 0.90 |
 | MiniLM L6 | 0.64 | 0.79 |
 
-These come from 39 answerable test questions, and the [full comparison](evaluation/jev-retrieval.md) covers all seven routes and how refusals were checked. The other choices were measured the same way: hand-reviewed passage boundaries raised Recall@5 by 0.10 over automatic splitting ([report](docs/manual-semantic-chunking-evaluation.md)), and DeepSeek V4.1 Flash writes the answers because it came out ahead when eight models answered the same 46 questions ([report](evaluation/llm-comparison.md)). Jev also reads what each visitor is asking for and how they seem to feel, which shows up as small tags in the chat.
+These come from 39 answerable test questions, and the [full comparison](evaluation/jev-retrieval.md) covers all seven routes and how refusals were checked. Hand-reviewed passage boundaries raised Recall@5 by 0.10 over automatic splitting ([report](docs/manual-semantic-chunking-evaluation.md)). DeepSeek V4.1 Flash writes the answers, mostly because it was cheap lol, and it also stuck to the facts better than the other seven models I tried ([report](evaluation/llm-comparison.md)). Jev also reads what each visitor is asking for and how they seem to feel, which shows up as small tags in the chat.
 
 ## How it's built
 
