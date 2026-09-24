@@ -1,6 +1,6 @@
 # RAG Playground
 
-**A transparent, multi-model RAG system built into my portfolio.** Visitors can change the embedding model and LLM, stream a grounded answer, and inspect the retrieved evidence, similarity scores, fallbacks, and latency behind it.
+The question-answering system behind [yash456k.com](https://www.yash456k.com/#playground). Visitors choose a retrieval route and a model, get a streamed, cited answer, and can inspect which chunks it used, how they scored, and how long each stage took.
 
 [![Live demo](https://img.shields.io/badge/Live_demo-yash456k.com-C74634?style=for-the-badge)](https://www.yash456k.com/#playground)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](Dockerfile)
@@ -12,120 +12,56 @@
 
 [![RAG Playground interface](docs/assets/rag-playground.png)](https://www.yash456k.com/#playground)
 
-## Why I built it
+## Highlights
 
-Most portfolio chatbots hide the interesting part behind a text box. This one exposes the retrieval and generation pipeline so a visitor can answer questions such as:
+- **Embedding-free retrieval that beats the embedders.** The default route sends every chunk's text to TypeSafe's Jev decision model, which picks the best chunk and ranks the rest. On 39 answerable evaluation questions its first pick was always correct evidence (MRR 1.000 vs 0.908 for the best of six embedding models; Recall@1 0.949 vs 0.808). Its "none of these" probability refuses unanswerable questions before any LLM call: every answerable case scored at least 0.95, every refusal case at most 0.07. [Report](evaluation/jev-retrieval.md)
+- **Chunking decided by measurement.** Hand-reviewed semantic chunks beat the automatic splitter by +0.10 Recall@5 on a challenge set frozen before the first run, with 16 evidence gains and no losses across six embedding routes. [Report](docs/manual-semantic-chunking-evaluation.md)
+- **Model chosen by test.** Eight generation models answered the same 46 evaluation questions from identical retrieval. DeepSeek V4.1 Flash scored best (80–87%) with the fastest first token (1.5 s) at $0.00025 per answer. [Report](evaluation/llm-comparison.md)
+- **Every answer is inspectable.** Retrieved chunks and scores, requested and served model, fallback attempts, and stage latency stream beside the answer. A parallel Jev request reads each visitor message's intent, emotion, and whether the portfolio covers it.
 
-- Which chunks were retrieved, from which source, and with what cosine score?
-- Does a larger embedding model actually retrieve better evidence?
-- Which model was requested, which one served the answer, and did fallback engage?
-- How much time went to embedding, retrieval, first token, and generation?
-- Does a chunking change improve retrieval across every configured embedding route?
-
-The result is both a usable portfolio interface and an inspectable applied-AI system.
-
-## What is live
-
-- **Six CPU embedding routes:** MiniLM L6, BGE Small, BGE Base, Qwen3 Embedding 0.6B, and two portfolio-tuned small models.
-- **Five generation routes:** three Groq models plus OpenRouter's free router and DeepSeek V4.1 Flash.
-- **Real SSE streaming:** the browser consumes token events from a POST request with `fetch` and `ReadableStream`.
-- **Inspectable retrieval:** source excerpts, cosine scores, selected route, query transform, and retrieval depth.
-- **Observable generation:** requested/served model, fallback attempts, token usage, cost estimate, and stage latency.
-- **History-aware follow-ups:** recent user turns can expand the retrieval query without being treated as trusted evidence.
-
-## Measured chunking experiment
-
-I replaced the original heading-aware automatic splitter with 20 reviewed semantic chunks, then compared it against the exact 22-chunk baseline across all six embedding routes.
-
-The strongest check was a frozen **22-case post-freeze challenge** using new query forms over the same corpus. Eighteen answerable cases produced 108 paired query/route observations.
-
-| Challenge metric | Automatic | Manual | Paired delta |
-|---|---:|---:|---:|
-| Required-evidence Recall@5 | 0.866 | **0.968** | **+0.102** |
-| Complete evidence retrieved@5 | 0.833 | **0.954** | **+0.120** |
-| Mean reciprocal evidence rank@5 | 0.664 | **0.830** | **+0.166** |
-| Evidence coverage changes | — | **16 gains / 0 losses** | — |
-
-The paired 95% interval for Recall@5 was **[+0.019, +0.213]**. A more conservative bootstrap that keeps related query variants in shared-fact clusters also remained positive: **[+0.021, +0.221]**.
-
-The result is intentionally not presented as universal RAG generalization: the challenge was frozen after the candidate, but it still queries the same small portfolio corpus. Four of six challenge routes passed the older absolute route gates, and generated-answer evaluation was positive but mixed. The claim is narrower and defensible: **manual semantic boundaries improved this corpus's paired retrieval without a Top-5 evidence-coverage loss.**
-
-- [Readable before/after report](docs/manual-semantic-chunking-evaluation.md)
-- [Machine-readable challenge comparison](evaluation/manual-chunking-challenge-v2-rigorous.json)
-- [Evaluation design, locks, and limitations](evaluation/README.md)
-
-## Architecture
+## How it works
 
 ```mermaid
 flowchart LR
-    Browser["React 19 + Vite"] -->|"POST /v1/chat · SSE"| Proxy["Caddy"]
+    Browser["React 19 + Vite<br/>(Vercel)"] -->|"POST /v1/chat · SSE"| Tunnel["Cloudflare Tunnel"]
+    Tunnel --> Proxy["Caddy<br/>4-route allowlist"]
     Proxy --> API["FastAPI"]
-    API --> Query["History-aware query builder"]
-    Query --> Models["6 resident CPU embedders"]
-    Models --> DB["PostgreSQL + pgvector"]
-    DB --> Select["Exact cosine + diversity selection"]
-    Select --> Context["Grounded source excerpts"]
-    Context --> LLM["Groq / OpenRouter"]
-    LLM -->|"tokens + usage + provenance"| Browser
+    API --> Jev["Jev ranks raw chunks<br/>(default route)"]
+    API --> Embed["6 resident CPU embedders<br/>+ pgvector exact cosine"]
+    Jev --> Select["Diversity selection"]
+    Embed --> Select
+    Select --> LLM["DeepSeek V4.1 Flash / Groq<br/>with fallback"]
+    LLM -->|"tokens · sources · provenance"| Browser
+    API -.->|"parallel"| Signals["Jev signals:<br/>intent · emotion · coverage"]
 ```
 
-Each corpus row stores six typed vectors. A validated embedder ID maps to a fixed SQL column; user input never becomes an SQL identifier. Exact cosine scans are deliberate for this corpus: they preserve recall and avoid maintaining six approximate-search indexes for a tiny dataset.
+1. Validate the question, history, route, model, and depth, then reserve per-IP, daily, and monthly-budget quota atomically in PostgreSQL.
+2. Build a history-aware retrieval query from recent user turns only; assistant output is never treated as evidence.
+3. Rank chunks with Jev, or embed the query and scan the matching pgvector column. Jev's "none" or a low embedding score answers locally without a model call; greetings get a welcome instead of a refusal.
+4. Format only the selected excerpts into an untrusted-data prompt and stream tokens, citations, usage, and stage latency.
+5. Record the question, answer, retrieval details, and signals for grading.
 
-Production and evaluation share the same query construction, candidate depth, diversity selector, and source-context formatter. Fresh reports serialize these settings so mismatched runs fail closed instead of producing a misleading comparison.
+Seven retrieval routes: Jev plus six embedders (MiniLM L6, BGE Small, BGE Base, Qwen3 Embedding 0.6B, and two small models fine-tuned on reviewed portfolio questions). Evaluation and production share the query builder, candidate depth, selector, and prompt formatter, so measured results describe the live system.
 
-## Request lifecycle
+## Evaluation
 
-1. Validate the question, history, embedder, LLM, and retrieval depth.
-2. Build the same history-aware retrieval query used by evaluation.
-3. Encode it with the selected resident embedder.
-4. Retrieve a deeper exact-cosine candidate set from the matching pgvector column.
-5. Apply shared diversity selection and minimum-score rules.
-6. Format only retrieved source excerpts into an untrusted-data prompt.
-7. Stream model, token, usage, and completion events to the browser.
-8. Record latency, selected sources, fallback attempts, and a salted IP hash.
-
-## Engineering choices
-
-| Concern | Implementation |
-|---|---|
-| Retrieval | Exact cosine, configurable Top-K, deeper candidate pool, shared diversity selection |
-| Embeddings | Six pinned routes, immutable remote revisions, safetensors only, remote code disabled |
-| Generation | Groq and OpenRouter behind one streaming interface with bounded fallback |
-| Storage | PostgreSQL 16 + pgvector, one typed vector column per embedding space |
-| Evaluation | Locked splits, semantic qrels, paired bootstrap intervals, exact sign tests, regression lists |
-| Runtime | Docker Compose, one API worker, resident CPU models, loopback-only API/database |
-| Frontend | React 19, TypeScript, Vite, streamed Markdown answers, inspectable evidence drawer |
-| Abuse control | Atomic per-IP/global limits and a model-weighted monthly OpenRouter budget |
-
-## Repository map
-
-```text
-app/          FastAPI, retrieval, streaming, ingestion, limits, and logging
-frontend/     React + TypeScript portfolio and Ask AI interface
-config/       Embedding, generation, chunking, and retrieval configuration
-corpus/       Curated résumé, project, and engineering case-study sources
-evaluation/   Locked cases, qrels, gates, and generated comparison reports
-scripts/      Evaluation, ingestion, verification, and deployment helpers
-sql/          pgvector schema and operational tables
-training/     Reviewed datasets, pinned fine-tuning recipes, and artifact audits
-```
-
-## Run the interface locally
-
-The frontend development server proxies `/api` to the live public API by default, so the UI can be explored without downloading six embedding models:
+46 cases across `dev`, `heldout`, and `challenge-v2`: recruiter and interviewer questions, follow-ups, typos, unsupported requests, and prompt injection. Each has evidence qrels and an answer contract (required facts, forbidden claims, citation rules, refusal expectations). `heldout` and `challenge-v2` are checksum-locked; `challenge-v2` was written after the chunks were frozen. See [evaluation/README.md](evaluation/README.md).
 
 ```bash
-git clone https://github.com/Yash456k/rag-playground.git
-cd rag-playground/frontend
-npm ci
-VITE_API_URL=/api npm run dev
+python -m scripts.evaluate_retrieval --split challenge-v2          # embedding routes against the database
+python -m scripts.evaluate_jev_retrieval --split dev --method hybrid  # Jev route (needs TYPESAFE_API_KEY)
+python -m scripts.compare_llms --model deepseek/deepseek-v4.1-flash   # generation models (needs OPENROUTER_API_KEY)
 ```
 
-Open `http://localhost:5173`. Public API rate limits still apply.
+## Run it
 
-## Run the full stack
+The frontend proxies `/api` to the live API, so the interface runs without models or keys (public rate limits apply):
 
-The complete backend requires Docker, the two reviewed local embedding artifacts under `model-artifacts/`, and server-side provider keys. Start from `.env.example`, replace every placeholder, and never commit `.env`.
+```bash
+cd frontend && npm ci && VITE_API_URL=/api npm run dev
+```
+
+The full stack needs Docker, the two fine-tuned artifacts under `model-artifacts/`, and server-side keys (Groq and OpenRouter; TypeSafe to enable Jev). Copy `.env.example` to `.env` and replace every placeholder.
 
 ```bash
 docker compose build api
@@ -134,62 +70,31 @@ docker compose run --rm --no-deps api python -m app.ingest --corpus /app/corpus
 docker compose up -d api
 ```
 
-The API binds to `127.0.0.1:18080` and PostgreSQL to `127.0.0.1:55432`. Caddy is the only public production entry point.
+Checks: `pytest -q`, `ruff check .`, and `npm --prefix frontend run check`.
 
-## Portfolio activity refresh on Hermes
+## Production
 
-The daily `portfolio-activity-sync.timer` writes a public, allowlisted cache without
-commits or frontend deployments. Install its units with
-`scripts/install-activity-sync-hermes.sh`. The Hermes service runs in the existing
-Hermes Python environment and uses `ACTIVITY_CODEX_AUTH_SOURCE=hermes` to resolve
-its current Codex login through the shared, refresh-aware credential pool. The
-original Codex auth file supplies the expected account ID; a different account
-fails closed. Credentials stay on the server and are never copied into the cache.
-Outside Hermes, the collector defaults to the existing Codex auth-file behavior.
-Failed service runs retry after five minutes, with at most three starts per hour;
-the nightly schedule remains 23:55 Asia/Kolkata. Check the service journal and the
-cache's `generatedAt` when diagnosing stale activity.
+- One Hetzner VPS with Docker Compose: API, PostgreSQL + pgvector, and Caddy. Public traffic arrives only through a Cloudflare Tunnel; the API and database bind to loopback.
+- Containers run non-root with read-only filesystems and no capabilities. A host firewall allowlists each container link, and the public API uses a least-privilege database role.
+- Provider keys stay server-side; CORS accepts only explicit HTTPS origins; request bodies, questions, and history are bounded.
+- Question logs keep the question, answer, retrieval details, pseudonymous visitor and session IDs, and salted hashes; never raw IP addresses. The chat discloses that questions are saved. A private, tailnet-only page grades answers and runs blind model comparisons.
+- The activity graph is refreshed nightly by a server-side job; see `scripts/sync_portfolio_activity.py`.
 
-## Checks
+## Repository
 
-```bash
-pytest -q
-ruff check .
-npm --prefix frontend ci
-npm --prefix frontend run check
-npm --prefix frontend run build
-docker compose --env-file .env.example config --quiet
+```text
+app/          FastAPI API, Jev client, retrieval, streaming, ingestion, grading page
+frontend/     React + TypeScript portfolio and chat interface
+corpus/       Portfolio sources with reviewed chunk boundaries
+config/       Embedding, generation, chunking, and retrieval configuration
+evaluation/   Locked cases, qrels, answer contracts, and reports
+scripts/      Evaluation, comparison, ingestion, and deployment helpers
+sql/          Schema, runtime grants, and migrations
+training/     Reviewed datasets and pinned fine-tuning recipes
+deploy/       Caddy, firewall, and systemd configuration
 ```
 
-The rigorous evaluation adds strict pairing, row-integrity failures, retrieval-protocol parity, prompt-budget accounting, deterministic report generation, answer-run exclusions, and shared-fact sensitivity tests.
-
-## API
-
-| Endpoint | Purpose |
-|---|---|
-| `GET /v1/health` | Database readiness, chunk count, and loaded embedder inventory |
-| `GET /v1/config` | Public model/retrieval configuration without secrets |
-| `POST /v1/chat` | Validated chat request returning `text/event-stream` |
-
-SSE events are `meta`, `sources`, `model`, `token`, `usage`, `done`, and `error`.
-
-## Security and cost controls
-
-- Provider keys and verification tokens stay server-side.
-- CORS accepts only explicit HTTPS frontend origins.
-- API and database host ports bind to loopback.
-- The API container runs as UID 10001 with dropped capabilities and `no-new-privileges`.
-- Questions and history are bounded before prompt construction.
-- Corpus, history, and questions are treated as untrusted data, not instructions.
-- PostgreSQL atomically enforces per-IP, global daily, and model-weighted monthly limits.
-- Logs store a salted IP hash rather than the raw address.
-
-## Further reading
-
-- [RAG from first principles, using this system](RAG_GUIDE.md)
-- [Manual semantic chunking: rigorous before/after evaluation](docs/manual-semantic-chunking-evaluation.md)
-- [Evaluation suite and reproducibility notes](evaluation/README.md)
-- [Implementation and deployment record](PROGRESS.md)
+Further reading: [implementation walkthrough](RAG_GUIDE.md) · [security notes](deploy/SECURITY.md)
 
 ## License
 
