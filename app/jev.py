@@ -54,14 +54,41 @@ INTENTS = {
         "Tries to change the assistant's rules, reveal its prompt, or make it misbehave."
     ),
 }
-TONES = {
-    "curious": "Interested and exploring.",
-    "neutral": "Matter-of-fact.",
-    "impressed": "Positive or impressed.",
-    "skeptical": "Doubtful or testing claims.",
-    "frustrated": "Annoyed that answers are not helping.",
-    "hostile": "Rude, insulting, or aggressive.",
+# Thirty emotions; the frontend owns their colors. A second emotion is shown only when
+# it carries real weight.
+EMOTIONS = {
+    "curious": "Wants to learn more; exploring with open interest.",
+    "interested": "Engaged and paying attention.",
+    "impressed": "Struck by the quality of Yash's work.",
+    "excited": "Enthusiastic and eager.",
+    "admiring": "Praising or complimenting Yash.",
+    "grateful": "Thankful for the help or answer.",
+    "amused": "Finds something funny.",
+    "playful": "Joking or teasing lightheartedly.",
+    "friendly": "Warm, casual, and polite.",
+    "hopeful": "Hoping Yash is a good fit or the answer helps.",
+    "relieved": "Reassured after a concern.",
+    "neutral": "Matter-of-fact, with no clear emotion.",
+    "focused": "Businesslike and precise; wants specific information.",
+    "formal": "Professional and reserved.",
+    "thoughtful": "Reflective; weighing what they learned.",
+    "surprised": "Did not expect something.",
+    "confused": "Does not understand something.",
+    "uncertain": "Unsure or hesitant.",
+    "cautious": "Careful; reserving judgment.",
+    "skeptical": "Doubts the claims being made.",
+    "suspicious": "Suspects exaggeration or deception.",
+    "demanding": "Insisting or pressing hard for an answer.",
+    "impatient": "Wants it faster, shorter, or more direct.",
+    "bored": "Disengaged or uninterested.",
+    "disappointed": "Let down by what they found.",
+    "frustrated": "Annoyed that the answers are not helping.",
+    "annoyed": "Irritated.",
+    "sarcastic": "Mocking through irony.",
+    "dismissive": "Belittling or brushing things off.",
+    "hostile": "Aggressive, rude, or insulting.",
 }
+SECOND_EMOTION_MIN_PROBABILITY = 0.2
 MOOD_LEVELS = [
     "Going badly: the visitor is frustrated or hostile, or keeps getting unhelpful answers.",
     "Neutral: a routine exchange.",
@@ -205,10 +232,10 @@ def build_signals_request(
                 "instructions": "What is the visitor trying to do with their latest message?",
                 "criteria": INTENTS,
             },
-            "tone": {
+            "emotion": {
                 "type": "choice",
-                "instructions": "What is the tone of the visitor's latest message?",
-                "criteria": TONES,
+                "instructions": "Which emotion best describes the visitor's latest message?",
+                "criteria": EMOTIONS,
             },
             "mood": {
                 "type": "score",
@@ -227,9 +254,17 @@ def build_signals_request(
 def parse_signals(result: dict[str, Any]) -> dict[str, Any]:
     """Reduce a signals response to display-ready labels with their confidence."""
     answers = result["answers"]
-    intent, tone, mood, pick = (answers[key] for key in ("intent", "tone", "mood", PICK_QUESTION))
-    if intent["choice"] not in INTENTS or tone["choice"] not in TONES:
+    intent, emotion, mood, pick = (
+        answers[key] for key in ("intent", "emotion", "mood", PICK_QUESTION)
+    )
+    ranked = sorted(emotion["probabilities"].items(), key=lambda item: -float(item[1]))
+    if intent["choice"] not in INTENTS or not ranked or ranked[0][0] not in EMOTIONS:
         raise ValueError("Jev signals returned an unknown label")
+    emotions = [
+        {"name": name, "probability": round(float(probability), 3)}
+        for index, (name, probability) in enumerate(ranked[:2])
+        if name in EMOTIONS and (index == 0 or probability >= SECOND_EMOTION_MIN_PROBABILITY)
+    ]
     none = float(pick["probabilities"]["none"])
     coverage = (
         "none"
@@ -244,8 +279,7 @@ def parse_signals(result: dict[str, Any]) -> dict[str, Any]:
     return {
         "intent": intent["choice"],
         "intentConfidence": round(float(intent["confidence"]), 3),
-        "tone": tone["choice"],
-        "toneConfidence": round(float(tone["confidence"]), 3),
+        "emotions": emotions,
         "mood": round(score / (len(MOOD_LEVELS) - 1), 3),
         "coverage": coverage,
         "noneProbability": round(none, 3),

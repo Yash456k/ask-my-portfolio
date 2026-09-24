@@ -1,4 +1,5 @@
 import {
+  type CSSProperties,
   type FormEvent,
   type KeyboardEvent,
   type MouseEvent as ReactMouseEvent,
@@ -17,6 +18,7 @@ import { AboutSection } from './components/AboutSection'
 import { AllProjectsSection } from './components/AllProjectsSection'
 import { LandingSection } from './components/LandingSection'
 import { SectionNavigator } from './components/SectionNavigator'
+import { emotionColor } from './emotions'
 import { WorkSection } from './components/WorkSection'
 import type {
   AssistantMessage,
@@ -473,14 +475,6 @@ const COVERAGE_LABELS: Record<ConversationSignals['coverage'], string> = {
   partial: 'Partly in portfolio',
   none: 'Not in portfolio',
 }
-const TONE_FEELING: Record<ConversationSignals['tone'], 'positive' | 'neutral' | 'negative'> = {
-  curious: 'positive',
-  impressed: 'positive',
-  neutral: 'neutral',
-  skeptical: 'negative',
-  frustrated: 'negative',
-  hostile: 'negative',
-}
 
 const confidence = (value: number) => `Jev · ${Math.round(value * 100)}% confident`
 
@@ -494,10 +488,6 @@ function AnswerSignals({ signals }: { signals: ConversationSignals }) {
       <span className="signal-chip" title={confidence(signals.intentConfidence)}>
         {INTENT_LABELS[signals.intent]}
       </span>
-      <span className={`signal-chip tone-${TONE_FEELING[signals.tone]}`} title={confidence(signals.toneConfidence)}>
-        <i aria-hidden="true" />
-        {signals.tone[0].toUpperCase() + signals.tone.slice(1)}
-      </span>
       <span className={`signal-chip coverage-${signals.coverage}`} title={`Jev · ${Math.round(signals.noneProbability * 100)}% not covered`}>
         {COVERAGE_LABELS[signals.coverage]}
       </span>
@@ -505,6 +495,25 @@ function AnswerSignals({ signals }: { signals: ConversationSignals }) {
         Mood
         <i aria-hidden="true"><b style={{ width: `${Math.max(6, signals.mood * 100)}%` }} /></i>
       </span>
+    </span>
+  )
+}
+
+// The emotions Jev read in a visitor's message, pinned to that message's corner.
+function EmotionTags({ emotions }: { emotions: ConversationSignals['emotions'] }) {
+  return (
+    <span className="emotion-tags" aria-label={`Jev read: ${emotions.map((e) => e.name).join(' and ')}`}>
+      {emotions.map((emotion) => (
+        <span
+          className="emotion-tag"
+          key={emotion.name}
+          style={{ '--emotion': emotionColor(emotion.name) } as CSSProperties}
+          title={`Jev · ${Math.round(emotion.probability * 100)}%`}
+        >
+          <i aria-hidden="true" />
+          {emotion.name[0].toUpperCase() + emotion.name.slice(1)}
+        </span>
+      ))}
     </span>
   )
 }
@@ -590,15 +599,18 @@ function ChatTranscript({ messages, onShowSources }: { messages: ChatMessage[]; 
 
   return (
     <div className="transcript">
-      {messages.map((message) =>
-        message.role === 'user' ? (
+      {messages.map((message, index) => {
+        const reply = messages[index + 1]
+        const emotions = reply?.role === 'assistant' ? reply.signals?.emotions : undefined
+        return message.role === 'user' ? (
           <article className="message user-message" key={message.id} aria-label="Your question">
+            {emotions && emotions.length > 0 && <EmotionTags emotions={emotions} />}
             <p>{message.content}</p>
           </article>
         ) : (
           <AssistantAnswer key={message.id} message={message} onShowSources={onShowSources} />
-        ),
-      )}
+        )
+      })}
     </div>
   )
 }
@@ -974,8 +986,7 @@ function App() {
                 signals: {
                   intent: event.intent,
                   intentConfidence: event.intentConfidence,
-                  tone: event.tone,
-                  toneConfidence: event.toneConfidence,
+                  emotions: event.emotions,
                   mood: event.mood,
                   coverage: event.coverage,
                   noneProbability: event.noneProbability,

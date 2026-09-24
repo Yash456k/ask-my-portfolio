@@ -749,12 +749,61 @@ a:focus-visible {
 }
 
 .user-message {
+  position: relative;
   align-self: flex-end;
   width: min(305px, 78%);
   padding: 17px 25px 13px;
   border-radius: 18px 18px 3px 18px;
   background: var(--blush);
   color: rgb(var(--theme-ink-rgb, 36 32 29));
+}
+
+/* Jev's read of the message, pinned to its top-right corner. */
+.emotion-tags {
+  position: absolute;
+  top: -9px;
+  right: 12px;
+  display: flex;
+  gap: 4px;
+}
+
+.emotion-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px 4px 7px;
+  border: 1px solid color-mix(in srgb, var(--emotion) 34%, transparent);
+  border-radius: 999px;
+  color: rgb(var(--theme-ink-rgb, 36 32 29));
+  background: color-mix(in srgb, var(--emotion) 14%, rgb(var(--theme-surface-rgb, 255 251 246)));
+  box-shadow: 0 2px 8px rgb(var(--theme-shadow-rgb, 90 60 40) / 0.08);
+  font: 500 10px/1 'DM Sans', sans-serif;
+  cursor: default;
+  animation: emotion-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.emotion-tag + .emotion-tag {
+  animation-delay: 90ms;
+}
+
+.emotion-tag > i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emotion);
+}
+
+@keyframes emotion-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.92);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emotion-tag {
+    animation: none;
+  }
 }
 
 .user-message p {
@@ -1544,19 +1593,10 @@ a:focus-visible {
   cursor: default;
 }
 
-.signal-chip > i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.signal-chip.tone-positive > i,
 .signal-mood.mood-high b {
   background: rgb(var(--theme-secondary-rgb, 88 107 75));
 }
 
-.signal-chip.tone-negative > i,
 .signal-mood.mood-low b {
   background: var(--red);
 }

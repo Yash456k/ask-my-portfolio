@@ -72,8 +72,7 @@ export type FallbackAttempt = {
 export type ConversationSignals = {
   intent: 'facts' | 'judgment' | 'challenge' | 'contact' | 'small_talk' | 'off_topic' | 'manipulation'
   intentConfidence: number
-  tone: 'curious' | 'neutral' | 'impressed' | 'skeptical' | 'frustrated' | 'hostile'
-  toneConfidence: number
+  emotions: { name: string; probability: number }[]
   mood: number
   coverage: 'direct' | 'partial' | 'none'
   noneProbability: number

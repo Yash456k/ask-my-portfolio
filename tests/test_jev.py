@@ -103,8 +103,7 @@ class _Provider:
 SIGNALS = {
     "intent": "facts",
     "intentConfidence": 0.96,
-    "tone": "curious",
-    "toneConfidence": 0.7,
+    "emotions": [{"name": "curious", "probability": 0.89}],
     "mood": 0.5,
     "coverage": "direct",
     "noneProbability": 0.02,
@@ -252,14 +251,22 @@ def test_signals_parse_maps_labels_mood_and_coverage() -> None:
     result = {
         "answers": {
             "intent": choice("challenge", 0.94),
-            "tone": choice("skeptical", 0.9),
+            "emotion": choice(
+                "skeptical", 0.6, {"skeptical": 0.62, "dismissive": 0.29, "neutral": 0.09}
+            ),
             "mood": {"score": 0.5, "confidence": 0.8},
             "pick": choice("none", 0.7, {"c01": 0.3, "none": 0.7}),
         }
     }
     parsed = parse_signals(result)
-    assert (parsed["intent"], parsed["tone"], parsed["mood"]) == ("challenge", "skeptical", 0.25)
-    assert parsed["coverage"] == "none"
+    assert (parsed["intent"], parsed["mood"], parsed["coverage"]) == ("challenge", 0.25, "none")
+    assert parsed["emotions"] == [
+        {"name": "skeptical", "probability": 0.62},
+        {"name": "dismissive", "probability": 0.29},
+    ]
+    # A weak runner-up is not shown.
+    result["answers"]["emotion"]["probabilities"] = {"curious": 0.89, "neutral": 0.08}
+    assert [e["name"] for e in parse_signals(result)["emotions"]] == ["curious"]
     result["answers"]["intent"]["choice"] = "unknown"
     with pytest.raises(ValueError):
         parse_signals(result)

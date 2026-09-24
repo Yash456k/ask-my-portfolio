@@ -1,0 +1,37 @@
+// Colors for the thirty emotions Jev can read in a visitor's message (app/jev.py).
+// Warm to match the site: sages and golds read positive, warm greys and slates neutral,
+// terracottas through oxblood negative. Every color is shown as a dot on a light tint.
+export const EMOTION_COLORS: Record<string, string> = {
+  curious: '#5e8c8a',
+  interested: '#6f9a7a',
+  impressed: '#4e8a5e',
+  excited: '#d89a3d',
+  admiring: '#c58b4e',
+  grateful: '#8fa36b',
+  amused: '#e0a94f',
+  playful: '#d9825b',
+  friendly: '#7fa38a',
+  hopeful: '#9db27c',
+  relieved: '#86a8a0',
+  neutral: '#9a8f85',
+  focused: '#6b7f99',
+  formal: '#7c7f8c',
+  thoughtful: '#8c84a6',
+  surprised: '#c9a227',
+  confused: '#a68cb8',
+  uncertain: '#a69b8c',
+  cautious: '#b0996b',
+  skeptical: '#b8763e',
+  suspicious: '#9e6a3b',
+  demanding: '#b5553c',
+  impatient: '#c8663f',
+  bored: '#8e8a80',
+  disappointed: '#7a6f86',
+  frustrated: '#c0503a',
+  annoyed: '#b04a3a',
+  sarcastic: '#8c5a7a',
+  dismissive: '#7d5b55',
+  hostile: '#9c2f2a',
+}
+
+export const emotionColor = (name: string) => EMOTION_COLORS[name] ?? EMOTION_COLORS.neutral
