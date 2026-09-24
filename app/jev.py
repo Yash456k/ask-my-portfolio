@@ -89,7 +89,12 @@ def rank(result: dict[str, Any], chunks: list[dict[str, Any]]) -> JevRanking:
         picked = keys.index(pick)
         order.remove(picked)
         order.insert(0, picked)
-    ordered = [{**chunks[index], "score": round(relevance[index], 5)} for index in order]
+    scores = list(relevance)
+    if pick != "none":
+        # The pick ranks first, so it shows Jev's pick probability when that is higher:
+        # displayed scores then follow the ranking instead of looking out of order.
+        scores[keys.index(pick)] = max(relevance[keys.index(pick)], float(probabilities[pick]))
+    ordered = [{**chunks[index], "score": round(scores[index], 5)} for index in order]
     return JevRanking(
         ordered=ordered,
         none_probability=float(probabilities["none"]),

@@ -301,11 +301,8 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
             config["embedders"].append(
                 {
                     "id": JEV_RETRIEVER_ID,
-                    "label": "Jev 1.13 · no embeddings",
-                    "description": (
-                        "TypeSafe Jev reads every chunk as text, picks the best one, and "
-                        "decides whether the portfolio can answer at all."
-                    ),
+                    "label": "Jev 1.13",
+                    "description": "Reads raw chunk text · no embeddings",
                     "dimensions": 0,
                     "kind": "jev",
                     "optimization": {

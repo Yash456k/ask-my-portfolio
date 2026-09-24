@@ -64,7 +64,7 @@ def test_request_uses_neutral_keys_and_both_question_types() -> None:
 def test_choice_pick_leads_then_noul_orders_the_rest() -> None:
     ranking = rank(_result("c03", 0.02, [0.4, 0.9, 0.7]), CHUNKS)
     assert [chunk["id"] for chunk in ranking.ordered] == ["13", "12", "11"]
-    assert ranking.ordered[0]["score"] == 0.7
+    assert ranking.ordered[0]["score"] == 0.98  # pick probability, higher than its 0.7
     assert ranking.pick == "13"
     assert ranking.none_probability == 0.02
 
