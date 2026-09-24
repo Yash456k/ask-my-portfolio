@@ -24,7 +24,7 @@
       },
       {
         "label": "degree presented as still in progress",
-        "pattern": "(?:is|currently)\\s+(?:still\\s+)?pursuing\\s+(?:a\\s+)?B\\.?Tech|(?:is|currently)\\s+(?:still\\s+)?studying"
+        "pattern": "\\b(?:is|he's)\\s+(?:currently\\s+|still\\s+)*(?:pursuing|studying)\\b"
       }
     ]
   }
