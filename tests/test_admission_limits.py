@@ -8,9 +8,9 @@ from unittest.mock import AsyncMock
 import httpx
 import pytest
 from starlette.requests import ClientDisconnect
+from test_admission import _app, _body, _settings
 
 from app.admission import MAX_BODY_BYTES, AdmissionLimiter, AdmissionMiddleware
-from test_admission import _app, _body, _settings
 
 
 @pytest.mark.parametrize("declared", [False, True])
@@ -33,7 +33,9 @@ async def test_exact_body_limit_preserves_sse_and_aliases(pipeline, declared) ->
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/event-stream")
     assert response.headers["x-accel-buffering"] == "no"
-    events = [json.loads(line[6:]) for line in response.text.splitlines() if line.startswith("data:")]
+    events = [
+        json.loads(line[6:]) for line in response.text.splitlines() if line.startswith("data:")
+    ]
     assert events[0]["type"] == "meta"
     assert events[0]["requestReceived"]["historyAware"] is False
     assert events[-1]["type"] == "done"
@@ -216,7 +218,9 @@ async def test_slot_released_on_pipeline_failures(pipeline, failure) -> None:
 
 
 @pytest.mark.parametrize("disconnect", [False, True])
-async def test_body_timeout_and_disconnect_release_without_dispatch(monkeypatch, disconnect) -> None:
+async def test_body_timeout_and_disconnect_release_without_dispatch(
+    monkeypatch, disconnect
+) -> None:
     monkeypatch.setattr("app.admission.BODY_READ_TIMEOUT_SECONDS", 0.01)
     settings = _settings()
     limiter = AdmissionLimiter(settings)

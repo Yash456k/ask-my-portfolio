@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# ruff: noqa: E501, E701, E702, S603, S607 - fixed-argv operator script; dense by design
 """Read-only production hardening assertions; no credentials printed."""
 import json
 import subprocess

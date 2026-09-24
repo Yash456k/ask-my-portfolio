@@ -208,9 +208,8 @@ class GroqClient:
             except GroqStreamError:
                 raise
             except httpx.TransportError as exc:
-                reason = (
-                    "provider_timeout" if isinstance(exc, httpx.TimeoutException) else "network_error"
-                )
+                timed_out = isinstance(exc, httpx.TimeoutException)
+                reason = "provider_timeout" if timed_out else "network_error"
                 attempts.append({"model": candidate, "status": None, "reason": reason})
                 if emitted_content:
                     raise GroqStreamError(

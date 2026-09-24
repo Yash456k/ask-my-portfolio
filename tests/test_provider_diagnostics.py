@@ -4,9 +4,9 @@ import json
 
 import httpx
 import pytest
+from test_groq_client import _client, _Response, _success_lines
 
 from app.groq_client import GroqStreamError
-from test_groq_client import _client, _Response, _success_lines
 
 
 @pytest.fixture
