@@ -38,6 +38,11 @@ PICK_INSTRUCTIONS = (
     "Pick none only if no passage is about the question's topic."
 )
 NONE_OPTION = "None of these passages is about the question's topic."
+# Visitors ask from inside the chat, so "this project" means the chat itself.
+VISITOR_CONTEXT = (
+    "The visitor is asking inside Ask my portfolio, the chat on Yash's portfolio site. "
+    "This project, this site, or this chat means Ask my portfolio."
+)
 RELEVANCE_INSTRUCTIONS = (
     "Does this passage contain information needed to answer the user's question?"
 )
@@ -125,7 +130,11 @@ def build_request(query: str, chunks: list[dict[str, Any]], model: str = JEV_MOD
             "type": "noul",
             "instructions": {"task": RELEVANCE_INSTRUCTIONS, "passage": chunk["content"]},
         }
-    return {"model": model, "state": {"user_question": query}, "questions": questions}
+    return {
+        "model": model,
+        "state": {"context": VISITOR_CONTEXT, "user_question": query},
+        "questions": questions,
+    }
 
 
 def rank(result: dict[str, Any], chunks: list[dict[str, Any]]) -> JevRanking:
