@@ -30,3 +30,14 @@ Keep DeepSeek V4.1 Flash: best pass rate, fastest first token, never truncated. 
 - The answer contracts were written while DeepSeek V4 Flash was the production model, so their regexes likely favour DeepSeek phrasing. Reading answers side by side showed correct MiMo and Luna answers failing on wording.
 - One run per model; DeepSeek V4.1 scored 0.804 and 0.870 in two runs, so treat gaps under about 6 points as noise.
 - Model-level conclusions only: the blind A/B pairs on the private grading page can settle close calls by human judgment.
+
+## Groq recheck, 2026-09-26
+
+Re-run on the same 46 contracts after the absence-answer prompt change, with Groq models called on Groq with the production payload (scripts/compare_llms.py now does this and waits out 429s).
+
+| Model | Pass | Model-answered pass | Median first token | p90 total |
+|---|---:|---:|---:|---:|
+| DeepSeek V4.1 Flash (production) | 0.848 | 0.811 | 1.4 s | 4.8 s |
+| GPT-OSS 120B on Groq | 0.391 | 0.243 | 0.43 s | 1.2 s |
+
+GPT-OSS 120B is about four times faster but fails most model-answered contracts: missing citations and claims the contracts cannot ground, written as bold headings and bullets with non-breaking hyphens. The Groq account is on the free tier (8,000 tokens a minute, about three answers a minute across all visitors), and `qwen/qwen3.6-27b` now returns 404 on Groq. DeepSeek stays the default.
