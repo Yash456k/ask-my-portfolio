@@ -41,14 +41,14 @@
     "summary": "A portfolio you can ask questions, with the sources behind every answer.",
     "detail": "The chat on this site. It answers questions about my work from hand-reviewed passages and shows which ones it used, how well each matched, and how long every step took.",
     "highlights": [
-      "The default retriever reads passages as plain text and put a right one first on all 39 test questions.",
+      "Jev, the default retriever, reads passages as plain text and ranked the right source first more often than every embedding model I tried.",
       "Questions the portfolio can't answer are refused before any language model is called.",
       "Chunking, retrieval, and the answer model were each chosen by tests on locked question sets."
     ],
     "metrics": [
       "7 retrieval routes",
-      "39/39 right passage first",
-      "$0.00025 per answer"
+      "2 fine-tuned models",
+      "Every answer cited"
     ],
     "tags": [
       "React",
