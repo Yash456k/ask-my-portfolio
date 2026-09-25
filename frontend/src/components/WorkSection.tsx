@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import projectsData from '../data/projects.json'
 import { ProjectDetail } from './ProjectDetail'
 import { ProjectRevolver } from './ProjectRevolver'
@@ -10,19 +10,23 @@ const projectItems = projectsData as readonly ProjectItem[]
 const projectDates = projectItems.map((project) => project.startedOn)
 const sweepDuration = 310
 const titleDuration = 420
+const initialProjectIndex = 1
 
 type WorkSectionProps = {
   onNavigate: (path: string) => void
 }
 
 export function WorkSection({ onNavigate }: WorkSectionProps) {
-  const [activeProjectIndex, setActiveProjectIndex] = useState(1)
+  const [activeProjectIndex, setActiveProjectIndex] = useState(initialProjectIndex)
   const [projectView, setProjectView] = useState<'selector' | 'detail' | 'returning'>('selector')
   const projectOpen = projectView !== 'selector'
   const work = useRef<HTMLElement>(null)
   const updateProjectPointer = useCallback((position: number) => {
     work.current?.style.setProperty('--project-position', String(projectPointerPosition(position, projectDates)))
   }, [])
+  // The revolver owns the pointer after mount. Setting it through a render-time
+  // style would reset it on every render, since the value depends on today's date.
+  useLayoutEffect(() => { updateProjectPointer(initialProjectIndex) }, [updateProjectPointer])
   const panel = useRef<HTMLElement>(null)
   const interacted = useRef(false)
   const titleOrigin = useRef<{ x: number; y: number; fontSize: number } | null>(null)
@@ -108,7 +112,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
   }, [projectOpen])
 
   return (
-    <section ref={work} style={{ '--project-position': projectPointerPosition(1, projectDates) } as CSSProperties} className="portfolio-section work-section tactile-work" id="work" aria-labelledby="work-title">
+    <section ref={work} className="portfolio-section work-section tactile-work" id="work" aria-labelledby="work-title">
       <div className="split-work-layout">
         <section className="work-mobile-panel experience-panel" aria-labelledby="work-title">
           <header className="split-panel-intro career-intro">
