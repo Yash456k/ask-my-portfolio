@@ -360,7 +360,7 @@ a:focus-visible {
 }
 
 .chat-header.is-active {
-  grid-template-columns: auto minmax(380px, 1fr) auto;
+  grid-template-columns: minmax(380px, 1fr) auto;
   align-items: center;
   justify-items: stretch;
   gap: 14px;
@@ -371,11 +371,14 @@ a:focus-visible {
   text-align: left;
 }
 
+/* Once the chat is open, the heading only labels the section for screen readers. */
 .chat-header.is-active .chat-heading {
-  display: flex;
-  grid-column: 1;
-  align-items: center;
-  gap: 5px;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 .chat-header.is-active .sparkle-mark {
@@ -397,13 +400,13 @@ a:focus-visible {
 }
 
 .chat-header.is-active > .model-panel {
-  grid-column: 2;
+  grid-column: 1;
   grid-row: 1;
 }
 
 .chat-header.is-active > .clear-chat {
   position: static;
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 1;
 }
 
@@ -1927,11 +1930,8 @@ a:focus-visible {
   .chat-header.is-active {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 10px;
-    min-height: 82px;
-    max-height: 92px;
   }
-  .chat-header.is-active .chat-heading { grid-column: 1; grid-row: 1; }
-  .chat-header.is-active > .model-panel { grid-column: 1 / -1; grid-row: 2; max-width: none; }
+  .chat-header.is-active > .model-panel { grid-column: 1; grid-row: 1; max-width: none; }
   .chat-header.is-active > .clear-chat { grid-column: 2; grid-row: 1; }
   .chat-column.is-active .active-chat-bar {
     min-height: 82px;
@@ -2058,8 +2058,8 @@ a:focus-visible {
   .model-panel.is-compact {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 78px;
-    grid-column: 1 / -1;
-    grid-row: 2;
+    grid-column: 1;
+    grid-row: 1;
     justify-self: stretch;
     gap: 5px;
   }

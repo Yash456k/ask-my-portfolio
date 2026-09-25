@@ -676,7 +676,7 @@ function Composer({ value, disabled, expanded, onChange, onSubmit, onEngage, inp
           rows={1}
           maxLength={QUESTION_LIMIT}
           disabled={disabled}
-          aria-describedby="composer-help composer-count composer-notice"
+          aria-describedby={expanded ? 'composer-help composer-count composer-notice' : 'composer-help composer-count'}
         />
         <button type="submit" disabled={!canSubmit} aria-label="Send question">
           <span className="visually-hidden">{disabled ? 'Working' : 'Send'}</span>
@@ -685,9 +685,11 @@ function Composer({ value, disabled, expanded, onChange, onSubmit, onEngage, inp
           </svg>
         </button>
       </div>
-      <p id="composer-notice" className="composer-notice">
-        Questions and answers are saved to improve this portfolio.
-      </p>
+      {expanded && (
+        <p id="composer-notice" className="composer-notice">
+          Questions and answers are saved to improve this portfolio.
+        </p>
+      )}
       <div className="composer-meta">
         <span id="composer-help">Enter to send · Shift + Enter for a new line</span>
         <span id="composer-count" className={value.length > QUESTION_LIMIT * 0.9 ? 'near-limit' : ''}>

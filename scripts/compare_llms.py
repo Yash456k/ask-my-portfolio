@@ -2,9 +2,9 @@
 
 Retrieval runs once through the production Jev route (app/jev.py) and is cached, so every
 model answers the same prompt, built by the production prompt builder, from the same
-chunks. Models are called through OpenRouter with the production payload (temperature,
-600-token cap, no extra reasoning settings), and every answer is scored by
-scripts.evaluate_answers.evaluate_answer. Cases Jev refuses locally never reach a model,
+chunks. Models are called the way production calls them: Groq models on Groq, the rest
+through OpenRouter, with the production payload from app/groq_client.py. Every answer is
+scored by scripts.evaluate_answers.evaluate_answer. Cases Jev refuses locally never reach a model,
 exactly as in production.
 
 Run inside the API image so provider keys stay on the server:
@@ -21,12 +21,14 @@ import statistics
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import httpx
 
 from app import jev
 from app.config import load_pipeline
+from app.groq_client import GroqClient
 from app.ingest import chunk_document, discover_documents
 from app.main import LOCAL_REFUSAL, SYSTEM_PROMPT, _build_user_prompt
 from app.retrieval_protocol import retrieval_candidate_depth
@@ -86,32 +88,42 @@ def _retrieve(cases: list[dict], chunks: list[dict], cache: Path) -> dict[str, d
     return results
 
 
-def _prices(models: list[str]) -> dict[str, tuple[float, float]]:
-    listing = httpx.get(f"{OPENROUTER}/models", timeout=30).json()["data"]
-    table = {
-        m["id"]: (float(m["pricing"]["prompt"]), float(m["pricing"]["completion"])) for m in listing
-    }
-    missing = [model for model in models if model not in table]
-    if missing:
-        raise SystemExit(f"Not on OpenRouter: {', '.join(missing)}")
-    return {model: table[model] for model in models}
+def _provider(pipeline, model: str) -> str:
+    try:
+        return pipeline.llm(model).provider
+    except KeyError:
+        return "openrouter"  # comparison candidates not in the pipeline yet
+
+
+def _prices(pipeline, models: list[str]) -> dict[str, tuple[float, float]]:
+    prices = {}
+    for model in models:
+        if _provider(pipeline, model) == "groq":
+            llm = pipeline.llm(model)
+            prices[model] = (llm.input_usd_per_million / 1e6, llm.output_usd_per_million / 1e6)
+    rest = [model for model in models if model not in prices]
+    if rest:
+        listing = httpx.get(f"{OPENROUTER}/models", timeout=30).json()["data"]
+        table = {
+            m["id"]: (float(m["pricing"]["prompt"]), float(m["pricing"]["completion"]))
+            for m in listing
+        }
+        missing = [model for model in rest if model not in table]
+        if missing:
+            raise SystemExit(f"Not on OpenRouter: {', '.join(missing)}")
+        prices.update({model: table[model] for model in rest})
+    return prices
 
 
 def _stream(
     client: httpx.Client, model: str, user_prompt: str, pipeline, reasoning: str | None
 ) -> dict[str, Any]:
-    payload = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": user_prompt},
-        ],
-        "temperature": pipeline.generation.temperature,
-        "max_tokens": pipeline.generation.max_tokens,
-        "stream": True,
-        "stream_options": {"include_usage": True},
-    }
-    if reasoning:
+    provider = _provider(pipeline, model)
+    # The production payload, so each provider gets exactly what the live API sends.
+    payload = GroqClient._payload(
+        SimpleNamespace(pipeline=pipeline), model, SYSTEM_PROMPT, user_prompt, provider
+    )
+    if reasoning and provider == "openrouter":
         # Not the production payload: for models whose hidden reasoning exhausts the cap.
         payload["reasoning"] = {"effort": reasoning, "exclude": True}
     started = time.perf_counter()
@@ -120,7 +132,7 @@ def _stream(
     usage: dict[str, Any] = {}
     error = None
     try:
-        with client.stream("POST", f"{OPENROUTER}/chat/completions", json=payload) as response:
+        with client.stream("POST", GroqClient.endpoints[provider], json=payload) as response:
             if response.status_code != 200:
                 elapsed = round((time.perf_counter() - started) * 1000, 1)
                 return {
@@ -157,7 +169,8 @@ def _stream(
 
 def _run_model(model, cases, retrieval, pipeline, price, forbidden, reasoning) -> list[dict]:
     rows = []
-    headers = {"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"}
+    key = "GROQ_API_KEY" if _provider(pipeline, model) == "groq" else "OPENROUTER_API_KEY"
+    headers = {"Authorization": f"Bearer {os.environ[key]}"}
     with httpx.Client(timeout=120, headers=headers) as client:
         for case in cases:
             retrieved = retrieval[case["id"]]
@@ -255,7 +268,7 @@ def main() -> int:
     cases = select_cases(load_cases(list(SPLITS)))
     remap_cases_to_chunks([case for case in cases if case.get("required_evidence")], chunks)
     retrieval = _retrieve(cases, chunks, args.output_dir / "retrieval-cache.json")
-    prices = _prices(args.model)
+    prices = _prices(pipeline, args.model)
     forbidden = load_gates()["answer"]["globalForbiddenClaims"]
 
     with ThreadPoolExecutor(max_workers=len(args.model)) as pool:
