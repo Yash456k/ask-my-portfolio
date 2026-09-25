@@ -26,8 +26,8 @@ JEV_RETRIEVER_ID = "jev"
 JEV_MODEL = "jev-1.13.0"
 JEV_ENDPOINT = "https://api.typesafe.ai/v1/systemone"
 # Refuse locally (no LLM call) when Jev puts at least this much probability on "none".
-# Locked cases (hybrid request): refusals peaked at 0.07 answerable (0.93 none);
-# answerable cases never fell below 0.95 answerable (0.05 none).
+# Locked cases (hybrid request, 2026-09-26 wording): refusals peaked at 0.36 answerable
+# (0.64 none, the salary case); answerable cases never fell below 0.98 answerable.
 NONE_REFUSAL_THRESHOLD = 0.5
 
 PICK_QUESTION = "pick"

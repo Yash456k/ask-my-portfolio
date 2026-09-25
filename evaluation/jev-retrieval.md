@@ -29,6 +29,19 @@ Case-weighted across dev (13), heldout (8), and challenge-v2 (18). Embedder rows
 
 **Cost and speed.** About 6.2k input tokens per question (every chunk is sent twice), about $0.00026 at $0.042 per million tokens. Median 461 ms, p90 744 ms from the client.
 
+## Pick wording, 2026-09-26
+
+The pick question used to say "pick none only if no passage contains information that answers it", so "Has Yash worked at Google?" was refused: no passage mentions Google. It now lets a passage count when the answer follows from what it leaves out (a list of where he has worked answers whether he worked somewhere else) and saves "none" for questions whose topic no passage covers. Re-measured on the current corpus with both wordings side by side:
+
+| | Before | After |
+|---|---:|---:|
+| Recall@1 (dev / heldout / challenge-v2) | 0.958 / 1.000 / 0.917 | 0.958 / 1.000 / 0.917 |
+| MRR@5, every split | 1.000 | 1.000 |
+| Lowest answerable signal | 0.96 | 0.98 |
+| Highest refusal-case signal (refused below 0.5) | 0.07 | 0.36 (salary) |
+
+All 9 refusal and prompt-injection cases are still refused, with less margin. Probe questions outside the locked set: "Has Yash worked at Google?", "…at Microsoft?", and "Does Yash know Rust?" moved from refused to answered; a favourite-movie question, a cat poem, and a prompt-injection attempt stayed refused (none probability 0.95–1.00).
+
 ## Limits
 
 - 39 answerable cases is a small sample. Dev and heldout informed the manual chunk boundaries (not Jev); challenge-v2, written after the chunks were frozen, is the cleanest evidence.
