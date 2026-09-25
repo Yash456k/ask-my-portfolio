@@ -32,10 +32,12 @@ NONE_REFUSAL_THRESHOLD = 0.5
 
 PICK_QUESTION = "pick"
 PICK_INSTRUCTIONS = (
-    "Pick the passage that best answers the user's question about Yash. "
-    "Pick none only if no passage contains information that answers it."
+    "Pick the passage that best helps answer the user's question about Yash. "
+    "A passage helps even when the answer follows from what it leaves out: "
+    "a list of where he has worked answers whether he worked somewhere else. "
+    "Pick none only if no passage is about the question's topic."
 )
-NONE_OPTION = "None of these passages contains information that answers the question."
+NONE_OPTION = "None of these passages is about the question's topic."
 RELEVANCE_INSTRUCTIONS = (
     "Does this passage contain information needed to answer the user's question?"
 )
