@@ -10,7 +10,6 @@ from test_admission import _app, _body
 
 from app.jev import (
     PICK_QUESTION,
-    VISITOR_CONTEXT,
     JevRanking,
     JevUnavailable,
     build_request,
@@ -59,7 +58,7 @@ def test_request_uses_neutral_keys_and_both_question_types() -> None:
     assert set(questions[PICK_QUESTION]["criteria"]) == {"c01", "c02", "c03", "none"}
     assert [questions[f"c0{i}"]["type"] for i in range(1, 4)] == ["noul"] * 3
     assert "Ahmedabad" in questions["c01"]["instructions"]["passage"]
-    assert body["state"] == {"context": VISITOR_CONTEXT, "user_question": "where is yash"}
+    assert body["state"] == {"user_question": "where is yash"}
 
 
 def test_choice_pick_leads_then_noul_orders_the_rest() -> None:

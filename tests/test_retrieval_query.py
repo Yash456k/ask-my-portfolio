@@ -31,3 +31,11 @@ def test_retrieval_query_can_disable_history() -> None:
         )
         == "Current question"
     )
+
+
+def test_questions_about_this_project_mean_the_chat_itself() -> None:
+    from app.retrieval_query import SELF_REFERENCE_NOTE
+
+    assert build_retrieval_query("What is this project?").endswith(SELF_REFERENCE_NOTE)
+    assert SELF_REFERENCE_NOTE in build_retrieval_query("tell me about this site", [("user", "hi")])
+    assert build_retrieval_query("What projects has Yash built?") == "What projects has Yash built?"
