@@ -1,13 +1,13 @@
-<!-- rag-chunk: rag-project-overview | RAG Playground product, inspectability, architecture, and repository -->
+<!-- rag-chunk: rag-project-overview | Ask my portfolio (formerly RAG Playground) product, inspectability, architecture, and repository -->
 # Selected projects by Yash Khambhatta
 
-## RAG Playground - portfolio question answering
+## Ask my portfolio - portfolio question answering
 
-RAG Playground is an interactive public portfolio feature that lets visitors ask grounded questions about Yash. Yash started building it in July 2026 and continues to develop it. Its corpus contains curated resume facts and project writeups. Visitors can compare six resident embedding routes: MiniLM L6, BGE Small, BGE Base, Qwen3 Embedding 0.6B, and portfolio-tuned E5 Small and GTE Small models. They can also choose among Groq-hosted generation models.
+Ask my portfolio, first built as RAG Playground, is the chat on Yash's portfolio site that answers grounded questions about Yash. Yash started building it in July 2026 and continues to develop it. Its corpus contains curated resume facts and project writeups. Jev, a TypeSafe decision model that reads passages as plain text, is the default retriever; six embedding routes are also available. DeepSeek V4.1 Flash writes answers by default, with Groq-hosted models as options.
 
-The interface streams answers token by token and makes the retrieval process visible. Every response shows the selected embedder and language model, the retrieved source chunks with cosine-similarity scores, and embedding, retrieval, first-token, generation, and total latency. The backend uses FastAPI, PostgreSQL with pgvector, one vector column per embedding space, strict corpus-only prompting, daily per-IP and global rate limits, provider fallback, and query logging. The frontend is a Vite and React TypeScript single-page application.
+The interface streams answers token by token and makes the retrieval process visible. Every response shows the selected retriever and language model, the retrieved source chunks with their scores, and each stage's latency, and small tags show what the visitor is asking for and how they seem to feel. The backend uses FastAPI, PostgreSQL with pgvector, one vector column per embedding space, strict corpus-only prompting, daily per-IP and global rate limits, provider fallback, and query logging. The frontend is a Vite and React TypeScript single-page application.
 
-Repository: https://github.com/Yash456k/rag-playground
+Repository: https://github.com/Yash456k/ask-my-portfolio
 
 <!-- rag-chunk: nsk-concurrency | Nashik Sports Klub booking scope, race prevention, and concurrency proof -->
 ## NSK - Nashik Sports Klub booking platform

@@ -1,9 +1,9 @@
 <!-- rag-chunk: inspectable-product | Inspectable RAG product behavior, model selection, citations, and latency -->
-# RAG Playground engineering case study
+# Ask my portfolio engineering case study
 
 ## Product goal and inspectability
 
-Yash built RAG Playground as a public portfolio question-answering system whose behavior can be inspected rather than treated as a black box. The browser lets a visitor choose an embedding model and a Groq-hosted generation model. Each streamed answer exposes the retrieved chunks, cosine-similarity scores, requested and served models, fallback state, and embedding, retrieval, first-token, generation, and total latency.
+Yash built Ask my portfolio, first called RAG Playground, as a public portfolio question-answering system whose behavior can be inspected rather than treated as a black box. The browser lets a visitor choose a retriever (Jev or an embedding model) and a generation model. Each streamed answer exposes the retrieved chunks, their scores, requested and served models, fallback state, and embedding, retrieval, first-token, generation, and total latency.
 
 <!-- rag-chunk: grounded-scope-privacy | Safety boundaries and query privacy: corpus grounding, untrusted inputs, refusal behavior, retained query telemetry, and raw IP addresses -->
 The system is deliberately limited to a curated portfolio corpus. Its prompt treats the question, conversation history, and retrieved text as untrusted data, requires claims to be supported by supplied excerpts, and refuses unrelated or unsupported requests. PostgreSQL records query selections, retrieved source identifiers and scores, provider attempts, completion state, and stage latency without storing raw client IP addresses.
