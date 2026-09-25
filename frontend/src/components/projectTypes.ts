@@ -5,11 +5,10 @@ export type ProjectItem = {
   startedOn: string
   title: string
   eyebrow: string
-  role: string
-  summary: string
-  detail: string
-  highlights: readonly string[]
-  metrics: readonly string[]
+  oneLiner: string
+  description: string
+  hooks: readonly string[]
+  points: readonly string[]
   tags: readonly string[]
   href: string
   repository: string

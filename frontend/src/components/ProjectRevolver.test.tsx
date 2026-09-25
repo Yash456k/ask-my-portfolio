@@ -7,7 +7,7 @@ import type { ProjectItem } from './projectTypes'
 
 const projects: ProjectItem[] = ['First', 'Second', 'Third'].map((title, index) => ({
   id: title, number: String(index + 1), date: 'Jan 2026', startedOn: '2026-01-15', title,
-  eyebrow: '', role: '', summary: '', detail: '', highlights: [], metrics: [], tags: [],
+  eyebrow: '', oneLiner: '', description: '', hooks: [], points: [], tags: [],
   href: '/', repository: '', linkLabel: '', external: false,
 }))
 

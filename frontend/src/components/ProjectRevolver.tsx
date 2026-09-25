@@ -171,13 +171,13 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
                 aria-label={`${index === activeIndex ? 'Selected project' : 'Select project'}: ${project.title}`}
                 onClick={(event) => { if (event.detail === 0 || !suppressClick.current) select(absolute) }}>
                 <span className="reel-number">{project.number}</span>
-                <span className="reel-item-copy"><strong>{project.title}</strong><small>{project.summary}</small></span>
+                <span className="reel-item-copy"><strong>{project.title}</strong><small>{project.oneLiner}</small></span>
               </button>
             )
           })}
         </div>
       </div>
-      <p className="reel-summary">{selectedProject.summary}</p>
+      <p className="reel-summary">{selectedProject.oneLiner}</p>
       <div className="reel-footer">
         <span className="reel-hint" id="project-gesture"><span className="gesture-cue is-vertical" aria-hidden="true" /><span className="desktop-reel-hint">Scroll or drag to explore</span><span className="mobile-reel-hint">Swipe up or down to explore</span></span>
         <button type="button" className="reel-open" onClick={openProject} aria-label={`View ${selectedProject.title}`}>View project <span aria-hidden="true">↗</span></button>

@@ -36,9 +36,9 @@ export function AllProjectsSection({ onNavigate }: AllProjectsSectionProps) {
               </header>
               <p>{project.eyebrow}</p>
               <h3>{project.title}</h3>
-              <strong>{project.summary}</strong>
+              <strong>{project.oneLiner}</strong>
               <ul aria-label={`${project.title} metrics`}>
-                {project.metrics.map((metric) => <li key={metric}>{metric}</li>)}
+                {project.hooks.map((hook) => <li key={hook}>{hook}</li>)}
               </ul>
               <footer>
                 <span>{project.tags.slice(0, 3).join(' · ')}</span>

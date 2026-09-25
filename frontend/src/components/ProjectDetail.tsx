@@ -18,15 +18,15 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
 
       <div className="project-focus-copy">
         <h2 id="project-focus-title">{project.title}</h2>
-        <p>{project.detail}</p>
+        <p>{project.description}</p>
       </div>
 
       <ul className="project-focus-metrics" aria-label={`${project.title} results`}>
-        {project.metrics.map((metric) => <li key={metric}>{metric}</li>)}
+        {project.hooks.map((hook) => <li key={hook}>{hook}</li>)}
       </ul>
 
       <ul className="project-focus-highlights" aria-label={`${project.title} highlights`}>
-        {project.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
+        {project.points.map((point) => <li key={point}>{point}</li>)}
       </ul>
 
       <footer className="project-focus-footer">
