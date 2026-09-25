@@ -6,12 +6,10 @@
 
 <p>My portfolio site, with a chat that answers questions about my work and shows the sources behind every answer.</p>
 
-[![Live demo](https://img.shields.io/badge/Live_demo-yash456k.com-C74634?style=flat-square)](https://www.yash456k.com/#playground)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](Dockerfile)
 [![React](https://img.shields.io/badge/React-19-20232A?style=flat-square&logo=react)](frontend/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat-square&logo=fastapi)](app/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL_%2B_pgvector-4169E1?style=flat-square&logo=postgresql&logoColor=white)](sql/schema.sql)
-[![CI](https://img.shields.io/github/actions/workflow/status/Yash456k/ask-my-portfolio/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white&label=CI)](https://github.com/Yash456k/ask-my-portfolio/actions/workflows/ci.yml)
 
 </div>
 
