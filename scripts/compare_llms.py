@@ -118,6 +118,20 @@ def _prices(pipeline, models: list[str]) -> dict[str, tuple[float, float]]:
 def _stream(
     client: httpx.Client, model: str, user_prompt: str, pipeline, reasoning: str | None
 ) -> dict[str, Any]:
+    # Free-tier limits (Groq: 8,000 tokens a minute) reject bursts, not answers, so a 429
+    # waits for the provider's reset and retries; latency counts the successful attempt.
+    for _attempt in range(8):
+        result = _stream_once(client, model, user_prompt, pipeline, reasoning)
+        if result["error"] != "http_429":
+            break
+        time.sleep(result.pop("retryAfter", 5.0))
+    result.pop("retryAfter", None)
+    return result
+
+
+def _stream_once(
+    client: httpx.Client, model: str, user_prompt: str, pipeline, reasoning: str | None
+) -> dict[str, Any]:
     provider = _provider(pipeline, model)
     # The production payload, so each provider gets exactly what the live API sends.
     payload = GroqClient._payload(
@@ -141,6 +155,7 @@ def _stream(
                     "totalMs": elapsed,
                     "usage": {},
                     "error": f"http_{response.status_code}",
+                    "retryAfter": float(response.headers.get("retry-after") or 5) + 0.5,
                 }
             for line in response.iter_lines():
                 if not line.startswith("data:") or line.strip() == "data: [DONE]":
