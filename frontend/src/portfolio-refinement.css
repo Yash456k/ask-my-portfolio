@@ -87,6 +87,22 @@
   .tactile-work .project-focus-footer a { font-size: 14px; }
 }
 
+/* Short desktop screens (a laptop with a bookmarks bar): tighten the rhythm so the
+   opened project, links included, still fits the screen the section snaps to. */
+@media (min-width: 851px) and (max-height: 880px) {
+  .tactile-work { padding-block: clamp(28px,5svh,44px); }
+  .tactile-work .split-panel-intro { margin-bottom: clamp(20px,3.6svh,32px); }
+  .tactile-work .project-focus-view { gap: clamp(14px,2.4svh,22px); }
+  .tactile-work .project-focus-header { padding-bottom: 10px; }
+  .tactile-work .project-focus-copy h2 { font-size: clamp(40px,min(4.6vw,7.2svh),60px); }
+  .tactile-work .project-focus-copy > p:last-child { margin-top: 12px; font-size: clamp(16px,min(1.4vw,2.45svh),19px); line-height: 1.6; }
+  .tactile-work .project-focus-metrics li { padding-block: clamp(11px,1.8svh,16px); }
+  .tactile-work .project-focus-highlights { gap: clamp(8px,1.4svh,12px); }
+  .tactile-work .project-focus-highlights li { font-size: clamp(15px,min(1.2vw,2.25svh),17px); line-height: 1.55; }
+  .tactile-work .project-focus-footer { padding-top: 12px; }
+  .tactile-work .project-focus-footer a { min-height: 36px; }
+}
+
 /* Carry the same paper, type and quiet spacing into the remaining views. */
 .rag-section { background: radial-gradient(ellipse at 80% 20%,rgb(var(--theme-surface-rgb, 240 223 207)),transparent 65%),rgb(var(--theme-surface-rgb, 248 240 231)); }
 .rag-section .background-art { opacity: .25; }

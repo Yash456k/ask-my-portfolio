@@ -8,14 +8,23 @@
     "eyebrow": "Live product",
     "role": "Full-stack engineering",
     "summary": "A race-safe booking platform for real sports inventory.",
-    "detail": "Built a multi-tenant booking system for Pickleball and Cricket with temporary slot holds, MongoDB transactions, role-specific workflows, real-time availability, secure authentication, and an AWS delivery pipeline.",
+    "detail": "A booking platform for a sports club's Pickleball and Cricket courts, built with temporary slot holds, MongoDB transactions, live availability, secure sign-in, and an automated AWS deploy.",
     "highlights": [
       "A 500-user concurrency test committed exactly one booking for the final slot.",
       "Atomic transactions and compound indexes protect inventory under load.",
-      "Administrators, walk-in staff, and customers each receive purpose-built workflows."
+      "Administrators, walk-in staff, and customers each get their own workflow."
     ],
-    "metrics": ["500 concurrent users", "100% booking integrity", "226 ms average latency"],
-    "tags": ["React", "Node.js", "MongoDB", "AWS"],
+    "metrics": [
+      "500 concurrent users",
+      "100% booking integrity",
+      "226 ms average latency"
+    ],
+    "tags": [
+      "React",
+      "Node.js",
+      "MongoDB",
+      "AWS"
+    ],
     "href": "https://www.nashiksportsklub.com",
     "repository": "https://github.com/Yash456k/NSK-Project-Public",
     "linkLabel": "Visit live product",
@@ -26,18 +35,27 @@
     "number": "02",
     "date": "Jul 2026",
     "startedOn": "2026-07-11",
-    "title": "This portfolio + RAG",
+    "title": "Ask my portfolio",
     "eyebrow": "Current build",
     "role": "Retrieval and product engineering",
-    "summary": "An inspectable portfolio that can answer for itself.",
-    "detail": "Designed trained retrieval routes, streamed answers, model fallback, visible evidence, timing receipts, and provider-aware limits. The system combines a React interface, FastAPI services, PostgreSQL with pgvector, and multiple embedding spaces.",
+    "summary": "A portfolio you can ask questions, with the sources behind every answer.",
+    "detail": "The chat on this site. It answers questions about my work from hand-reviewed passages and shows which ones it used, how well each matched, and how long every step took.",
     "highlights": [
-      "Every answer exposes retrieved evidence, similarity scores, and latency.",
-      "Provider-aware routing keeps model cost predictable while preserving fallbacks.",
-      "The corpus and vector indexes can be rebuilt from one repeatable data workflow."
+      "The default retriever reads passages as plain text and put a right one first on all 39 test questions.",
+      "Questions the portfolio can't answer are refused before any language model is called.",
+      "Chunking, retrieval, and the answer model were each chosen by tests on locked question sets."
     ],
-    "metrics": ["6 embedding routes", "Streamed responses", "Visible retrieval evidence"],
-    "tags": ["React", "FastAPI", "pgvector", "RAG"],
+    "metrics": [
+      "7 retrieval routes",
+      "39/39 right passage first",
+      "$0.00025 per answer"
+    ],
+    "tags": [
+      "React",
+      "FastAPI",
+      "pgvector",
+      "RAG"
+    ],
     "href": "/#playground",
     "repository": "https://github.com/Yash456k/ask-my-portfolio",
     "linkLabel": "View live",
@@ -52,14 +70,23 @@
     "eyebrow": "Shipped application",
     "role": "Real-time product engineering",
     "summary": "Event-driven messaging with secure authentication and an AI assistant.",
-    "detail": "Built a live messaging application with Socket.IO, Google OAuth, Firebase authentication, JWT security, MongoDB chat schemas, React Context state, and a Gemini-powered assistant.",
+    "detail": "A real-time chat app with Socket.IO messaging, Google sign-in through Firebase, JWT-secured sessions, and a Gemini assistant.",
     "highlights": [
-      "Real-time conversations are delivered through an event-driven Socket.IO layer.",
-      "Google OAuth, Firebase, and JWTs support secure identity flows.",
-      "The application has supported more than 100 users and 500 messages."
+      "Messages are delivered live through an event-driven Socket.IO layer.",
+      "Google OAuth, Firebase, and JWTs handle sign-in and sessions.",
+      "More than 100 users have sent over 500 messages on it."
     ],
-    "metrics": ["100+ users", "500+ messages", "Live Socket.IO events"],
-    "tags": ["React", "Node.js", "Socket.IO", "MongoDB"],
+    "metrics": [
+      "100+ users",
+      "500+ messages",
+      "Live Socket.IO events"
+    ],
+    "tags": [
+      "React",
+      "Node.js",
+      "Socket.IO",
+      "MongoDB"
+    ],
     "href": "https://yashchatapp.vercel.app",
     "repository": "https://github.com/Yash456k/SocketIO-MERN-chatApp",
     "linkLabel": "Open live demo",
