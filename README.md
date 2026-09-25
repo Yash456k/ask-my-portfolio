@@ -6,13 +6,12 @@
 
 <p>My portfolio site, with a chat that answers questions about my work and shows the sources behind every answer.</p>
 
-[![Live demo](https://img.shields.io/badge/Live_demo-yash456k.com-C74634?style=for-the-badge)](https://www.yash456k.com/#playground)
+[![Live demo](https://img.shields.io/badge/Live_demo-yash456k.com-C74634?style=flat-square)](https://www.yash456k.com/#playground)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](Dockerfile)
 [![React](https://img.shields.io/badge/React-19-20232A?style=flat-square&logo=react)](frontend/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat-square&logo=fastapi)](app/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL_%2B_pgvector-4169E1?style=flat-square&logo=postgresql&logoColor=white)](sql/schema.sql)
-[![CI](https://github.com/Yash456k/ask-my-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/Yash456k/ask-my-portfolio/actions/workflows/ci.yml)
-[![License](https://img.shields.io/badge/license-MIT-black?style=flat-square)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/Yash456k/ask-my-portfolio/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white&label=CI)](https://github.com/Yash456k/ask-my-portfolio/actions/workflows/ci.yml)
 
 </div>
 
@@ -32,9 +31,13 @@ The chat answers from a small set of documents about me, split into hand-reviewe
 
 [![The chat answering a question about Yash's work, with the passages it used listed beside the answer](docs/assets/chat.png)](https://www.yash456k.com/#playground)
 
-## How it finds answers
+## How it works
 
-You can choose how the chat looks for its sources: one of six embedding models, two of them fine-tuned on reviewed questions about my work, or Jev, a decision model from TypeSafe that reads every passage as plain text and picks the one that answers the question. Jev is the default because it put the right passage first more often than any of the embedding models, and when nothing in the portfolio can answer a question it says so before a language model is ever called.
+A question first goes to a retriever, which picks the passages most likely to hold the answer, and a language model then writes the reply from those passages alone, citing each one it uses.
+
+![How a question is answered: a retriever picks passages, a language model writes from them, and the answer streams back with citations](docs/assets/architecture.svg)
+
+You can choose the retriever: one of six embedding models, two of them fine-tuned on reviewed questions about my work, or Jev, a decision model from TypeSafe that reads every passage as plain text and picks the one that answers the question. Jev is the default because it put the right passage first more often than any of the embedding models, and when nothing in the portfolio can answer a question it says so before a language model is ever called.
 
 | Retrieval | Recall@1 | Mean reciprocal rank |
 |---|---:|---:|
@@ -44,12 +47,6 @@ You can choose how the chat looks for its sources: one of six embedding models, 
 | MiniLM L6 | 0.64 | 0.79 |
 
 These come from 39 answerable test questions, and the [full comparison](evaluation/jev-retrieval.md) covers all seven routes and how refusals were checked. Hand-reviewed passage boundaries raised Recall@5 by 0.10 over automatic splitting ([report](docs/manual-semantic-chunking-evaluation.md)). DeepSeek V4.1 Flash writes the answers, mostly because it was cheap lol, and it also stuck to the facts better than the other seven models I tried ([report](evaluation/llm-comparison.md)). Jev also reads what each visitor is asking for and how they seem to feel, which shows up as small tags in the chat.
-
-## How it's built
-
-![How a question flows from the site through Cloudflare Tunnel and the API to retrieval, the language model, and back as a streamed answer](docs/assets/architecture.svg)
-
-The site is hosted on Vercel and the API runs on a single Hetzner server that can only be reached through a Cloudflare Tunnel; the [security notes](deploy/SECURITY.md) describe how it is locked down. Questions and answers are saved to improve the portfolio, as the note under the chat says, and raw IP addresses are never stored.
 
 ## Run it yourself
 
