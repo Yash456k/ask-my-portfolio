@@ -62,7 +62,7 @@ def test_deepseek_flash_and_model_weighted_budget_reserves(pipeline: PipelineCon
     assert deepseek.output_usd_per_million == 0.42
     # Only the selected OpenRouter model is charged; the Groq fallback is free here.
     assert pipeline.request_cost_reserve_micro_usd(deepseek.id, 32_000) == 4_732
-    assert pipeline.request_cost_reserve_micro_usd("qwen/qwen3.6-27b", 32_000) == 0
+    assert pipeline.request_cost_reserve_micro_usd("openai/gpt-oss-120b", 32_000) == 0
     assert pipeline.request_cost_reserve_micro_usd("openrouter/free", 32_000) == 0
 
 

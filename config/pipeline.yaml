@@ -91,12 +91,6 @@ llms:
     provider: groq
     input_usd_per_million: 0.15
     output_usd_per_million: 0.60
-  - id: qwen/qwen3.6-27b
-    label: Qwen3.6 27B
-    description: Preview · strong multilingual reasoning
-    provider: groq
-    input_usd_per_million: 0.60
-    output_usd_per_million: 3.00
   - id: openrouter/free
     label: Free Models Router
     description: OpenRouter · free model selected per request
