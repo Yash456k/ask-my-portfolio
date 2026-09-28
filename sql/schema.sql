@@ -30,6 +30,19 @@ CREATE TABLE IF NOT EXISTS chunks (
 ALTER TABLE chunks ADD COLUMN IF NOT EXISTS embedding_portfolio_e5 vector(384);
 ALTER TABLE chunks ADD COLUMN IF NOT EXISTS embedding_portfolio_gte vector(384);
 
+-- Chunk text as it was before each re-ingestion. Query logs cite chunk ids, and
+-- re-ingestion replaces them, so graded answers join here for the exact evidence.
+-- Owner-only: the public runtime role has no grant on this table.
+CREATE TABLE IF NOT EXISTS chunk_history (
+    chunk_id bigint NOT NULL,
+    source text NOT NULL,
+    chunk_index integer NOT NULL,
+    content text NOT NULL,
+    archived_at timestamptz NOT NULL DEFAULT now(),
+    reason text NOT NULL,
+    PRIMARY KEY (chunk_id, archived_at)
+);
+
 -- The portfolio corpus is deliberately small. Exact scans avoid HNSW graphs,
 -- provide perfect recall, and use less resident memory. Add indexes only after
 -- measuring a materially larger corpus.

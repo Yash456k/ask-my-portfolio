@@ -133,6 +133,37 @@ services:
         max-size: 5m
         max-file: "2"
 
+  ingest:
+    # One-off corpus ingestion beside the live API (scripts/ingest.sh). Runs as the operator
+    # database role from .env, on the database network only, with no internet access.
+    image: rag-playground-api:local
+    profiles: ["tools"]
+    command: ["python", "-m", "app.ingest", "--corpus", "/app/corpus"]
+    env_file:
+      - path: .env.runtime
+        required: true
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - model_cache:/models:ro
+      - ./model-artifacts:/model-artifacts:ro
+    networks:
+      rag_db:
+        ipv4_address: 172.30.251.5
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=128m,uid=10001,gid=999
+    mem_limit: 2500m
+    cpus: 1.0
+    pids_limit: 128
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
   proxy:
     build:
       context: .

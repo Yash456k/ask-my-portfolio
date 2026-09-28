@@ -25,6 +25,8 @@ table inet rag_isolation {
         ip saddr 172.30.251.3 ip daddr 172.30.251.2 tcp dport 5432 accept
         # Private grading service (Tailscale Serve only) reads logs and writes grades.
         ip saddr 172.30.251.4 ip daddr 172.30.251.2 tcp dport 5432 accept
+        # One-off corpus ingestion (scripts/ingest.sh), only while it runs.
+        ip saddr 172.30.251.5 ip daddr 172.30.251.2 tcp dport 5432 accept
         ip saddr @container_networks ip daddr @private_destinations counter reject with icmpx type admin-prohibited
         # App providers and proxy ACME need public HTTPS; DNS uses Docker's
         # resolver, with public DNS permitted when Docker forwards the request.

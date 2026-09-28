@@ -222,25 +222,56 @@ async def load_registry(pipeline: PipelineConfig) -> EmbeddingRegistry:
     return registry
 
 
-def ingest(corpus_path: Path) -> None:
+def _unchanged(
+    connection: psycopg.Connection, chunks: list[Chunk], pipeline: PipelineConfig
+) -> bool:
+    """True when the stored chunks match the corpus and every vector column is filled."""
+    filled = sql.SQL(" AND ").join(
+        sql.SQL("{} IS NOT NULL").format(sql.Identifier(config.column))
+        for config in pipeline.embedders
+    )
+    rows = connection.execute(
+        sql.SQL("SELECT source, chunk_index, title, content, {} FROM chunks").format(filled)
+    ).fetchall()
+    stored = sorted((source, index, title, content) for source, index, title, content, _ in rows)
+    wanted = sorted((chunk.source, chunk.index, chunk.title, chunk.content) for chunk in chunks)
+    return stored == wanted and all(row[4] for row in rows)
+
+
+def ingest(corpus_path: Path, *, reason: str = "re-ingest", force: bool = False) -> None:
     settings = get_settings()
     pipeline = load_pipeline()
     documents = discover_documents(corpus_path)
     chunks = [chunk for document in documents for chunk in chunk_document(document, pipeline)]
     logger.info("Prepared %d chunks from %d documents", len(chunks), len(documents))
 
-    registry = asyncio.run(load_registry(pipeline))
-    texts = [chunk.content for chunk in chunks]
-    vectors = {
-        config.id: registry.encode_documents(config.id, texts).tolist()
-        for config in pipeline.embedders
-    }
-
     schema = (Path(__file__).parents[1] / "sql" / "schema.sql").read_text(encoding="utf-8")
     with psycopg.connect(settings.database_url) as connection:
+        # The live API may be serving; fail fast instead of queueing its queries behind DDL locks.
+        connection.execute("SET lock_timeout = '5s'")
         connection.execute(schema)
+        connection.commit()
         register_vector(connection)
+        if not force and _unchanged(connection, chunks, pipeline):
+            logger.info("Corpus unchanged and every vector column is filled; nothing to ingest")
+            return
+        connection.commit()
+
+        registry = asyncio.run(load_registry(pipeline))
+        texts = [chunk.content for chunk in chunks]
+        vectors = {
+            config.id: registry.encode_documents(config.id, texts).tolist()
+            for config in pipeline.embedders
+        }
+
+        # One transaction: the API reads the old corpus until commit, then the new one.
         with connection.transaction():
+            # Query logs cite chunk ids, which this swap replaces; keep the old text for grading.
+            connection.execute(
+                "INSERT INTO chunk_history (chunk_id, source, chunk_index, content, reason) "
+                "SELECT id, source, chunk_index, content, %s FROM chunks",
+                (reason,),
+            )
             connection.execute("DELETE FROM chunks")
             connection.execute("DELETE FROM documents")
             document_ids: dict[str, int] = {}
@@ -296,9 +327,15 @@ def main() -> None:
         description="Ingest portfolio documents into all vector spaces"
     )
     parser.add_argument("--corpus", type=Path, default=Path("corpus"))
+    parser.add_argument(
+        "--reason", default="re-ingest", help="Recorded with the replaced chunks in chunk_history"
+    )
+    parser.add_argument(
+        "--force", action="store_true", help="Re-embed even when the corpus is unchanged"
+    )
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    ingest(args.corpus.resolve())
+    ingest(args.corpus.resolve(), reason=args.reason, force=args.force)
 
 
 if __name__ == "__main__":

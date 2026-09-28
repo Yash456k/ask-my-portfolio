@@ -115,7 +115,7 @@ def _jev_app(pipeline, jev_rank, jev_signals=None):
     application.state.jev = SimpleNamespace(
         rank=jev_rank, signals=jev_signals or AsyncMock(return_value=SIGNALS)
     )
-    application.state.jev_chunks = CHUNKS
+    application.state.database.all_chunks = AsyncMock(return_value=CHUNKS)
     application.state.provider = _Provider()
     fallback_rows = [{**CHUNKS[2], "score": 0.91}]
     application.state.database.retrieve = AsyncMock(return_value=fallback_rows)

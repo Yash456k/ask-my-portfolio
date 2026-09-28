@@ -66,6 +66,8 @@ docker compose run --rm --no-deps api python -m app.ingest --corpus /app/corpus
 docker compose up -d api
 ```
 
+On a running deployment, `scripts/ingest.sh` puts corpus changes from `main` live in one step while the API keeps serving.
+
 Tests run with `pytest -q` and `npm --prefix frontend run check`, and the evaluation suites are described in [evaluation/README.md](evaluation/README.md).
 
 ## License

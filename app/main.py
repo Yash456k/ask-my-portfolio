@@ -227,8 +227,6 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
         if active_settings.typesafe_api_key:
             active_pipeline.embedder(active_settings.jev_fallback_embedder)  # fail fast
             jev = JevClient(active_settings.typesafe_api_key, active_settings.jev_timeout_seconds)
-            # Jev reads the whole corpus; ingestion already restarts the API.
-            app.state.jev_chunks = await database.all_chunks()
         retention_task = asyncio.create_task(
             _retention_loop(database, active_settings.query_log_retention_days)
         )
@@ -393,6 +391,13 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
         force_failure = valid_verification_token(
             request.headers.get("x-verify-fallback"), active_settings.verify_fallback_token
         )
+        # Jev reads the whole corpus. Reading it per request (20 rows) lets a re-ingest
+        # take effect without restarting the API.
+        jev_chunks = (
+            await request.app.state.database.all_chunks()
+            if getattr(request.app.state, "jev", None) is not None
+            else []
+        )
 
         async def events() -> AsyncIterator[str]:
             started = time.perf_counter()
@@ -412,7 +417,7 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
                     jev_client.signals(
                         body.question,
                         [(item.role, item.content) for item in body.history],
-                        request.app.state.jev_chunks,
+                        jev_chunks,
                     )
                 )
 
@@ -449,7 +454,7 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
                     retrieval_started = time.perf_counter()
                     try:
                         ranking, usage = await request.app.state.jev.rank(
-                            query, request.app.state.jev_chunks
+                            query, jev_chunks
                         )
                         ranked = ranking.ordered
                         refuse = ranking.none_probability >= NONE_REFUSAL_THRESHOLD
