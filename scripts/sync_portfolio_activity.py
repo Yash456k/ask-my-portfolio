@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Refresh the server-side portfolio activity cache from Codex and GitHub."""
+"""Refresh the server-side portfolio activity cache from Codex, Claude Code and GitHub."""
 
 from __future__ import annotations
 
@@ -135,6 +135,39 @@ def read_codex_activity(codex_home: Path, start: date, end: date) -> dict[str, A
     }
 
 
+def read_claude_activity(start: date, end: date) -> dict[str, Any] | None:
+    """Claude Code tokens per day from the claude-code-usage hive note, which the laptop's
+    scripts/claude_usage_to_hive.py keeps. None when the note is missing or unreadable, so the
+    rest of the snapshot still refreshes."""
+    try:
+        result = subprocess.run(  # noqa: S603 - fixed arguments
+            ["hivenote", "read", "claude-code-usage", "--json"],  # noqa: S607 - on the service PATH
+            capture_output=True, text=True, timeout=30, check=True,
+        )
+        notes = json.loads(result.stdout).get("notes") or []
+        saved = json.loads(notes[0]["content"]).get("days", {}) if notes else {}
+    except (OSError, subprocess.SubprocessError, json.JSONDecodeError, KeyError, IndexError):
+        return None
+    if not saved:
+        return None
+    all_days = {str(day)[:10]: int(tokens) for day, tokens in saved.items() if int(tokens) > 0}
+    days = [
+        {"date": day, "tokens": tokens}
+        for day, tokens in sorted(all_days.items())
+        if start.isoformat() <= day <= end.isoformat()
+    ]
+    peak = max(days, key=lambda item: item["tokens"], default=None)
+    return {
+        "total": sum(item["tokens"] for item in days),
+        "lifetimeTotal": sum(all_days.values()),
+        "peakDailyTokens": max(all_days.values()),
+        "activeDays": len(days),
+        "since": min(all_days),
+        "peak": {"date": peak["date"], "count": peak["tokens"]} if peak else None,
+        "days": days,
+    }
+
+
 def run_gh_graphql(start: date, end: date) -> dict[str, Any]:
     query = """
     query($from: DateTime!, $to: DateTime!) {
@@ -249,12 +282,16 @@ def main() -> None:
         "codex": read_codex_activity(codex_home, start, end),
         "github": read_github_activity(start, end),
     }
+    claude = read_claude_activity(start, end)
+    if claude is not None:
+        snapshot["claude"] = claude
     output_path = args.output.expanduser()
     write_snapshot(snapshot, output_path)
     print(
         f"Refreshed {output_path}: "
         f"{snapshot['codex']['total']:,} Codex tokens, "
-        f"{snapshot['github']['total']:,} GitHub contributions"
+        f"{snapshot['github']['total']:,} GitHub contributions, "
+        f"{claude['total'] if claude else 0:,} Claude Code tokens"
     )
 
 
