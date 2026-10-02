@@ -124,8 +124,10 @@
 
 @media (min-width: 851px) { .landing-copy h1 em { white-space: nowrap; font-size: .91em; } }
 @media (max-width: 550px) { .landing-copy h1 { font-size: clamp(48px,12vw,64px); } .landing-copy h1 em { white-space: normal; } }
-/* Two equal halves, so the sliding pill always matches the button under it. */
-.activity-focus .activity-switch { width: 222px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Two equal halves sized to the longer label, so the sliding pill always covers its
+   button whatever font the visitor's system renders. */
+.activity-focus .activity-switch { width: max-content; grid-template-columns: repeat(2, 1fr); }
+.activity-focus .activity-switch button { padding-inline: 16px; }
 .activity-focus .activity-switch button { white-space: nowrap; }
 /* Agent tokens: one line per agent under the day's total. */
 .activity-day-tooltip .activity-split { display: grid; gap: 3px; margin-top: 7px; }
