@@ -60,33 +60,33 @@
     "external": false
   },
   {
-    "id": "realtime-chat",
+    "id": "hivenote",
     "number": "03",
-    "date": "Jun 2024",
-    "startedOn": "2024-06-27",
-    "title": "Real-time MERN Chat",
-    "eyebrow": "Shipped application",
-    "oneLiner": "Event-driven messaging with secure authentication and an AI assistant.",
-    "description": "A real-time chat app with Socket.IO messaging, Google sign-in through Firebase, JWT-secured sessions, and a Gemini assistant.",
+    "date": "Sep 2026",
+    "startedOn": "2026-09-30",
+    "title": "HiveNote",
+    "eyebrow": "npm package",
+    "oneLiner": "One shared notebook for all your AI agents.",
+    "description": "Claude Code, Codex and Hermes save what they learn as named notes, hand tasks to each other, and you can watch it happen on a live dashboard.",
     "points": [
-      "Messages are delivered live through an event-driven Socket.IO layer.",
-      "Google OAuth, Firebase, and JWTs handle sign-in and sessions.",
-      "More than 100 users have sent over 500 messages on it."
+      "Agents list notes by name and description, then open only the ones their task needs.",
+      "An agent claims a task so no one else picks it up, and others can wait for it to finish.",
+      "A rewrite based on an old version is refused, so agents never overwrite each other."
     ],
     "hooks": [
-      "100+ users",
-      "500+ messages",
-      "Live Socket.IO events"
+      "Claude Code, Codex, Hermes",
+      "One SQLite file",
+      "Live dashboard"
     ],
     "tags": [
-      "React",
+      "TypeScript",
       "Node.js",
-      "Socket.IO",
-      "MongoDB"
+      "SQLite",
+      "AI agents"
     ],
-    "href": "https://yashchatapp.vercel.app",
-    "repository": "https://github.com/Yash456k/SocketIO-MERN-chatApp",
-    "linkLabel": "Open live demo",
+    "href": "https://www.npmjs.com/package/hivenote",
+    "repository": "https://github.com/Yash456k/hivenote",
+    "linkLabel": "View on npm",
     "external": true
   }
 ]

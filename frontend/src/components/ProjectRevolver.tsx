@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, PointerEvent } from 'react'
 import { springStep, wrapIndex } from '../lib/revolver'
 import type { ProjectItem } from './projectTypes'
+import { ProjectDemo } from './ProjectDemo'
 
 type ProjectRevolverProps = {
   projects: readonly ProjectItem[]
@@ -177,6 +178,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
           })}
         </div>
       </div>
+      <div className="reel-demo"><ProjectDemo projectId={selectedProject.id} /></div>
       <p className="reel-summary">{selectedProject.oneLiner}</p>
       <div className="reel-footer">
         <span className="reel-hint" id="project-gesture"><span className="gesture-cue is-vertical" aria-hidden="true" /><span className="desktop-reel-hint">Scroll or drag to explore</span><span className="mobile-reel-hint">Swipe up or down to explore</span></span>

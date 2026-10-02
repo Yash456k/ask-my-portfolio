@@ -342,9 +342,39 @@
   .tactile-work .project-selector-view { display: flex; flex-direction: column; }
   .tactile-work .smooth-reel-stage { flex: 1; display: flex; flex-direction: column; min-height: 0; }
   /* The footer is taller than "Drag to explore"; the top padding evens the wheel's space. */
-  .tactile-work .smooth-reel { --reel-spacing: 148px; flex: 1; display: flex; flex-direction: column; align-items: stretch; padding-top: 30px; }
-  .tactile-work .reel-aperture { flex: 1; height: auto; min-height: 340px; mask-image: linear-gradient(transparent,#000 6%,#000 94%,transparent); }
+  .tactile-work .smooth-reel { --reel-spacing: 112px; display: flex; flex-direction: column; align-items: stretch; }
+  .tactile-work .reel-aperture { height: 320px; mask-image: linear-gradient(transparent,#000 6%,#000 94%,transparent); }
   .tactile-work .reel-seat { height: 124px; }
+  /* The project's drawing fills the space between the wheel and its footer. */
+  .tactile-work .reel-demo { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding-block: 6px; }
   .tactile-work .reel-item small { max-width: 520px; font-size: 13px; }
   .tactile-work .reel-footer { margin-bottom: -12px; }
 }
+
+/* Outline drawings of each project, in the accent colour. Desktop only. */
+.reel-demo { display: none; }
+.project-demo { width: 100%; max-width: 600px; height: auto; max-height: 100%; overflow: visible; font-family: 'DM Sans', system-ui, sans-serif; animation: demo-cycle var(--cycle, 6500ms) linear both; }
+.project-demo rect, .project-demo circle, .project-demo path { fill: none; stroke: rgb(var(--theme-accent-rgb, 175 70 54) / 0.8); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.project-demo .demo-soft { stroke: rgb(var(--theme-accent-rgb, 175 70 54) / 0.45); }
+.project-demo .demo-faint { stroke: rgb(var(--theme-accent-rgb, 175 70 54) / 0.3); }
+.project-demo .demo-strong { stroke: rgb(var(--theme-accent-rgb, 175 70 54)); stroke-width: 1.8; }
+.project-demo .demo-text { fill: rgb(var(--theme-accent-rgb, 175 70 54) / 0.9); stroke: none; font-size: 11px; }
+.project-demo .demo-small { font-size: 9.5px; }
+.project-demo .demo-muted { fill: rgb(var(--theme-accent-rgb, 175 70 54) / 0.55); }
+.project-demo .d-draw { stroke-dasharray: 1; animation: demo-draw 650ms cubic-bezier(.4,0,.2,1) var(--d, 0s) both; }
+.project-demo .d-fade { animation: demo-fade 400ms ease var(--d, 0s) both; }
+.project-demo .d-pop { transform-box: fill-box; transform-origin: center; animation: demo-pop 450ms cubic-bezier(.22,1,.36,1) var(--d, 0s) both; }
+.project-demo .demo-cursor { animation: demo-cursor-win 1.3s cubic-bezier(.3,.7,.3,1) var(--d, 0s) both; }
+.project-demo .demo-cursor.is-loser { animation: demo-cursor-lose 1.9s cubic-bezier(.3,.7,.3,1) var(--d, 0s) both; }
+.project-demo .hive-card.is-first { animation: hive-first 4.5s cubic-bezier(.65,0,.35,1) var(--d, 0s) both; }
+.project-demo .hive-card.is-second { animation: hive-second 4.5s cubic-bezier(.65,0,.35,1) var(--d, 0s) both; }
+@keyframes demo-cycle { 0% { opacity: 0; } 4% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes demo-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes demo-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes demo-pop { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: none; } }
+@keyframes demo-cursor-win { 0% { opacity: 0; transform: translate(var(--fx), var(--fy)); } 15% { opacity: 1; } 100% { opacity: 1; transform: translate(0, 0); } }
+@keyframes demo-cursor-lose { 0% { opacity: 0; transform: translate(var(--fx), var(--fy)); } 12% { opacity: 1; } 70% { transform: translate(0, 0); } 77% { transform: translate(4px, 0); } 84% { transform: translate(-4px, 0); } 90% { opacity: 1; transform: translate(0, 0); } 100% { opacity: .3; transform: translate(calc(var(--fx) * .2), calc(var(--fy) * .2)); } }
+@keyframes hive-first { 0%, 22% { transform: translate(0, 0); } 34%, 62% { transform: translate(194px, 0); } 74%, 100% { transform: translate(388px, 0); } }
+@keyframes hive-second { 0%, 55% { transform: translate(0, 0); } 67%, 100% { transform: translate(194px, 0); } }
+@media (min-width: 851px) { .reel-demo { display: flex; } }
+@media (prefers-reduced-motion: reduce) { .project-demo, .project-demo * { animation: none !important; } }
