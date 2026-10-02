@@ -105,7 +105,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
 
   useEffect(() => {
     if (!interacted.current) return
-    const target = panel.current?.querySelector<HTMLButtonElement>(projectOpen ? '.project-focus-header button' : '.reel-open')
+    const target = panel.current?.querySelector<HTMLButtonElement>(projectOpen ? '.project-back' : '.reel-open')
     target?.focus({ preventScroll: true })
     if (projectOpen && window.matchMedia('(max-width: 850px)').matches && (panel.current?.getBoundingClientRect().top ?? 0) < 24) {
       panel.current?.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })

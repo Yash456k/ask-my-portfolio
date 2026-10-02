@@ -81,15 +81,14 @@ function Bee({ flip = false }: { flip?: boolean }) {
   )
 }
 
-const hex = (x: number, y: number, r = 15.5) => {
+const hex = (x: number, y: number, r = 20.5) => {
   const w = r * Math.sqrt(3) / 2
   return `M${x} ${y - r} L${x + w} ${y - r / 2} L${x + w} ${y + r / 2} L${x} ${y + r} L${x - w} ${y + r / 2} L${x - w} ${y - r / 2} Z`
 }
-// A loose comb of sixteen cells; each cell is a note. Every bee works its own corner.
-const ROWS = [[22, [257.5, 286.5, 315.5, 344.5]], [47.5, [214, 243, 272, 301, 330, 359, 388]], [73, [228.5, 257.5, 286.5, 315.5, 344.5]]] as const
-const CELLS = ROWS.flatMap(([y, xs]) => xs.map((x) => [x, y] as const))
-const NOTE_A = [243, 47.5] as const, NOTE_B = [344.5, 22] as const, NOTE_C = [286.5, 73] as const, NOTE_D = [388, 47.5] as const
-const writing = (x: number, y: number, start: number) => [[-6, 7, -4.5], [-7, 5, 0], [-5, 4, 4.5]].map(([a, b, dy], i) => (
+// Seven cells in two rows; each cell is a note. Every bee works its own corner.
+const CELLS = [[240, 28], [280, 28], [320, 28], [360, 28], [260, 62], [300, 62], [340, 62]] as const
+const NOTE_A = CELLS[0], NOTE_B = CELLS[3], NOTE_C = CELLS[5], NOTE_D = CELLS[6]
+const writing = (x: number, y: number, start: number) => [[-9, 9, -6], [-10, 7, 0], [-7, 6, 6]].map(([a, b, dy], i) => (
   <path key={i} className="d-draw" pathLength={1} style={at(start + i * 0.3)} d={`M${x + a} ${y + dy} H${x + b}`} />
 ))
 
@@ -101,7 +100,7 @@ function HiveDemo() {
       {writing(NOTE_A[0], NOTE_A[1], 2.0)}
       <path className="d-pop demo-strong" style={at(3.05)} d={hex(NOTE_A[0], NOTE_A[1])} />
       {/* Codex watches that note, then picks up the next one. */}
-      <path className="hive-thread demo-faint" style={at(1.7)} d={`M${NOTE_B[0] - 4} ${NOTE_B[1] + 6} L${NOTE_A[0] + 6} ${NOTE_A[1] - 6}`} />
+      <path className="hive-thread demo-faint" style={at(1.7)} d={`M${NOTE_B[0] - 8} ${NOTE_B[1] - 14} Q${(NOTE_A[0] + NOTE_B[0]) / 2} ${NOTE_A[1] - 34} ${NOTE_A[0] + 8} ${NOTE_A[1] - 14}`} />
       {writing(NOTE_C[0], NOTE_C[1], 3.9)}
       {/* Hermes reads a note on its way past. */}
       <path className="hive-read demo-strong" style={at(2.15)} d={hex(NOTE_D[0], NOTE_D[1])} />

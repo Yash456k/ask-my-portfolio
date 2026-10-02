@@ -401,14 +401,29 @@
 @keyframes hive-thread { 0% { opacity: 0; } 15%, 85% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes hive-read { 0%, 100% { opacity: 0; } 35%, 60% { opacity: 1; } }
 /* Claude flies in, writes in a cell, and leaves once it is done. */
-@keyframes bee-claude { 0% { opacity: 0; transform: translate(40px, 80px); } 8% { opacity: 1; } 26%, 55% { transform: translate(243px, 35px); } 72% { opacity: 1; transform: translate(120px, 8px); } 80%, 100% { opacity: 0; transform: translate(70px, 0); } }
+@keyframes bee-claude { 0% { opacity: 0; transform: translate(40px, 70px); } 8% { opacity: 1; } 26%, 55% { transform: translate(240px, 18px); } 72% { opacity: 1; transform: translate(120px, 4px); } 80%, 100% { opacity: 0; transform: translate(70px, 0); } }
 /* Codex waits on the next cell, watching Claude's, then hops to a fresh one. */
-@keyframes bee-codex { 0% { opacity: 0; transform: translate(560px, 2px); } 6% { opacity: 1; } 18%, 56% { transform: translate(344.5px, 10px); } 66%, 100% { opacity: 1; transform: translate(286.5px, 61px); } }
+@keyframes bee-codex { 0% { opacity: 0; transform: translate(560px, 0); } 6% { opacity: 1; } 18%, 56% { transform: translate(360px, 18px); } 66%, 100% { opacity: 1; transform: translate(300px, 52px); } }
 /* Hermes drifts past and reads a note on the way. */
-@keyframes bee-hermes { 0% { opacity: 0; transform: translate(600px, 92px); } 5% { opacity: 1; } 30%, 42% { transform: translate(388px, 35px); } 76% { opacity: 1; transform: translate(90px, 94px); } 86%, 100% { opacity: 0; transform: translate(30px, 96px); } }
+@keyframes bee-hermes { 0% { opacity: 0; transform: translate(600px, 92px); } 5% { opacity: 1; } 30%, 42% { transform: translate(340px, 52px); } 76% { opacity: 1; transform: translate(90px, 94px); } 86%, 100% { opacity: 0; transform: translate(30px, 96px); } }
 @media (min-width: 851px) { .reel-demo, .project-demo-dock { display: flex; } .reel-demo { display: block; } }
 @media (prefers-reduced-motion: reduce) { .project-demo, .project-demo * { animation: none !important; } }
 @media (min-width: 851px) and (max-width: 1200px) {
   .tactile-work .project-focus-copy > p:last-child { font-size: 13.5px; }
   .tactile-work .project-focus-highlights li { font-size: 13px; }
 }
+
+/* Desktop: a quiet hint beside the wheel that it scrolls. */
+.reel-scroll-cue { display: none; }
+@media (min-width: 851px) {
+  .tactile-work .smooth-reel { position: relative; }
+  .tactile-work .reel-scroll-cue { display: block; position: absolute; left: -32px; top: 50%; width: 12px; height: 44px; margin-top: -22px; border: 1px solid rgb(var(--theme-accent-rgb, 175 70 54) / 0.35); border-radius: 8px; pointer-events: none; }
+  .tactile-work .reel-scroll-cue::after { content: ''; position: absolute; left: 3.5px; top: 6px; width: 3px; height: 9px; border-radius: 2px; background: rgb(var(--theme-accent-rgb, 175 70 54) / 0.75); animation: reel-scroll-cue 2.4s cubic-bezier(.45,.05,.3,1) infinite; }
+  .tactile-work .smooth-reel-stage:hover .reel-scroll-cue::after, .tactile-work .smooth-reel:focus-within .reel-scroll-cue::after { animation-play-state: paused; }
+  /* Back to revolver sits where View project was. */
+  .tactile-work .project-focus-footer { justify-content: space-between; }
+  /* The activity card is a little smaller, so the headline leads. */
+  .activity-focus { zoom: .84; justify-self: end; }
+}
+@keyframes reel-scroll-cue { 0% { opacity: 0; transform: translateY(0); } 20% { opacity: 1; } 70% { opacity: 1; transform: translateY(18px); } 100% { opacity: 0; transform: translateY(22px); } }
+@media (prefers-reduced-motion: reduce) { .reel-scroll-cue::after { animation: none; opacity: 1; } }

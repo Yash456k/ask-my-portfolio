@@ -13,7 +13,6 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
           <span>{project.number}</span>
           <time>{project.date}</time>
         </div>
-        <button type="button" onClick={onBack}>Back to revolver <span aria-hidden="true">↙</span></button>
       </header>
 
       <div className="project-focus-copy">
@@ -36,6 +35,7 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
           </a>
           <a href={project.repository} target="_blank" rel="noreferrer">Source <span aria-hidden="true">↗</span></a>
         </nav>
+        <button type="button" className="reel-open project-back" onClick={onBack}>Back to revolver <span aria-hidden="true">↙</span></button>
       </footer>
     </article>
   )
