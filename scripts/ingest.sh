@@ -25,9 +25,13 @@ if ! grep -qE '^DATABASE_URL=.+' .env; then
   exit 1
 fi
 
-echo "[1/4] Pulling main"
-git fetch -q origin +refs/heads/main:refs/remotes/origin/main
-git merge --ff-only -q origin/main
+if [[ -z "${INGEST_PULLED:-}" ]]; then
+  echo "[1/4] Pulling main"
+  git fetch -q origin +refs/heads/main:refs/remotes/origin/main
+  git merge --ff-only -q origin/main
+  # The pull may have changed this script; carry on with the new copy.
+  INGEST_PULLED=1 exec "$0" "$@"
+fi
 commit="$(git rev-parse --short HEAD)"
 
 echo "[2/4] Building the image with the corpus at $commit"
