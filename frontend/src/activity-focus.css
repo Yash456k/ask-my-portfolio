@@ -124,3 +124,12 @@
 
 @media (min-width: 851px) { .landing-copy h1 em { white-space: nowrap; font-size: .91em; } }
 @media (max-width: 550px) { .landing-copy h1 { font-size: clamp(48px,12vw,64px); } .landing-copy h1 em { white-space: normal; } }
+/* Claude Code: warm terracotta shades beside Codex's amber. */
+.activity-focus .activity-card--claude {
+  --activity-empty: #322e2a;
+  --activity-one: #4a2f27;
+  --activity-two: #8a4a35;
+  --activity-three: #b8603f;
+  --activity-four: #f08a63;
+}
+.activity-focus .activity-switch-glider.is-claude { transform: translateX(100%); }

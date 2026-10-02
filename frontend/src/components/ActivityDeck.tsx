@@ -4,7 +4,12 @@ import { getActivity } from '../api'
 import { readCachedActivity } from '../activity'
 import type { ActivitySnapshot } from '../activity'
 
-type ActivityKind = 'codex' | 'github'
+type ActivityKind = 'codex' | 'claude'
+
+const SOURCE: Record<ActivityKind, { label: string; footer: string }> = {
+  codex: { label: 'Codex', footer: 'Refreshed daily from official activity' },
+  claude: { label: 'Claude Code', footer: 'Refreshed daily from session logs' },
+}
 type CardPosition = 'active' | 'behind' | 'swapping-out' | 'swapping-in'
 type ActivityRange = 'quarter' | 'year'
 
@@ -65,9 +70,7 @@ function quantile(sorted: number[], fraction: number): number {
 }
 
 function buildCalendar(activity: ActivitySnapshot, kind: ActivityKind, range: ActivityRange): HeatmapDay[][] {
-  const sourceDays = kind === 'codex'
-    ? activity.codex.days.map((day) => ({ date: day.date, count: day.tokens }))
-    : activity.github.days
+  const sourceDays = (activity[kind]?.days ?? []).map((day) => ({ date: day.date, count: day.tokens }))
   const counts = sourceDays.map((day) => day.count).filter(Boolean).sort((a, b) => a - b)
   // Keep ordinary days quiet and reserve the brightest shade for rare peaks.
   const bands = [0.5, 0.75, 0.95]
@@ -114,10 +117,10 @@ function CodexMark() {
   )
 }
 
-function GitHubMark() {
+function ClaudeMark() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M8 5v11.2M16 7.8v11.1M8 8.1h5.2A2.8 2.8 0 0 0 16 5.3V3m-8 13.2A2.8 2.8 0 1 1 5.2 19 2.8 2.8 0 0 1 8 16.2Zm8 2.7a2.8 2.8 0 1 1-2.8 2.8 2.8 2.8 0 0 1 2.8-2.8Z" />
+      <path d="M12 4v16M4 12h16M6.3 6.3l11.4 11.4M17.7 6.3 6.3 17.7" />
     </svg>
   )
 }
@@ -143,9 +146,7 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
   const summary = useMemo(() => {
     const activeDays = weeks.flat().filter((day) => day.count > 0)
     const total = activeDays.reduce((sum, day) => sum + day.count, 0)
-    const averageDays = kind === 'codex'
-      ? activeDays.filter((day) => day.count > 1_000_000)
-      : activeDays
+    const averageDays = activeDays.filter((day) => day.count > 1_000_000)
     const averageTotal = averageDays.reduce((sum, day) => sum + day.count, 0)
     const peak = activeDays.reduce<HeatmapDay | null>(
       (current, day) => !current || day.count > current.count ? day : current,
@@ -157,20 +158,17 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
       average: averageDays.length > 0 ? averageTotal / averageDays.length : 0,
       peak,
     }
-  }, [kind, weeks])
+  }, [weeks])
   const [hovered, setHovered] = useState<HoveredDay | null>(null)
   const days = useMemo(() => weeks.flat(), [weeks])
   const lastDayIndex = days.reduce((last, day, index) => (day.isFuture ? last : index), 0)
   // One tab stop for the whole calendar; arrow keys move between days.
   const [focusedDay, setFocusedDay] = useState<string | null>(null)
   const focusIndex = Math.max(0, focusedDay ? days.findIndex((day) => day.date === focusedDay) : lastDayIndex)
-  const isCodex = kind === 'codex'
-  const displayTotal = isCodex && range === 'year'
-    ? activity.codex.lifetimeTotal
-    : summary.total
-  const unit = isCodex
-    ? range === 'year' ? 'lifetime tokens' : 'tokens in period'
-    : 'contributions'
+  const source = SOURCE[kind]
+  const claudeSince = kind === 'claude' ? activity.claude?.since : undefined
+  const displayTotal = range === 'year' ? activity[kind]?.lifetimeTotal ?? summary.total : summary.total
+  const unit = range === 'year' ? 'lifetime tokens' : 'tokens in period'
   const columnTemplate = range === 'quarter'
     ? `repeat(${weeks.length}, minmax(0, 18px))`
     : `repeat(${weeks.length}, minmax(0, 1fr))`
@@ -210,10 +208,10 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
     >
       <header className="activity-card-header">
         <div className="activity-card-identity">
-          <span className="activity-card-mark">{isCodex ? <CodexMark /> : <GitHubMark />}</span>
+          <span className="activity-card-mark">{kind === 'codex' ? <CodexMark /> : <ClaudeMark />}</span>
           <div>
-            <p>{isCodex ? 'Codex' : 'GitHub'} activity</p>
-            <span>{range === 'quarter' ? 'Last 3 months' : 'Last 12 months'}</span>
+            <p>Agent tokens</p>
+            <span>{source.label} · {range === 'quarter' ? 'last 3 months' : 'last 12 months'}</span>
           </div>
         </div>
         <span className="activity-live"><i /> Updated daily</span>
@@ -223,12 +221,11 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
         <div className="activity-stat activity-total">
           <span>{unit}</span>
           <strong>{formatNumber(displayTotal)}</strong>
-          <small>{range === 'quarter' ? 'last 3 months' : isCodex ? 'all time' : 'last 12 months'}</small>
+          <small>{range === 'quarter' ? 'last 3 months' : claudeSince ? `since ${formatDate(claudeSince)}` : 'all time'}</small>
         </div>
         <div className="activity-stat activity-average">
           <span>Daily avg</span>
           <strong>{formatNumber(summary.average)}</strong>
-          {!isCodex && <small>per active day</small>}
         </div>
         {summary.peak && (
           <div className="activity-stat activity-peak">
@@ -239,7 +236,7 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
         )}
       </div>
 
-      <div className={`activity-calendar is-${range}`} role="group" aria-label={`${isCodex ? 'Codex' : 'GitHub'} daily activity for the last ${range === 'quarter' ? '3 months' : 'year'}`}>
+      <div className={`activity-calendar is-${range}`} role="group" aria-label={`${source.label} daily tokens for the last ${range === 'quarter' ? '3 months' : 'year'}`}>
         <div className="activity-months" aria-hidden="true" style={{ gridTemplateColumns: columnTemplate }}>
           {months.map((month) => (
             <span key={`${month.week}-${month.label}`} style={{ gridColumnStart: month.week }}>{month.label}</span>
@@ -254,7 +251,7 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
               key={day.date}
               disabled={day.isFuture}
               tabIndex={index === focusIndex ? 0 : -1}
-              aria-label={`${formatDate(day.date)}: ${formatTooltipValue(day.count, isCodex)} ${isCodex ? 'tokens' : 'contributions'}`}
+              aria-label={`${formatDate(day.date)}: ${formatTooltipValue(day.count, true)} tokens`}
               onMouseEnter={(event) => showTooltip(event.currentTarget, day)}
               onMouseLeave={() => setHovered(null)}
               onFocus={(event) => {
@@ -270,7 +267,7 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
             className={`activity-day-tooltip align-${hovered.alignment}`}
             style={{ left: hovered.left, top: hovered.top }}
           >
-            <strong>{formatTooltipValue(hovered.day.count, isCodex)}</strong> {isCodex ? 'tokens' : 'contributions'}
+            <strong>{formatTooltipValue(hovered.day.count, true)}</strong> tokens
             <span>{formatDate(hovered.day.date)}</span>
           </output>
         )}
@@ -278,7 +275,7 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
 
       <footer className="activity-card-footer">
         <span><strong>{summary.activeDays}</strong> active days</span>
-        <span>Refreshed daily from official activity</span>
+        <span>{source.footer}</span>
       </footer>
     </article>
   )
@@ -332,7 +329,7 @@ export function ActivityDeck() {
 
   if (!activity) {
     return (
-      <aside className="activity-deck activity-deck--loading" aria-label="Coding activity" aria-live="polite">
+      <aside className="activity-deck activity-deck--loading" aria-label="Agent tokens" aria-live="polite">
         <div className="activity-loading-card">
           <span className="activity-card-mark"><CodexMark /></span>
           <p>{refreshFailed ? 'Activity is temporarily unavailable.' : 'Loading activity…'}</p>
@@ -342,7 +339,7 @@ export function ActivityDeck() {
   }
 
   return (
-    <aside className="activity-deck" aria-label="Coding activity">
+    <aside className="activity-deck" aria-label="Agent tokens">
       <div className="activity-toolbar">
         <div className="activity-range-switch" aria-label="Choose activity period">
           <button type="button" aria-pressed={range === 'quarter'} onClick={() => setRange('quarter')}>3M</button>
@@ -353,15 +350,17 @@ export function ActivityDeck() {
           <button type="button" aria-pressed={selected === 'codex'} disabled={Boolean(swap)} onClick={() => selectCard('codex')}>
             Codex
           </button>
-          <button type="button" aria-pressed={selected === 'github'} disabled={Boolean(swap)} onClick={() => selectCard('github')}>
-            GitHub
-          </button>
+          {activity.claude && (
+            <button type="button" aria-pressed={selected === 'claude'} disabled={Boolean(swap)} onClick={() => selectCard('claude')}>
+              Claude Code
+            </button>
+          )}
         </div>
       </div>
 
       <div className="activity-card-stack">
         <ActivityCard activity={activity} kind="codex" position={positionFor('codex')} range={range} onSwapComplete={completeSwap} />
-        <ActivityCard activity={activity} kind="github" position={positionFor('github')} range={range} onSwapComplete={completeSwap} />
+        {activity.claude && <ActivityCard activity={activity} kind="claude" position={positionFor('claude')} range={range} onSwapComplete={completeSwap} />}
       </div>
 
       <p className="activity-caption">

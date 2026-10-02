@@ -31,6 +31,15 @@ export type ActivitySnapshot = {
     peak: CountDay | null
     days: CountDay[]
   }
+  /** Claude Code tokens, from the laptop's session logs via HiveNote; absent until synced. */
+  claude?: {
+    total: number
+    lifetimeTotal: number
+    activeDays: number
+    since: string
+    peak: CountDay | null
+    days: TokenDay[]
+  }
 }
 
 const STORAGE_KEY = 'portfolio-activity:v1'
@@ -59,6 +68,18 @@ function parseDays<T>(value: unknown, parser: (day: unknown) => T | null): T[] |
   if (!Array.isArray(value) || value.length > 370) return null
   const parsed = value.map(parser)
   return parsed.every((day): day is T => day !== null) ? parsed : null
+}
+
+function parseClaude(value: unknown): ActivitySnapshot['claude'] {
+  if (!isRecord(value)) return undefined
+  const days = parseDays(value.days, parseTokenDay)
+  const peak = value.peak === null ? null : parseCountDay(value.peak)
+  if (
+    !days || (value.peak !== null && !peak)
+    || !isCount(value.total) || !isCount(value.lifetimeTotal) || !isCount(value.activeDays) || value.activeDays > 370
+    || typeof value.since !== 'string' || !ISO_DATE.test(value.since)
+  ) return undefined
+  return { total: value.total, lifetimeTotal: value.lifetimeTotal, activeDays: value.activeDays, since: value.since, peak, days }
 }
 
 export function parseActivitySnapshot(value: unknown): ActivitySnapshot | null {
@@ -113,6 +134,7 @@ export function parseActivitySnapshot(value: unknown): ActivitySnapshot | null {
       peak: githubPeak,
       days: githubDays,
     },
+    ...(parseClaude(value.claude) ? { claude: parseClaude(value.claude) } : {}),
   }
 }
 
