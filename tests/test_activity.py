@@ -90,3 +90,22 @@ def test_activity_endpoint_fails_closed(tmp_path: Path, pipeline) -> None:
     assert response.status_code == 503
     assert response.json() == {"detail": "activity_cache_unavailable"}
     assert response.headers["cache-control"] == "no-store"
+
+
+def test_activity_endpoint_serves_claude_code_tokens(tmp_path: Path, pipeline) -> None:
+    claude = {
+        "total": 9,
+        "lifetimeTotal": 12,
+        "activeDays": 1,
+        "since": "2026-07-01",
+        "peak": {"date": "2026-07-15", "count": 9},
+        "days": [{"date": "2026-07-15", "tokens": 9}],
+    }
+    cache = tmp_path / "activity.json"
+    cache.write_text(json.dumps({**_snapshot(), "claude": {**claude, "prompt": "drop-me"}}))
+    client = TestClient(create_app(_settings(cache), pipeline))
+
+    body = client.get("/v1/activity").json()
+
+    assert body["claude"] == claude
+    assert "drop-me" not in json.dumps(body)
