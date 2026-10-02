@@ -332,3 +332,18 @@
 @media (max-width: 850px) and (min-height: 900px) {
   .tactile-work .smooth-reel { --reel-spacing: 164px; }
 }
+
+/* Desktop: the projects column takes the experience column's height. Its footer sits on the
+   "Drag to explore" line, and the wheel centres on the band of the timeline and cards. */
+@media (min-width: 851px) {
+  .tactile-work .split-work-layout { align-items: stretch; }
+  .tactile-work .projects-panel { display: flex; flex-direction: column; }
+  .tactile-work .project-view-stack { flex: 1; }
+  .tactile-work .project-selector-view { display: flex; flex-direction: column; }
+  .tactile-work .smooth-reel-stage { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  /* The footer is taller than "Drag to explore"; the top padding evens the wheel's space. */
+  .tactile-work .smooth-reel { --reel-spacing: 128px; flex: 1; display: flex; flex-direction: column; align-items: stretch; padding-top: 30px; }
+  .tactile-work .reel-aperture { flex: 1; height: auto; min-height: 340px; }
+  .tactile-work .reel-seat { height: 132px; }
+  .tactile-work .reel-footer { margin-bottom: -12px; }
+}
