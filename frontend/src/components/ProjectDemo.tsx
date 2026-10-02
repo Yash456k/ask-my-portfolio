@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 
 // A small outline drawing of what each project does. It plays once, holds, fades,
@@ -66,9 +66,33 @@ function Card({ label, children }: { label: string, children?: ReactNode }) {
       <rect x="0" y="0" width="128" height="26" rx="6" />
       <circle cx="13" cy="13" r="5" />
       <text className="demo-text demo-small" x="24" y="16.5">{label}</text>
-      <path className="demo-faint" d="M84 13 H116" />
+      <path className="demo-faint" d="M74 13 H94" />
       {children}
     </>
+  )
+}
+
+
+// HiveNote's dashboard bee (hivenote/ui/app.js), redrawn in outline.
+function Bee({ className, x, y }: { className: string, x: number, y: number }) {
+  const clip = `bee-${useId().replace(/:/g, '')}`
+  return (
+    <g transform={`translate(${x} ${y}) scale(0.5)`}>
+      <g className={`hive-bee ${className}`} style={at(0.75)}>
+        <g className="bee-whole">
+          <defs><clipPath id={clip}><ellipse cx="32" cy="38" rx="20" ry="17.5" /></clipPath></defs>
+          <g transform="rotate(-22 25 21)"><ellipse className="bee-wing is-back" cx="25" cy="15" rx="8" ry="12" /></g>
+          <path d="M12.8 37 L6.5 39 L12.8 41.2 Z" />
+          <g clipPath={`url(#${clip})`}><path d="M20.75 18 V60 M28.75 18 V60" /></g>
+          <ellipse cx="32" cy="38" rx="20" ry="17.5" />
+          <g transform="rotate(16 36 21)"><ellipse className="bee-wing" cx="36" cy="14" rx="8.5" ry="12.5" /></g>
+          <path d="M41 24 C42 18.5 44.5 15 47.5 13.5 M37 22.5 C37 17 38 13.5 40 11" />
+          <circle cx="48" cy="13" r="2.2" /><circle cx="40.4" cy="10.5" r="2.2" />
+          <circle className="bee-eye" cx="39.5" cy="35.5" r="2.2" /><circle className="bee-eye" cx="46" cy="35.5" r="2" />
+          <path d="M40.6 40.8 q2.3 2.2 4.6 0" />
+        </g>
+      </g>
+    </g>
   )
 }
 
@@ -84,7 +108,7 @@ function HiveDemo() {
       ))}
       <g transform="translate(431 62)"><g className="d-pop" style={at(0.6)}><Card label="Hermes" /></g></g>
       <g transform="translate(43 62)">
-        <g className="hive-card is-second" style={at(0.75)}><g className="d-pop" style={at(0.75)}><Card label="Codex" /></g></g>
+        <g className="hive-card is-second" style={at(0.75)}><g className="d-pop" style={at(0.75)}><Card label="Codex" /></g><Bee className="is-second" x={94} y={-24} /></g>
       </g>
       <g transform="translate(43 28)">
         <g className="hive-card is-first" style={at(0.75)}>
@@ -93,6 +117,7 @@ function HiveDemo() {
               <path className="d-draw demo-strong" pathLength={1} style={at(4.35)} d="M100 13 l4 4 l8 -9" />
             </Card>
           </g>
+          <Bee className="is-first" x={94} y={-24} />
         </g>
       </g>
     </>
