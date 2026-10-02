@@ -133,3 +133,5 @@
   --activity-four: #f08a63;
 }
 .activity-focus .activity-switch-glider.is-claude { transform: translateX(100%); }
+.activity-focus .activity-switch { width: 214px; }
+.activity-focus .activity-switch button { white-space: nowrap; }
