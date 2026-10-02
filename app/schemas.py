@@ -109,6 +109,19 @@ class GitHubActivity(BaseModel):
     days: list[ActivityCountDay] = Field(max_length=370)
 
 
+class ClaudeActivity(BaseModel):
+    """Claude Code tokens per day, kept in HiveNote from the laptop's session logs."""
+
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    total: int = Field(ge=0)
+    lifetime_total: int = Field(ge=0, alias="lifetimeTotal")
+    active_days: int = Field(ge=0, le=370, alias="activeDays")
+    since: date
+    peak: ActivityCountDay | None
+    days: list[ActivityTokenDay] = Field(max_length=370)
+
+
 class ActivitySnapshot(BaseModel):
     """The complete public activity contract. Undeclared fields never leave the API."""
 
@@ -118,3 +131,4 @@ class ActivitySnapshot(BaseModel):
     period: ActivityPeriod
     codex: CodexActivity
     github: GitHubActivity
+    claude: ClaudeActivity | None = None

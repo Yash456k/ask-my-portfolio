@@ -25,9 +25,13 @@ if ! grep -qE '^DATABASE_URL=.+' .env; then
   exit 1
 fi
 
-echo "[1/4] Pulling main"
-git fetch -q origin +refs/heads/main:refs/remotes/origin/main
-git merge --ff-only -q origin/main
+if [[ -z "${INGEST_PULLED:-}" ]]; then
+  echo "[1/4] Pulling main"
+  git fetch -q origin +refs/heads/main:refs/remotes/origin/main
+  git merge --ff-only -q origin/main
+  # The pull may have changed this script; carry on with the new copy.
+  INGEST_PULLED=1 exec "$0" "$@"
+fi
 commit="$(git rev-parse --short HEAD)"
 
 echo "[2/4] Building the image with the corpus at $commit"
@@ -38,6 +42,6 @@ echo "[3/4] Ingesting beside the running API"
   python -m app.ingest --corpus /app/corpus --reason "re-ingest at $commit" "${force[@]}"
 
 echo "[4/4] Checking the live API"
-api_url="$(grep -E '^PUBLIC_API_URL=' .env | tail -n 1 | cut -d= -f2- | tr -d '"\r')"
-curl --fail --silent --show-error "${api_url%/}/v1/health"
+# The API's loopback port, not a public URL from .env, which can go stale.
+curl --fail --silent --show-error http://127.0.0.1:18080/v1/health
 echo
