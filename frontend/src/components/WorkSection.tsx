@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import projectsData from '../data/projects.json'
+import { ProjectDemo } from './ProjectDemo'
 import { ProjectDetail } from './ProjectDetail'
 import { ProjectRevolver } from './ProjectRevolver'
 import type { ProjectItem } from './projectTypes'
@@ -151,6 +152,8 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
             <div className="project-detail-view" aria-hidden={!projectOpen} inert={projectView !== 'detail'}>
               <ProjectDetail project={selectedProject} onBack={closeProject} />
             </div>
+            {/* One drawing for both views, so opening a project leaves it playing in place. */}
+            <div className="project-demo-dock"><ProjectDemo projectId={selectedProject.id} /></div>
           </div>
         </section>
       </div>

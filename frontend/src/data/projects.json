@@ -74,7 +74,7 @@
       "A rewrite based on an old version is refused, so agents never overwrite each other."
     ],
     "hooks": [
-      "Claude Code, Codex, Hermes",
+      "Claude, Codex, Hermes",
       "One SQLite file",
       "Live dashboard"
     ],
