@@ -38,6 +38,6 @@ echo "[3/4] Ingesting beside the running API"
   python -m app.ingest --corpus /app/corpus --reason "re-ingest at $commit" "${force[@]}"
 
 echo "[4/4] Checking the live API"
-api_url="$(grep -E '^PUBLIC_API_URL=' .env | tail -n 1 | cut -d= -f2- | tr -d '"\r')"
-curl --fail --silent --show-error "${api_url%/}/v1/health"
+# The API's loopback port, not a public URL from .env, which can go stale.
+curl --fail --silent --show-error http://127.0.0.1:18080/v1/health
 echo
