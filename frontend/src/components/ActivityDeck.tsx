@@ -8,11 +8,15 @@ type ActivityKind = 'codex' | 'github'
 type CardPosition = 'active' | 'behind' | 'swapping-out' | 'swapping-in'
 type ActivityRange = 'quarter' | 'year'
 
+type AgentSplit = { codex: number; claude: number }
+
 type HeatmapDay = {
   date: string
   count: number
   level: number
   isFuture: boolean
+  /** Agent tokens only: how the day's total splits between Codex and Claude Code. */
+  split?: AgentSplit
 }
 
 const DAY_MS = 86_400_000
@@ -52,6 +56,14 @@ function formatTooltipValue(value: number, isTokenCount: boolean): string {
   return value.toLocaleString()
 }
 
+function splitParts(split: AgentSplit): Array<readonly [string, number]> {
+  return ([['Codex', split.codex], ['Claude Code', split.claude]] as const).filter(([, tokens]) => tokens > 0)
+}
+
+function splitText(split: AgentSplit): string {
+  return splitParts(split).map(([name, tokens]) => `${name} ${formatTooltipValue(tokens, true)}`).join(' · ')
+}
+
 function formatDate(value: string): string {
   return dateAtNoon(value).toLocaleDateString('en', {
     day: 'numeric',
@@ -64,22 +76,26 @@ function quantile(sorted: number[], fraction: number): number {
   return sorted[Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * fraction))] ?? 0
 }
 
-/** Agent tokens: Codex and Claude Code added together per day. */
-function agentDays(activity: ActivitySnapshot): Array<{ date: string; count: number }> {
-  const byDate = new Map<string, number>()
-  for (const day of [...activity.codex.days, ...(activity.claude?.days ?? [])]) {
-    byDate.set(day.date, (byDate.get(day.date) ?? 0) + day.tokens)
+/** Agent tokens: Codex and Claude Code added together per day, keeping the split. */
+function agentDays(activity: ActivitySnapshot): Array<{ date: string; count: number; split: AgentSplit }> {
+  const byDate = new Map<string, AgentSplit>()
+  const add = (date: string, part: keyof AgentSplit, tokens: number) => {
+    const split = byDate.get(date) ?? { codex: 0, claude: 0 }
+    split[part] += tokens
+    byDate.set(date, split)
   }
-  return [...byDate].map(([date, count]) => ({ date, count }))
+  for (const day of activity.codex.days) add(day.date, 'codex', day.tokens)
+  for (const day of activity.claude?.days ?? []) add(day.date, 'claude', day.tokens)
+  return [...byDate].map(([date, split]) => ({ date, count: split.codex + split.claude, split }))
 }
 
 function buildCalendar(activity: ActivitySnapshot, kind: ActivityKind, range: ActivityRange): HeatmapDay[][] {
-  const sourceDays = kind === 'codex' ? agentDays(activity) : activity.github.days
+  const sourceDays: Array<{ date: string; count: number; split?: AgentSplit }> = kind === 'codex' ? agentDays(activity) : activity.github.days
   const counts = sourceDays.map((day) => day.count).filter(Boolean).sort((a, b) => a - b)
   // Keep ordinary days quiet and reserve the brightest shade for rare peaks.
   const bands = [0.5, 0.75, 0.95]
   const thresholds = bands.map((fraction) => quantile(counts, fraction))
-  const byDate = new Map(sourceDays.map((day) => [day.date, day.count]))
+  const byDate = new Map(sourceDays.map((day) => [day.date, day]))
   const lastDataDay = dateAtNoon(activity.period.end)
   const calendarEnd = new Date(lastDataDay)
   calendarEnd.setDate(calendarEnd.getDate() + (6 - calendarEnd.getDay()))
@@ -90,9 +106,10 @@ function buildCalendar(activity: ActivitySnapshot, kind: ActivityKind, range: Ac
     Array.from({ length: 7 }, (_, dayIndex) => {
       const date = new Date(calendarStart.getTime() + ((weekIndex * 7 + dayIndex) * DAY_MS))
       const dateKey = isoDate(date)
-      const count = byDate.get(dateKey) ?? 0
+      const source = byDate.get(dateKey)
+      const count = source?.count ?? 0
       const level = count === 0 ? 0 : 1 + thresholds.filter((threshold) => count > threshold).length
-      return { date: dateKey, count, level, isFuture: date > lastDataDay }
+      return { date: dateKey, count, level, isFuture: date > lastDataDay, split: source?.split }
     }),
   )
 }
@@ -261,7 +278,7 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
               key={day.date}
               disabled={day.isFuture}
               tabIndex={index === focusIndex ? 0 : -1}
-              aria-label={`${formatDate(day.date)}: ${formatTooltipValue(day.count, isCodex)} ${isCodex ? 'tokens' : 'contributions'}`}
+              aria-label={`${formatDate(day.date)}: ${formatTooltipValue(day.count, isCodex)} ${isCodex ? 'tokens' : 'contributions'}${day.split && day.count > 0 ? ` (${splitText(day.split)})` : ''}`}
               onMouseEnter={(event) => showTooltip(event.currentTarget, day)}
               onMouseLeave={() => setHovered(null)}
               onFocus={(event) => {
@@ -278,6 +295,13 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
             style={{ left: hovered.left, top: hovered.top }}
           >
             <strong>{formatTooltipValue(hovered.day.count, isCodex)}</strong> {isCodex ? 'tokens' : 'contributions'}
+            {hovered.day.split && hovered.day.count > 0 && (
+              <span className="activity-split">
+                {splitParts(hovered.day.split).map(([name, tokens]) => (
+                  <span key={name}><b>{formatNumber(tokens)}</b> {name}</span>
+                ))}
+              </span>
+            )}
             <span>{formatDate(hovered.day.date)}</span>
           </output>
         )}
