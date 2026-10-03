@@ -1215,6 +1215,10 @@ a:focus-visible {
   white-space: nowrap;
 }
 
+/* The title gives way first, so the time badge and close button always stay inside the rail. */
+.rail-heading h2 { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.rail-heading > svg, .rail-heading > .retrieval-time, .rail-heading > .evidence-close { flex-shrink: 0; }
+
 .retrieval-time {
   margin-left: auto;
   padding: 5px 8px;
@@ -1723,6 +1727,10 @@ a:focus-visible {
   display: grid;
   /* Receipt, emotion reading (when present), heading, then the scrolling chunk list. */
   grid-template-rows: auto auto auto minmax(0, 1fr);
+  /* One column that cannot outgrow the rail: an implicit auto column takes the width of the
+     widest unshrinkable row, which pushed every row past the card's edge when a visitor's
+     browser enforces a minimum font size. */
+  grid-template-columns: minmax(0, 1fr);
   padding: 22px 18px 18px;
   overflow: hidden;
 }
