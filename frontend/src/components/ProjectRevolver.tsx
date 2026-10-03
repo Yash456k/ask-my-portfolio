@@ -18,6 +18,8 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
   const root = useRef<HTMLDivElement>(null)
   const gesture = useRef<{ pointerId: number; startX: number; startY: number; origin: number; target: number; spacing: number; dragged: boolean } | null>(null)
   const suppressClick = useRef(false)
+  // The scroll hint beside the wheel retires the first time the wheel is moved.
+  const [moved, setMoved] = useState(false)
   const selectedProject = projects[activeIndex] ?? projects[0]
 
   const animate = useCallback(() => {
@@ -57,6 +59,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
   }, [])
 
   const select = useCallback((target: number) => {
+    setMoved(true)
     physical.current.target = target
     onChange(wrapIndex(target, projects.length))
     animate()
@@ -154,7 +157,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
   return (
     <div className="smooth-reel-stage">
       <div ref={root} className="smooth-reel" role="group" aria-label="Project selector" aria-describedby="project-gesture" tabIndex={0} onKeyDown={keyboard}>
-        <span className="reel-scroll-cue" aria-hidden="true" />
+        <span className={`reel-scroll-cue ${moved ? 'is-used' : ''}`} aria-hidden="true" />
         <div className="reel-aperture" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={(event) => pointerEnd(event)} onPointerCancel={(event) => pointerEnd(event, true)} onLostPointerCapture={lostPointerCapture}>
           <div className="reel-seat" aria-hidden="true" />
           {[-2, -1, 0, 1, 2].map((slot) => {
