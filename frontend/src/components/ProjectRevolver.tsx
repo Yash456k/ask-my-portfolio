@@ -200,7 +200,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
   return (
     <div className="smooth-reel-stage">
       <div ref={root} className="smooth-reel" role="group" aria-label="Project selector" aria-describedby="project-gesture" tabIndex={0} onKeyDown={keyboard}>
-        <span className={`reel-scroll-cue ${moved ? 'is-used' : ''}`} aria-hidden="true"><i /><b>Scroll</b></span>
+        <span className={`reel-scroll-cue ${moved ? 'is-used' : ''}`} aria-hidden="true" />
         <div className="reel-aperture" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={(event) => pointerEnd(event)} onPointerCancel={(event) => pointerEnd(event, true)} onLostPointerCapture={lostPointerCapture}>
           <div className="reel-seat" aria-hidden="true" />
           {[-2, -1, 0, 1, 2].map((slot) => {

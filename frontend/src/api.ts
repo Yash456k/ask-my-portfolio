@@ -38,7 +38,13 @@ async function errorFromResponse(response: Response): Promise<ApiError> {
 
   if (response.status === 429) {
     const wait = retryAfter && Number.isFinite(retryAfter) ? formatWait(retryAfter) : 'later'
-    return new ApiError(`This demo's shared usage limit has been reached. Please try again ${wait}.`, 429, retryAfter)
+    // The API names which limit was hit: this visitor's, everyone's for the day, or the month's budget.
+    const reason = detail.startsWith('ip_')
+      ? "You've reached today's question limit for this demo."
+      : detail.startsWith('monthly_budget_')
+        ? "This demo has used its budget for the month."
+        : "This demo's shared usage limit has been reached."
+    return new ApiError(`${reason} Please try again ${wait}.`, 429, retryAfter)
   }
   if (response.status === 422) {
     return new ApiError('That request could not be validated. Shorten the question and try again.', 422)
