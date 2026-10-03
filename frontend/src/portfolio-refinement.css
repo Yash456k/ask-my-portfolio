@@ -417,12 +417,11 @@
 .reel-scroll-cue { display: none; }
 @media (min-width: 851px) {
   .tactile-work .smooth-reel { position: relative; }
-  /* Small arrows above and below the selected project's number say the wheel moves both ways.
-     They fade out once it has moved. */
-  .tactile-work .reel-scroll-cue { display: block; position: absolute; z-index: 3; left: 10px; top: 50%; width: 20px; height: 62px; margin-top: -31px; pointer-events: none; transition: opacity 500ms ease; }
-  .tactile-work .reel-scroll-cue::before, .tactile-work .reel-scroll-cue::after { position: absolute; left: 0; right: 0; text-align: center; color: rgb(var(--theme-accent-rgb, 175 70 54) / 0.75); font: 500 12px/1 'DM Sans', sans-serif; }
-  .tactile-work .reel-scroll-cue::before { content: '↑'; top: 0; animation: reel-cue-up 2s ease-in-out infinite; }
-  .tactile-work .reel-scroll-cue::after { content: '↓'; bottom: 0; animation: reel-cue-down 2s ease-in-out infinite; }
+  /* Two chevrons up and two down, left of the selected project, lighting from the middle
+     outwards. They fade out once the wheel has moved. */
+  .tactile-work .reel-scroll-cue { display: block; position: absolute; right: calc(100% + 12px); top: 50%; width: 28px; height: 64px; margin-top: -32px; fill: none; stroke: rgb(var(--theme-accent-rgb, 170 71 49)); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; transition: opacity 500ms ease; }
+  .tactile-work .reel-scroll-cue path { animation: reel-cue 1.8s ease-in-out infinite; }
+  .tactile-work .reel-scroll-cue .is-outer { animation-delay: .24s; }
   .tactile-work .reel-scroll-cue.is-used { opacity: 0; }
   /* Back to revolver sits where View project was. */
   .tactile-work .project-focus-footer { justify-content: space-between; }
@@ -432,6 +431,5 @@
   .activity-focus { width: 84%; justify-self: end; }
   .activity-focus .activity-card-stack, .activity-focus .activity-caption { zoom: .84; }
 }
-@keyframes reel-cue-up { 0%, 100% { opacity: .4; translate: 0 0; } 50% { opacity: 1; translate: 0 -3px; } }
-@keyframes reel-cue-down { 0%, 100% { opacity: .4; translate: 0 0; } 50% { opacity: 1; translate: 0 3px; } }
-@media (prefers-reduced-motion: reduce) { .reel-scroll-cue::before, .reel-scroll-cue::after { animation: none; opacity: 1; } }
+@keyframes reel-cue { 0%, 70%, 100% { opacity: .22; } 35% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .reel-scroll-cue path { animation: none; } }
