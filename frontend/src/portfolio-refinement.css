@@ -418,12 +418,14 @@
 @media (min-width: 851px) {
   .tactile-work .smooth-reel { position: relative; }
   /* A mouse with a turning wheel, a down arrow and the word; it fades out once the wheel has moved. */
-  .tactile-work .reel-scroll-cue { position: absolute; left: -54px; top: 50%; display: flex; flex-direction: column; align-items: center; transform: translateY(-50%); pointer-events: none; transition: opacity 500ms ease; }
-  .tactile-work .reel-scroll-cue i { position: relative; width: 24px; height: 38px; margin-bottom: 12px; border: 2px solid rgb(var(--theme-accent-rgb, 175 70 54) / 0.85); border-radius: 13px; }
+  .tactile-work .reel-scroll-cue { position: absolute; right: calc(100% + 14px); top: 50%; display: flex; flex-direction: column; align-items: center; transform: translateY(-50%); pointer-events: none; transition: opacity 500ms ease; }
+  .tactile-work .reel-scroll-cue i { position: relative; width: 24px; height: 38px; margin-bottom: 9px; border: 2px solid rgb(var(--theme-accent-rgb, 175 70 54) / 0.85); border-radius: 13px; }
   .tactile-work .reel-scroll-cue i::after { content: ''; position: absolute; left: 8px; top: 7px; width: 4px; height: 8px; border-radius: 2px; background: rgb(var(--theme-accent-rgb, 175 70 54)); animation: reel-scroll-cue 1.8s cubic-bezier(.45,.05,.3,1) infinite; }
-  .tactile-work .reel-scroll-cue b { writing-mode: vertical-rl; color: rgb(var(--theme-accent-rgb, 175 70 54) / 0.9); font: 600 10px/1 'DM Sans', sans-serif; letter-spacing: .22em; text-transform: uppercase; }
+  .tactile-work .reel-scroll-cue b { margin-right: -.18em; color: rgb(var(--theme-accent-rgb, 175 70 54) / 0.9); font: 600 10px/1 'DM Sans', sans-serif; letter-spacing: .18em; text-transform: uppercase; white-space: nowrap; }
   .tactile-work .reel-scroll-cue::after { content: '↓'; margin-top: 6px; color: rgb(var(--theme-accent-rgb, 175 70 54) / 0.9); font: 500 15px/1 'DM Sans', sans-serif; animation: reel-scroll-arrow 1.8s ease-in-out infinite; }
   .tactile-work .reel-scroll-cue.is-used { opacity: 0; }
+  /* Narrow desktops have a small gap beside the wheel: the mouse and arrow alone fit it. */
+  @media (max-width: 1100px) { .tactile-work .reel-scroll-cue b { display: none; } }
   /* Back to revolver sits where View project was. */
   .tactile-work .project-focus-footer { justify-content: space-between; }
   /* The activity card is a little smaller, so the headline leads. Only the card and its caption
