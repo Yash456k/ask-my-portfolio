@@ -417,10 +417,12 @@
 .reel-scroll-cue { display: none; }
 @media (min-width: 851px) {
   .tactile-work .smooth-reel { position: relative; }
-  /* A mouse with a turning wheel and a down arrow; it fades out once the wheel has been moved. */
-  .tactile-work .reel-scroll-cue { display: block; position: absolute; left: -42px; top: 50%; width: 20px; height: 32px; margin-top: -26px; border: 1.5px solid rgb(var(--theme-accent-rgb, 175 70 54) / 0.7); border-radius: 11px; pointer-events: none; transition: opacity 500ms ease; }
-  .tactile-work .reel-scroll-cue::after { content: ''; position: absolute; left: 7px; top: 6px; width: 3px; height: 7px; border-radius: 2px; background: rgb(var(--theme-accent-rgb, 175 70 54)); animation: reel-scroll-cue 1.8s cubic-bezier(.45,.05,.3,1) infinite; }
-  .tactile-work .reel-scroll-cue::before { content: ''; position: absolute; left: 50%; top: calc(100% + 7px); width: 7px; height: 7px; margin-left: -4.5px; border-right: 1.5px solid rgb(var(--theme-accent-rgb, 175 70 54) / 0.7); border-bottom: 1.5px solid rgb(var(--theme-accent-rgb, 175 70 54) / 0.7); transform: rotate(45deg); animation: reel-scroll-arrow 1.8s ease-in-out infinite; }
+  /* A mouse with a turning wheel, a down arrow and the word; it fades out once the wheel has moved. */
+  .tactile-work .reel-scroll-cue { position: absolute; left: -54px; top: 50%; display: flex; flex-direction: column; align-items: center; transform: translateY(-50%); pointer-events: none; transition: opacity 500ms ease; }
+  .tactile-work .reel-scroll-cue i { position: relative; width: 24px; height: 38px; margin-bottom: 12px; border: 2px solid rgb(var(--theme-accent-rgb, 175 70 54) / 0.85); border-radius: 13px; }
+  .tactile-work .reel-scroll-cue i::after { content: ''; position: absolute; left: 8px; top: 7px; width: 4px; height: 8px; border-radius: 2px; background: rgb(var(--theme-accent-rgb, 175 70 54)); animation: reel-scroll-cue 1.8s cubic-bezier(.45,.05,.3,1) infinite; }
+  .tactile-work .reel-scroll-cue b { writing-mode: vertical-rl; color: rgb(var(--theme-accent-rgb, 175 70 54) / 0.9); font: 600 10px/1 'DM Sans', sans-serif; letter-spacing: .22em; text-transform: uppercase; }
+  .tactile-work .reel-scroll-cue::after { content: '↓'; margin-top: 6px; color: rgb(var(--theme-accent-rgb, 175 70 54) / 0.9); font: 500 15px/1 'DM Sans', sans-serif; animation: reel-scroll-arrow 1.8s ease-in-out infinite; }
   .tactile-work .reel-scroll-cue.is-used { opacity: 0; }
   /* Back to revolver sits where View project was. */
   .tactile-work .project-focus-footer { justify-content: space-between; }
@@ -432,4 +434,4 @@
 }
 @keyframes reel-scroll-cue { 0% { opacity: 0; transform: translateY(0); } 25% { opacity: 1; } 70% { opacity: 1; transform: translateY(9px); } 100% { opacity: 0; transform: translateY(11px); } }
 @keyframes reel-scroll-arrow { 0%, 100% { opacity: .35; translate: 0 0; } 55% { opacity: 1; translate: 0 4px; } }
-@media (prefers-reduced-motion: reduce) { .reel-scroll-cue::after, .reel-scroll-cue::before { animation: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .reel-scroll-cue i::after, .reel-scroll-cue::after { animation: none; opacity: 1; } }

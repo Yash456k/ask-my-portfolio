@@ -147,6 +147,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
                 onChange={setActiveProjectIndex}
                 onPositionChange={updateProjectPointer}
                 onOpen={openProject}
+                paused={projectOpen}
               />
             </div>
             <div className="project-detail-view" aria-hidden={!projectOpen} inert={projectView !== 'detail'}>

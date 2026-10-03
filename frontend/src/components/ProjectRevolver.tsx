@@ -9,9 +9,16 @@ type ProjectRevolverProps = {
   onChange: (index: number) => void
   onOpen: () => void
   onPositionChange: (position: number) => void
+  /** True while a project is open: the wheel does not turn by itself then. */
+  paused?: boolean
 }
 
-export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPositionChange }: ProjectRevolverProps) {
+// The wheel turns by itself while its section is on screen: 5 s after the last mouse movement
+// there, and 10 s after the visitor last moved the wheel.
+const AUTO_IDLE_MS = 5_000
+const AUTO_AFTER_USER_MS = 10_000
+
+export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPositionChange, paused = false }: ProjectRevolverProps) {
   const [position, setPosition] = useState(activeIndex)
   const physical = useRef({ position: activeIndex, velocity: 0, target: activeIndex })
   const frame = useRef<number | null>(null)
@@ -58,12 +65,48 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
     if (frame.current !== null) cancelAnimationFrame(frame.current)
   }, [])
 
-  const select = useCallback((target: number) => {
+  const turnTo = useCallback((target: number) => {
     setMoved(true)
     physical.current.target = target
     onChange(wrapIndex(target, projects.length))
     animate()
   }, [animate, onChange, projects.length])
+
+  const nextAuto = useRef(Number.POSITIVE_INFINITY)
+  const autoPaused = useRef(paused)
+  useEffect(() => { autoPaused.current = paused }, [paused])
+
+  // Every move the visitor makes goes through here.
+  const select = useCallback((target: number) => {
+    nextAuto.current = performance.now() + AUTO_AFTER_USER_MS
+    turnTo(target)
+  }, [turnTo])
+
+  useEffect(() => {
+    const element = root.current
+    if (!element || !('IntersectionObserver' in window)) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const section = element.closest<HTMLElement>('.portfolio-section') ?? element
+    let visible = false
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting
+      if (visible) nextAuto.current = performance.now() + AUTO_IDLE_MS
+    }, { threshold: .6 })
+    observer.observe(element)
+    const mouseMoved = () => { nextAuto.current = Math.max(nextAuto.current, performance.now() + AUTO_IDLE_MS) }
+    section.addEventListener('pointermove', mouseMoved)
+    const timer = window.setInterval(() => {
+      const wide = window.matchMedia('(min-width: 851px)').matches
+      if (!visible || !wide || autoPaused.current || gesture.current || document.hidden || performance.now() < nextAuto.current) return
+      nextAuto.current = performance.now() + AUTO_IDLE_MS
+      turnTo(physical.current.target + 1)
+    }, 250)
+    return () => {
+      observer.disconnect()
+      section.removeEventListener('pointermove', mouseMoved)
+      window.clearInterval(timer)
+    }
+  }, [turnTo])
 
   const rotate = useCallback((direction: number) => {
     // Bound queued travel without throwing away input during an animation.
@@ -157,7 +200,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPos
   return (
     <div className="smooth-reel-stage">
       <div ref={root} className="smooth-reel" role="group" aria-label="Project selector" aria-describedby="project-gesture" tabIndex={0} onKeyDown={keyboard}>
-        <span className={`reel-scroll-cue ${moved ? 'is-used' : ''}`} aria-hidden="true" />
+        <span className={`reel-scroll-cue ${moved ? 'is-used' : ''}`} aria-hidden="true"><i /><b>Scroll</b></span>
         <div className="reel-aperture" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={(event) => pointerEnd(event)} onPointerCancel={(event) => pointerEnd(event, true)} onLostPointerCapture={lostPointerCapture}>
           <div className="reel-seat" aria-hidden="true" />
           {[-2, -1, 0, 1, 2].map((slot) => {
