@@ -8,11 +8,15 @@ type ActivityKind = 'codex' | 'github'
 type CardPosition = 'active' | 'behind' | 'swapping-out' | 'swapping-in'
 type ActivityRange = 'quarter' | 'year'
 
+type AgentSplit = { codex: number; claude: number }
+
 type HeatmapDay = {
   date: string
   count: number
   level: number
   isFuture: boolean
+  /** Agent tokens only: how the day's total splits between Codex and Claude Code. */
+  split?: AgentSplit
 }
 
 const DAY_MS = 86_400_000
@@ -52,6 +56,14 @@ function formatTooltipValue(value: number, isTokenCount: boolean): string {
   return value.toLocaleString()
 }
 
+function splitParts(split: AgentSplit): Array<readonly [string, number]> {
+  return ([['Codex', split.codex], ['Claude Code', split.claude]] as const).filter(([, tokens]) => tokens > 0)
+}
+
+function splitText(split: AgentSplit): string {
+  return splitParts(split).map(([name, tokens]) => `${name} ${formatTooltipValue(tokens, true)}`).join(' · ')
+}
+
 function formatDate(value: string): string {
   return dateAtNoon(value).toLocaleDateString('en', {
     day: 'numeric',
@@ -64,15 +76,26 @@ function quantile(sorted: number[], fraction: number): number {
   return sorted[Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * fraction))] ?? 0
 }
 
+/** Agent tokens: Codex and Claude Code added together per day, keeping the split. */
+function agentDays(activity: ActivitySnapshot): Array<{ date: string; count: number; split: AgentSplit }> {
+  const byDate = new Map<string, AgentSplit>()
+  const add = (date: string, part: keyof AgentSplit, tokens: number) => {
+    const split = byDate.get(date) ?? { codex: 0, claude: 0 }
+    split[part] += tokens
+    byDate.set(date, split)
+  }
+  for (const day of activity.codex.days) add(day.date, 'codex', day.tokens)
+  for (const day of activity.claude?.days ?? []) add(day.date, 'claude', day.tokens)
+  return [...byDate].map(([date, split]) => ({ date, count: split.codex + split.claude, split }))
+}
+
 function buildCalendar(activity: ActivitySnapshot, kind: ActivityKind, range: ActivityRange): HeatmapDay[][] {
-  const sourceDays = kind === 'codex'
-    ? activity.codex.days.map((day) => ({ date: day.date, count: day.tokens }))
-    : activity.github.days
+  const sourceDays: Array<{ date: string; count: number; split?: AgentSplit }> = kind === 'codex' ? agentDays(activity) : activity.github.days
   const counts = sourceDays.map((day) => day.count).filter(Boolean).sort((a, b) => a - b)
   // Keep ordinary days quiet and reserve the brightest shade for rare peaks.
   const bands = [0.5, 0.75, 0.95]
   const thresholds = bands.map((fraction) => quantile(counts, fraction))
-  const byDate = new Map(sourceDays.map((day) => [day.date, day.count]))
+  const byDate = new Map(sourceDays.map((day) => [day.date, day]))
   const lastDataDay = dateAtNoon(activity.period.end)
   const calendarEnd = new Date(lastDataDay)
   calendarEnd.setDate(calendarEnd.getDate() + (6 - calendarEnd.getDay()))
@@ -83,9 +106,10 @@ function buildCalendar(activity: ActivitySnapshot, kind: ActivityKind, range: Ac
     Array.from({ length: 7 }, (_, dayIndex) => {
       const date = new Date(calendarStart.getTime() + ((weekIndex * 7 + dayIndex) * DAY_MS))
       const dateKey = isoDate(date)
-      const count = byDate.get(dateKey) ?? 0
+      const source = byDate.get(dateKey)
+      const count = source?.count ?? 0
       const level = count === 0 ? 0 : 1 + thresholds.filter((threshold) => count > threshold).length
-      return { date: dateKey, count, level, isFuture: date > lastDataDay }
+      return { date: dateKey, count, level, isFuture: date > lastDataDay, split: source?.split }
     }),
   )
 }
@@ -166,7 +190,7 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
   const focusIndex = Math.max(0, focusedDay ? days.findIndex((day) => day.date === focusedDay) : lastDayIndex)
   const isCodex = kind === 'codex'
   const displayTotal = isCodex && range === 'year'
-    ? activity.codex.lifetimeTotal
+    ? activity.codex.lifetimeTotal + (activity.claude?.lifetimeTotal ?? 0)
     : summary.total
   const unit = isCodex
     ? range === 'year' ? 'lifetime tokens' : 'tokens in period'
@@ -212,8 +236,8 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
         <div className="activity-card-identity">
           <span className="activity-card-mark">{isCodex ? <CodexMark /> : <GitHubMark />}</span>
           <div>
-            <p>{isCodex ? 'Codex' : 'GitHub'} activity</p>
-            <span>{range === 'quarter' ? 'Last 3 months' : 'Last 12 months'}</span>
+            <p>{isCodex ? 'Agent tokens' : 'GitHub activity'}</p>
+            <span>{isCodex ? 'Codex + Claude Code · ' : ''}{range === 'quarter' ? 'Last 3 months' : 'Last 12 months'}</span>
           </div>
         </div>
         <span className="activity-live"><i /> Updated daily</span>
@@ -239,7 +263,7 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
         )}
       </div>
 
-      <div className={`activity-calendar is-${range}`} role="group" aria-label={`${isCodex ? 'Codex' : 'GitHub'} daily activity for the last ${range === 'quarter' ? '3 months' : 'year'}`}>
+      <div className={`activity-calendar is-${range}`} role="group" aria-label={`${isCodex ? 'Agent token' : 'GitHub'} daily activity for the last ${range === 'quarter' ? '3 months' : 'year'}`}>
         <div className="activity-months" aria-hidden="true" style={{ gridTemplateColumns: columnTemplate }}>
           {months.map((month) => (
             <span key={`${month.week}-${month.label}`} style={{ gridColumnStart: month.week }}>{month.label}</span>
@@ -254,7 +278,7 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
               key={day.date}
               disabled={day.isFuture}
               tabIndex={index === focusIndex ? 0 : -1}
-              aria-label={`${formatDate(day.date)}: ${formatTooltipValue(day.count, isCodex)} ${isCodex ? 'tokens' : 'contributions'}`}
+              aria-label={`${formatDate(day.date)}: ${formatTooltipValue(day.count, isCodex)} ${isCodex ? 'tokens' : 'contributions'}${day.split && day.count > 0 ? ` (${splitText(day.split)})` : ''}`}
               onMouseEnter={(event) => showTooltip(event.currentTarget, day)}
               onMouseLeave={() => setHovered(null)}
               onFocus={(event) => {
@@ -271,6 +295,13 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
             style={{ left: hovered.left, top: hovered.top }}
           >
             <strong>{formatTooltipValue(hovered.day.count, isCodex)}</strong> {isCodex ? 'tokens' : 'contributions'}
+            {hovered.day.split && hovered.day.count > 0 && (
+              <span className="activity-split">
+                {splitParts(hovered.day.split).map(([name, tokens]) => (
+                  <span key={name}><b>{formatNumber(tokens)}</b> {name}</span>
+                ))}
+              </span>
+            )}
             <span>{formatDate(hovered.day.date)}</span>
           </output>
         )}
@@ -278,7 +309,7 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
 
       <footer className="activity-card-footer">
         <span><strong>{summary.activeDays}</strong> active days</span>
-        <span>Refreshed daily from official activity</span>
+        <span>{isCodex ? 'Refreshed daily from Codex and Claude Code' : 'Refreshed daily from official activity'}</span>
       </footer>
     </article>
   )
@@ -351,7 +382,7 @@ export function ActivityDeck() {
         <div className="activity-switch" aria-label="Choose activity source">
           <span className={`activity-switch-glider is-${selected}`} aria-hidden="true" />
           <button type="button" aria-pressed={selected === 'codex'} disabled={Boolean(swap)} onClick={() => selectCard('codex')}>
-            Codex
+            Agent tokens
           </button>
           <button type="button" aria-pressed={selected === 'github'} disabled={Boolean(swap)} onClick={() => selectCard('github')}>
             GitHub

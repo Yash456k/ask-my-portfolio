@@ -60,66 +60,53 @@ function NskDemo() {
   )
 }
 
-function Card({ label, children }: { label: string, children?: ReactNode }) {
-  return (
-    <>
-      <rect x="0" y="0" width="128" height="26" rx="6" />
-      <circle cx="13" cy="13" r="5" />
-      <text className="demo-text demo-small" x="24" y="16.5">{label}</text>
-      <path className="demo-faint" d="M74 13 H94" />
-      {children}
-    </>
-  )
-}
-
-
-// HiveNote's dashboard bee (hivenote/ui/app.js), redrawn in outline.
-function Bee({ className, x, y }: { className: string, x: number, y: number }) {
+// HiveNote's dashboard bee (hivenote/ui/app.js), redrawn in outline and centred on its body.
+function Bee({ flip = false }: { flip?: boolean }) {
   const clip = `bee-${useId().replace(/:/g, '')}`
   return (
-    <g transform={`translate(${x} ${y}) scale(0.5)`}>
-      <g className={`hive-bee ${className}`} style={at(0.75)}>
-        <g className="bee-whole">
-          <defs><clipPath id={clip}><ellipse cx="32" cy="38" rx="20" ry="17.5" /></clipPath></defs>
-          <g transform="rotate(-22 25 21)"><ellipse className="bee-wing is-back" cx="25" cy="15" rx="8" ry="12" /></g>
-          <path d="M12.8 37 L6.5 39 L12.8 41.2 Z" />
-          <g clipPath={`url(#${clip})`}><path d="M20.75 18 V60 M28.75 18 V60" /></g>
-          <ellipse cx="32" cy="38" rx="20" ry="17.5" />
-          <g transform="rotate(16 36 21)"><ellipse className="bee-wing" cx="36" cy="14" rx="8.5" ry="12.5" /></g>
-          <path d="M41 24 C42 18.5 44.5 15 47.5 13.5 M37 22.5 C37 17 38 13.5 40 11" />
-          <circle cx="48" cy="13" r="2.2" /><circle cx="40.4" cy="10.5" r="2.2" />
-          <circle className="bee-eye" cx="39.5" cy="35.5" r="2.2" /><circle className="bee-eye" cx="46" cy="35.5" r="2" />
-          <path d="M40.6 40.8 q2.3 2.2 4.6 0" />
-        </g>
+    <g transform={`scale(${flip ? -0.5 : 0.5} 0.5) translate(-32 -38)`}>
+      <g className="bee-whole">
+        <defs><clipPath id={clip}><ellipse cx="32" cy="38" rx="20" ry="17.5" /></clipPath></defs>
+        <g transform="rotate(-22 25 21)"><ellipse className="bee-wing is-back" cx="25" cy="15" rx="8" ry="12" /></g>
+        <path d="M12.8 37 L6.5 39 L12.8 41.2 Z" />
+        <g clipPath={`url(#${clip})`}><path d="M20.75 18 V60 M28.75 18 V60" /></g>
+        <ellipse cx="32" cy="38" rx="20" ry="17.5" />
+        <g transform="rotate(16 36 21)"><ellipse className="bee-wing" cx="36" cy="14" rx="8.5" ry="12.5" /></g>
+        <path d="M41 24 C42 18.5 44.5 15 47.5 13.5 M37 22.5 C37 17 38 13.5 40 11" />
+        <circle cx="48" cy="13" r="2.2" /><circle cx="40.4" cy="10.5" r="2.2" />
+        <circle className="bee-eye" cx="39.5" cy="35.5" r="2.2" /><circle className="bee-eye" cx="46" cy="35.5" r="2" />
+        <path d="M40.6 40.8 q2.3 2.2 4.6 0" />
       </g>
     </g>
   )
 }
 
+const hex = (x: number, y: number, r = 20.5) => {
+  const w = r * Math.sqrt(3) / 2
+  return `M${x} ${y - r} L${x + w} ${y - r / 2} L${x + w} ${y + r / 2} L${x} ${y + r} L${x - w} ${y + r / 2} L${x - w} ${y - r / 2} Z`
+}
+// Seven cells in two rows; each cell is a note. Every bee works its own corner.
+const CELLS = [[240, 28], [280, 28], [320, 28], [360, 28], [260, 62], [300, 62], [340, 62]] as const
+const NOTE_A = CELLS[0], NOTE_B = CELLS[3], NOTE_C = CELLS[5], NOTE_D = CELLS[6]
+const writing = (x: number, y: number, start: number) => [[-9, 9, -6], [-10, 7, 0], [-7, 6, 6]].map(([a, b, dy], i) => (
+  <path key={i} className="d-draw" pathLength={1} style={at(start + i * 0.3)} d={`M${x + a} ${y + dy} H${x + b}`} />
+))
+
 function HiveDemo() {
-  const columns = [['To do', 32], ['Doing', 226], ['Done', 420]] as const
   return (
     <>
-      {columns.map(([name, x], index) => (
-        <g key={name}>
-          <rect className="d-draw demo-soft" pathLength={1} style={at(index * 0.12)} x={x} y="4" width="150" height="92" rx="9" />
-          <text className="d-fade demo-text demo-small demo-muted" style={at(0.3 + index * 0.12)} x={x + 12} y="20">{name}</text>
-        </g>
-      ))}
-      <g transform="translate(431 62)"><g className="d-pop" style={at(0.6)}><Card label="Hermes" /></g></g>
-      <g transform="translate(43 62)">
-        <g className="hive-card is-second" style={at(0.75)}><g className="d-pop" style={at(0.75)}><Card label="Codex" /></g><Bee className="is-second" x={94} y={-24} /></g>
-      </g>
-      <g transform="translate(43 28)">
-        <g className="hive-card is-first" style={at(0.75)}>
-          <g className="d-pop" style={at(0.6)}>
-            <Card label="Claude">
-              <path className="d-draw demo-strong" pathLength={1} style={at(4.35)} d="M100 13 l4 4 l8 -9" />
-            </Card>
-          </g>
-          <Bee className="is-first" x={94} y={-24} />
-        </g>
-      </g>
+      {CELLS.map(([x, y], i) => <path key={`${x}-${y}`} className="d-draw demo-soft" pathLength={1} style={at(0.05 * i)} d={hex(x, y)} />)}
+      {/* Claude writes a note; the cell glows when it is done. */}
+      {writing(NOTE_A[0], NOTE_A[1], 2.0)}
+      <path className="d-pop demo-strong" style={at(3.05)} d={hex(NOTE_A[0], NOTE_A[1])} />
+      {/* Codex watches that note, then picks up the next one. */}
+      <path className="hive-thread demo-faint" style={at(1.7)} d={`M${NOTE_B[0] - 8} ${NOTE_B[1] - 14} Q${(NOTE_A[0] + NOTE_B[0]) / 2} ${NOTE_A[1] - 34} ${NOTE_A[0] + 8} ${NOTE_A[1] - 14}`} />
+      {writing(NOTE_C[0], NOTE_C[1], 3.9)}
+      {/* Hermes reads a note on its way past. */}
+      <path className="hive-read demo-strong" style={at(2.15)} d={hex(NOTE_D[0], NOTE_D[1])} />
+      <g className="hive-bee is-claude" style={at(0.6)}><Bee /><text className="demo-text demo-tiny" x="-13" y="4" textAnchor="end">Claude</text></g>
+      <g className="hive-bee is-codex" style={at(0.6)}><Bee flip /><text className="demo-text demo-tiny" x="13" y="4">Codex</text></g>
+      <g className="hive-bee is-hermes" style={at(0.6)}><Bee flip /><text className="demo-text demo-tiny" x="13" y="4">Hermes</text></g>
     </>
   )
 }
@@ -127,7 +114,7 @@ function HiveDemo() {
 const DEMOS: Record<string, { title: string, draw: () => ReactNode }> = {
   'portfolio-rag': { title: 'A question answered with its sources', draw: AskDemo },
   nsk: { title: 'Three people race for one slot; one booking wins', draw: NskDemo },
-  hivenote: { title: 'Agents claim tasks and move them to done', draw: HiveDemo },
+  hivenote: { title: 'Agents in a hive write notes, wait on each other and read what others left', draw: HiveDemo },
 }
 
 export function ProjectDemo({ projectId }: { projectId: string }) {

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import projectsData from '../data/projects.json'
+import { ProjectDemo } from './ProjectDemo'
 import { ProjectDetail } from './ProjectDetail'
 import { ProjectRevolver } from './ProjectRevolver'
 import type { ProjectItem } from './projectTypes'
@@ -104,7 +105,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
 
   useEffect(() => {
     if (!interacted.current) return
-    const target = panel.current?.querySelector<HTMLButtonElement>(projectOpen ? '.project-focus-header button' : '.reel-open')
+    const target = panel.current?.querySelector<HTMLButtonElement>(projectOpen ? '.project-back' : '.reel-open')
     target?.focus({ preventScroll: true })
     if (projectOpen && window.matchMedia('(max-width: 850px)').matches && (panel.current?.getBoundingClientRect().top ?? 0) < 24) {
       panel.current?.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })
@@ -146,11 +147,14 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
                 onChange={setActiveProjectIndex}
                 onPositionChange={updateProjectPointer}
                 onOpen={openProject}
+                paused={projectOpen}
               />
             </div>
             <div className="project-detail-view" aria-hidden={!projectOpen} inert={projectView !== 'detail'}>
               <ProjectDetail project={selectedProject} onBack={closeProject} />
             </div>
+            {/* One drawing for both views, so opening a project leaves it playing in place. */}
+            <div className="project-demo-dock"><ProjectDemo projectId={selectedProject.id} /></div>
           </div>
         </section>
       </div>

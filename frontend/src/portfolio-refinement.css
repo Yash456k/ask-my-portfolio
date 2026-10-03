@@ -342,17 +342,30 @@
   .tactile-work .project-selector-view { display: flex; flex-direction: column; }
   .tactile-work .smooth-reel-stage { flex: 1; display: flex; flex-direction: column; min-height: 0; }
   /* The footer is taller than "Drag to explore"; the top padding evens the wheel's space. */
-  .tactile-work .smooth-reel { --reel-spacing: 112px; display: flex; flex-direction: column; align-items: stretch; }
-  .tactile-work .reel-aperture { height: 320px; mask-image: linear-gradient(transparent,#000 6%,#000 94%,transparent); }
+  .tactile-work .project-view-stack { position: relative; --demo-h: clamp(84px,min(13svh,9vw),118px); }
+  .tactile-work .smooth-reel { --reel-spacing: 112px; flex: 1; display: flex; flex-direction: column; align-items: stretch; }
+  .tactile-work .reel-aperture { flex: 1; height: auto; min-height: 260px; mask-image: linear-gradient(transparent,#000 6%,#000 94%,transparent); }
   .tactile-work .reel-seat { height: 124px; }
-  /* The project's drawing fills the space between the wheel and its footer. */
-  .tactile-work .reel-demo { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding-block: 6px; }
+  /* Both views keep the same space above their footer for the project's drawing, which sits
+     outside them so opening a project leaves it playing in place. */
+  .tactile-work .reel-demo { display: block; flex: 0 0 var(--demo-h); }
+  .tactile-work .project-demo-dock { display: flex; position: absolute; left: 0; right: 0; bottom: 61px; height: var(--demo-h); align-items: center; justify-content: center; pointer-events: none; }
+  .tactile-work .project-detail-view { align-self: stretch; }
+  .tactile-work .project-focus-view { display: flex; flex-direction: column; gap: clamp(10px,1.4svh,13px); }
+  .tactile-work .project-focus-copy h2 { font-size: clamp(36px,min(3.2vw,5.6svh),46px); }
+  .tactile-work .project-focus-copy > p:last-child { margin-top: 10px; font-size: clamp(14px,min(1vw,2svh),16px); line-height: 1.55; }
+  .tactile-work .project-focus-metrics li { padding: clamp(8px,1.3svh,12px) 8px; font-size: clamp(12px,.95vw,13.5px); }
+  .tactile-work .project-focus-highlights { gap: 8px; margin-bottom: var(--demo-h); }
+  .tactile-work .project-focus-highlights li { font-size: clamp(13.5px,min(.95vw,1.9svh),15px); line-height: 1.5; }
+  /* Same box as the wheel's footer, so the links sit on the 'Drag to explore' line. */
+  .tactile-work .project-focus-footer { box-sizing: border-box; display: flex; align-items: center; min-height: 61px; margin-top: auto; margin-bottom: -12px; padding-top: 20px; }
+  .tactile-work .project-focus-footer a { min-height: 40px; }
   .tactile-work .reel-item small { max-width: 520px; font-size: 13px; }
   .tactile-work .reel-footer { margin-bottom: -12px; }
 }
 
 /* Outline drawings of each project, in the accent colour. Desktop only. */
-.reel-demo { display: none; }
+.reel-demo, .project-demo-dock { display: none; }
 .project-demo { width: 100%; max-width: 600px; height: auto; max-height: 100%; overflow: visible; font-family: 'DM Sans', system-ui, sans-serif; animation: demo-cycle var(--cycle, 6500ms) linear both; }
 .project-demo rect, .project-demo circle, .project-demo ellipse, .project-demo path { fill: none; stroke: rgb(var(--theme-accent-rgb, 175 70 54) / 0.8); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .project-demo .demo-soft { stroke: rgb(var(--theme-accent-rgb, 175 70 54) / 0.45); }
@@ -366,25 +379,57 @@
 .project-demo .d-pop { transform-box: fill-box; transform-origin: center; animation: demo-pop 450ms cubic-bezier(.22,1,.36,1) var(--d, 0s) both; }
 .project-demo .demo-cursor { animation: demo-cursor-win 1.3s cubic-bezier(.3,.7,.3,1) var(--d, 0s) both; }
 .project-demo .demo-cursor.is-loser { animation: demo-cursor-lose 1.9s cubic-bezier(.3,.7,.3,1) var(--d, 0s) both; }
-.project-demo .hive-card.is-first { animation: hive-first 4.5s cubic-bezier(.65,0,.35,1) var(--d, 0s) both; }
-.project-demo .hive-card.is-second { animation: hive-second 4.5s cubic-bezier(.65,0,.35,1) var(--d, 0s) both; }
 @keyframes demo-cycle { 0% { opacity: 0; } 4% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes demo-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes demo-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes demo-pop { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: none; } }
 @keyframes demo-cursor-win { 0% { opacity: 0; transform: translate(var(--fx), var(--fy)); } 15% { opacity: 1; } 100% { opacity: 1; transform: translate(0, 0); } }
 @keyframes demo-cursor-lose { 0% { opacity: 0; transform: translate(var(--fx), var(--fy)); } 12% { opacity: 1; } 70% { transform: translate(0, 0); } 77% { transform: translate(4px, 0); } 84% { transform: translate(-4px, 0); } 90% { opacity: 1; transform: translate(0, 0); } 100% { opacity: .3; transform: translate(calc(var(--fx) * .2), calc(var(--fy) * .2)); } }
-@keyframes hive-first { 0%, 22% { transform: translate(0, 0); } 34%, 62% { transform: translate(194px, 0); } 74%, 100% { transform: translate(388px, 0); } }
-@keyframes hive-second { 0%, 55% { transform: translate(0, 0); } 67%, 100% { transform: translate(194px, 0); } }
 .project-demo .bee-eye { fill: rgb(var(--theme-accent-rgb, 175 70 54) / 0.8); stroke: none; }
 .project-demo .bee-wing { stroke: rgb(var(--theme-accent-rgb, 175 70 54) / 0.5); transform-box: fill-box; transform-origin: 50% 100%; animation: bee-flap .14s ease-in-out infinite alternate; }
 .project-demo .bee-wing.is-back { animation-delay: -.07s; }
 .project-demo .bee-whole { animation: bee-bob 1.8s ease-in-out infinite; }
-.project-demo .hive-bee.is-first { animation: bee-first 4.5s cubic-bezier(.45,.05,.3,1) var(--d, 0s) both; }
-.project-demo .hive-bee.is-second { animation: bee-second 4.5s cubic-bezier(.45,.05,.3,1) var(--d, 0s) both; }
 @keyframes bee-flap { from { transform: scaleY(1); } to { transform: scaleY(.35); } }
 @keyframes bee-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-@keyframes bee-first { 0%, 14% { opacity: 0; transform: translate(-50px, -40px); } 24%, 76% { opacity: 1; transform: translate(0, 0); } 90%, 100% { opacity: 0; transform: translate(60px, -70px); } }
-@keyframes bee-second { 0%, 48% { opacity: 0; transform: translate(-50px, -40px); } 58%, 100% { opacity: 1; transform: translate(0, 0); } }
-@media (min-width: 851px) { .reel-demo { display: flex; } }
+.project-demo .demo-tiny { font-size: 8px; }
+.project-demo .hive-thread { stroke-dasharray: 2 3; animation: hive-thread 1.5s ease var(--d, 0s) both; }
+.project-demo .hive-read { animation: hive-read .9s ease var(--d, 0s) both; }
+.project-demo .hive-bee { animation: 5s cubic-bezier(.45,.05,.3,1) var(--d, 0s) both; }
+.project-demo .hive-bee.is-claude { animation-name: bee-claude; }
+.project-demo .hive-bee.is-codex { animation-name: bee-codex; }
+.project-demo .hive-bee.is-hermes { animation-name: bee-hermes; }
+@keyframes hive-thread { 0% { opacity: 0; } 15%, 85% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes hive-read { 0%, 100% { opacity: 0; } 35%, 60% { opacity: 1; } }
+/* Claude flies in, writes in a cell, and leaves once it is done. */
+@keyframes bee-claude { 0% { opacity: 0; transform: translate(40px, 70px); } 8% { opacity: 1; } 26%, 55% { transform: translate(240px, 18px); } 72% { opacity: 1; transform: translate(120px, 4px); } 80%, 100% { opacity: 0; transform: translate(70px, 0); } }
+/* Codex waits on the next cell, watching Claude's, then hops to a fresh one. */
+@keyframes bee-codex { 0% { opacity: 0; transform: translate(560px, 0); } 6% { opacity: 1; } 18%, 56% { transform: translate(360px, 18px); } 66%, 100% { opacity: 1; transform: translate(300px, 52px); } }
+/* Hermes drifts past and reads a note on the way. */
+@keyframes bee-hermes { 0% { opacity: 0; transform: translate(600px, 92px); } 5% { opacity: 1; } 30%, 42% { transform: translate(340px, 52px); } 76% { opacity: 1; transform: translate(90px, 94px); } 86%, 100% { opacity: 0; transform: translate(30px, 96px); } }
+@media (min-width: 851px) { .reel-demo, .project-demo-dock { display: flex; } .reel-demo { display: block; } }
 @media (prefers-reduced-motion: reduce) { .project-demo, .project-demo * { animation: none !important; } }
+@media (min-width: 851px) and (max-width: 1200px) {
+  .tactile-work .project-focus-copy > p:last-child { font-size: 13.5px; }
+  .tactile-work .project-focus-highlights li { font-size: 13px; }
+}
+
+/* Desktop: a quiet hint beside the wheel that it scrolls. */
+.reel-scroll-cue { display: none; }
+@media (min-width: 851px) {
+  .tactile-work .smooth-reel { position: relative; }
+  /* Two chevrons up and two down, left of the selected project, lighting from the middle
+     outwards. They fade out once the wheel has moved. */
+  .tactile-work .reel-scroll-cue { display: block; position: absolute; right: calc(100% + 12px); top: 50%; width: 28px; height: 64px; margin-top: -32px; fill: none; stroke: rgb(var(--theme-accent-rgb, 170 71 49)); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; transition: opacity 500ms ease; }
+  .tactile-work .reel-scroll-cue path { animation: reel-cue 1.8s ease-in-out infinite; }
+  .tactile-work .reel-scroll-cue .is-outer { animation-delay: .24s; }
+  .tactile-work .reel-scroll-cue.is-used { opacity: 0; }
+  /* Back to revolver sits where View project was. */
+  .tactile-work .project-focus-footer { justify-content: space-between; }
+  /* The activity card is a little smaller, so the headline leads. Only the card and its caption
+     are scaled: zoom makes every size fractional, which left the toggles' pills a pixel off
+     centre on 125% displays, so the toggles keep their native whole-pixel sizes. */
+  .activity-focus { width: 84%; justify-self: end; }
+  .activity-focus .activity-card-stack, .activity-focus .activity-caption { zoom: .84; }
+}
+@keyframes reel-cue { 0%, 70%, 100% { opacity: .22; } 35% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .reel-scroll-cue path { animation: none; } }
