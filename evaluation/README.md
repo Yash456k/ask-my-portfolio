@@ -23,6 +23,11 @@ on contracts skip it. `scripts.summarize_retrieval_runs` pools Jev and embedding
 comparison with bootstrap intervals and paired sign tests; the result is
 `retrieval-comparison-challenge-v3.json` and the write-up is `retrieval-challenge-v3.md`.
 
+`scripts.judge_answers` grades the answers `evaluate_answers` collects on challenge-v3, against each
+case's reference answer and the sources the chat was shown, and `scripts.judge_agreement` compares
+those grades with a person's from the grading page. The first full run is written up in
+`answers-challenge-v3.md`, with every answer and verdict in `answers-challenge-v3.judged.jsonl`.
+
 Each factual case contains source-and-chunk evidence groups. A qrel option combines a source,
 the current deterministic chunk indexes, and a section-specific content regex. The regex prevents
 an overlapping but wrong section from counting and makes intentional re-chunking easy to review.
