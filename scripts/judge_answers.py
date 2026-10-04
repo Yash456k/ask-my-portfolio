@@ -124,7 +124,7 @@ def judge(client: httpx.Client, url: str, key: str, model: str, prompt: str) -> 
         "temperature": 0,
     }
     last = "no attempt"
-    for attempt in range(5):
+    for attempt in range(12):
         try:
             response = client.post(url, json=payload, headers={"Authorization": f"Bearer {key}"})
             if response.status_code == 429 or response.status_code >= 500:
@@ -205,9 +205,17 @@ def main() -> None:
         json.loads(line) for line in args.answers.read_text(encoding="utf-8").splitlines() if line
     ]
     output = args.output or args.answers.with_name(f"judged-{args.answers.name}")
-    rows: list[dict[str, Any]] = []
-    with httpx.Client(timeout=90) as client:
+    # Verdicts are saved as they arrive, and a rerun picks up where the last one stopped.
+    rows: list[dict[str, Any]] = (
+        [json.loads(line) for line in output.read_text(encoding="utf-8").splitlines() if line]
+        if output.exists()
+        else []
+    )
+    judged = {row["caseId"] for row in rows}
+    with httpx.Client(timeout=90) as client, output.open("a", encoding="utf-8") as saved:
         for row in answered[: args.limit]:
+            if row["caseId"] in judged:
+                continue
             case = cases[row["caseId"]]
             response = row["response"]
             if not response.get("answer"):
@@ -246,9 +254,8 @@ def main() -> None:
                 json.dumps({"case": row["caseId"], "grade": rows[-1]["grade"], **verdict}),
                 flush=True,
             )
-    output.write_text(
-        "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows), encoding="utf-8"
-    )
+            saved.write(json.dumps(rows[-1], ensure_ascii=False) + "\n")
+            saved.flush()
     summary = {"judge": args.model, "answersFile": args.answers.name, **summarize(rows)}
     output.with_suffix(".summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps(summary, indent=2))
