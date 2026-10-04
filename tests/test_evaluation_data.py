@@ -88,7 +88,7 @@ def test_every_factual_qrel_matches_the_current_deterministic_corpus(pipeline) -
         for chunk in chunk_document(document, pipeline)
     ]
 
-    for case in load_cases(["dev", "heldout", "challenge-v2"]):
+    for case in load_cases(["dev", "heldout", "challenge-v2", "challenge-v3"]):
         ranks = evidence_group_ranks(case["required_evidence"], chunks)
         assert all(rank is not None for rank in ranks), json.dumps(
             {"case": case["id"], "ranks": ranks}
@@ -124,3 +124,14 @@ def test_qrels_remap_to_each_chunking_mode(pipeline, split: str, honor_manual: b
                     )
                 ]
                 assert option["chunk_indexes"] == sorted(matches)
+
+
+def test_judge_agreement_is_perfect_when_grades_match_and_zero_at_chance() -> None:
+    from scripts.judge_agreement import GRADES, kappa
+
+    same = [("good", "good"), ("ok", "ok"), ("bad", "bad"), ("good", "good")]
+    assert kappa(same, GRADES) == 1.0
+    # Each grade pairs equally often with every grade: no better than chance.
+    chance = [(a, b) for a in GRADES for b in GRADES]
+    assert kappa(chance, GRADES) == 0.0
+    assert kappa(chance, GRADES, weighted=True) == 0.0

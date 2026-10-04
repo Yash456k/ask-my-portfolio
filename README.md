@@ -37,14 +37,14 @@ A question first goes to a retriever, which picks the passages most likely to ho
 
 You can choose the retriever: one of six embedding models, two of them fine-tuned on reviewed questions about my work, or Jev, a decision model from TypeSafe that reads every passage as plain text and picks the one that answers the question. Jev is the default because it put the right passage first more often than any of the embedding models, and when nothing in the portfolio can answer a question it says so before a language model is ever called.
 
-| Retrieval | Recall@1 | Mean reciprocal rank |
-|---|---:|---:|
-| **Jev** (default) | **0.95** | **1.00** |
-| BGE Base | 0.82 | 0.91 |
-| Portfolio E5 Small, fine-tuned | 0.81 | 0.92 |
-| MiniLM L6 | 0.68 | 0.80 |
+| Retrieval | Right passage first | Mean reciprocal rank | Refused with no language model |
+|---|---:|---:|---:|
+| **Jev** (default) | **100%** | **1.00** | **45 of 51** |
+| Qwen3 Embedding 0.6B | 80.0% | 0.88 | 18 of 51 |
+| Portfolio E5 Small, fine-tuned | 77.3% | 0.86 | 9 of 51 |
+| BGE Base | 72.9% | 0.84 | 0 of 51 |
 
-These come from 37 answerable test questions, measured on the corpus that is live now, and the [full comparison](evaluation/jev-retrieval.md) covers all seven routes and how refusals were checked. Hand-reviewed passage boundaries raised Recall@5 by 0.10 over automatic splitting ([report](docs/manual-semantic-chunking-evaluation.md)). DeepSeek V4.1 Flash writes the answers, mostly because it was cheap lol, and it also stuck to the facts better than the other seven models I tried ([report](evaluation/llm-comparison.md)). Jev also reads what each visitor is asking for and how they seem to feel, which shows up as small tags in the chat.
+These come from 276 test questions: 225 the portfolio can answer and 51 it has to refuse, like prompt injection, private details and off-topic requests. Jev put a right passage first on all 225 answerable ones (224 in an earlier run; it isn't deterministic). Its lead over the best embedding model is 20 points (95% interval 15 to 25): it ranked a right passage first on 45 questions where that model didn't, and never the other way round. The questions were written by one set of Claude agents and their evidence labelled blind by another, then locked before any retriever saw them; I haven't hand-reviewed them yet. The [full report](evaluation/retrieval-challenge-v3.md) covers all seven routes, each kind of question, and the limits, and an [earlier comparison](evaluation/jev-retrieval.md) on a smaller set of 37 questions agrees. The chat's final answers to the same questions were graded by a judge model: 213 of the 225 came out correct and fully supported, and all 51 that should be refused were ([report](evaluation/answers-challenge-v3.md)). I still have to check that judge against my own grades. Hand-reviewed passage boundaries raised Recall@5 by 0.10 over automatic splitting ([report](docs/manual-semantic-chunking-evaluation.md)). DeepSeek V4.1 Flash writes the answers, mostly because it was cheap lol, and it also stuck to the facts better than the other seven models I tried ([report](evaluation/llm-comparison.md)). Jev also reads what each visitor is asking for and how they seem to feel, which shows up as small tags in the chat.
 
 ## Run it yourself
 
@@ -66,7 +66,7 @@ docker compose run --rm --no-deps api python -m app.ingest --corpus /app/corpus
 docker compose up -d api
 ```
 
-On a running deployment, `scripts/ingest.sh` puts corpus changes from `main` live in one step while the API keeps serving.
+Content updates are one command from my laptop, `scripts/deploy_corpus.sh`: it runs the 276-question retrieval evaluation as a gate, then has the server pull `main` and swap the new passages in while the API keeps serving. Only passages whose text changed are embedded again.
 
 Tests run with `pytest -q` and `npm --prefix frontend run check`, and the evaluation suites are described in [evaluation/README.md](evaluation/README.md).
 

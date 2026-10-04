@@ -15,8 +15,11 @@ from urllib.parse import urlsplit, urlunsplit
 from app.retrieval_context import format_source_excerpts
 
 EVALUATION_ROOT = Path(__file__).resolve().parent
-SPLITS = ("dev", "heldout", "challenge-v2")
-LOCKED_SPLITS = frozenset({"heldout", "challenge-v2"})
+# Splits whose cases carry hand-written regex answer contracts.
+CONTRACT_SPLITS = ("dev", "heldout", "challenge-v2")
+# challenge-v3 is the large set: its answers are scored by a judge against a reference answer.
+SPLITS = (*CONTRACT_SPLITS, "challenge-v3")
+LOCKED_SPLITS = frozenset({"heldout", "challenge-v2", "challenge-v3"})
 SECRET_KEY_PATTERN = re.compile(
     r"(?:api[-_]?key|authorization|password|secret|"
     r"(?:access|auth|verification|evaluation|bearer)?[-_]?token)$",

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import random
 import re
 import sys
 import time
@@ -19,6 +20,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from evaluation.eval_lib import (  # noqa: E402
+    CONTRACT_SPLITS,
     EVALUATION_ROOT,
     SPLITS,
     EvaluationDataError,
@@ -88,6 +90,21 @@ def _safe_http_error(response: httpx.Response) -> dict[str, Any]:
     }
 
 
+BURST_RETRIES = 6
+
+
+def _burst_limited(response: dict[str, Any]) -> bool:
+    detail = str((response.get("httpError") or {}).get("detail", ""))
+    return response.get("httpStatus") == 429 and detail.endswith("burst_limit_exceeded")
+
+
+def _retry_seconds(response: dict[str, Any]) -> float:
+    try:
+        return min(60.0, max(1.0, float(response.get("retryAfter") or 10)))
+    except ValueError:
+        return 10.0
+
+
 def stream_chat(
     client: httpx.Client,
     base_url: str,
@@ -119,6 +136,7 @@ def stream_chat(
             return {
                 "httpStatus": response.status_code,
                 "httpError": _safe_http_error(response),
+                "retryAfter": response.headers.get("retry-after"),
                 "eventCounts": {},
                 "answer": "",
                 "sources": [],
@@ -357,6 +375,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--delay-seconds", type=float, default=0.1)
     parser.add_argument("--timeout-seconds", type=float, default=90.0)
     parser.add_argument("--request-budget", type=int, default=50)
+    parser.add_argument(
+        "--shuffle-seed",
+        type=int,
+        help="Ask the cases in a seeded random order, so the newest logged answers are a "
+        "random sample for hand grading",
+    )
     parser.add_argument("--evaluation-dir", type=Path, default=EVALUATION_ROOT)
     parser.add_argument("--output-dir", type=Path, default=Path("evaluation/results"))
     parser.add_argument("--no-gate", action="store_true")
@@ -372,12 +396,14 @@ def run(args: argparse.Namespace) -> int:
     if not 5 <= args.timeout_seconds <= 300:
         raise EvaluationDataError("--timeout-seconds must be between 5 and 300")
 
-    splits = list(SPLITS) if args.split == "all" else [args.split]
+    splits = list(CONTRACT_SPLITS) if args.split == "all" else [args.split]
     cases = select_cases(
         load_cases(splits, args.evaluation_dir),
         case_ids=args.case,
         categories=args.category,
     )
+    if args.shuffle_seed is not None:
+        random.Random(args.shuffle_seed).shuffle(cases)  # noqa: S311 (ordering, not security)
     gate_config = load_gates(args.evaluation_dir)["answer"]
     global_forbidden = gate_config.get("globalForbiddenClaims", [])
 
@@ -404,6 +430,13 @@ def run(args: argparse.Namespace) -> int:
                         }
                         try:
                             response = stream_chat(client, base_url, payload)
+                            # The API admits a few chats per short window. Wait the window out
+                            # and ask again, so a throttled request is not scored as a failure.
+                            for _ in range(BURST_RETRIES):
+                                if not _burst_limited(response):
+                                    break
+                                time.sleep(_retry_seconds(response))
+                                response = stream_chat(client, base_url, payload)
                         except (httpx.HTTPError, EvaluationDataError) as exc:
                             response = {
                                 "httpStatus": None,

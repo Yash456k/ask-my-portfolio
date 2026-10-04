@@ -1,0 +1,203 @@
+{
+  "judge": "openai/gpt-oss-120b",
+  "answersFile": "answers-20261004T123416722139Z.jsonl",
+  "answers": 276,
+  "answerable": {
+    "good": {
+      "count": 213,
+      "of": 225,
+      "share": 0.947,
+      "ci95": [
+        0.916,
+        0.973
+      ]
+    },
+    "correct": {
+      "count": 218,
+      "of": 225,
+      "share": 0.969,
+      "ci95": [
+        0.942,
+        0.991
+      ]
+    },
+    "correctOrPartly": {
+      "count": 222,
+      "of": 225,
+      "share": 0.987,
+      "ci95": [
+        0.969,
+        1.0
+      ]
+    },
+    "grounded": {
+      "count": 220,
+      "of": 225,
+      "share": 0.978,
+      "ci95": [
+        0.956,
+        0.996
+      ]
+    },
+    "wronglyRefused": {
+      "count": 1,
+      "of": 225,
+      "share": 0.004,
+      "ci95": [
+        0.0,
+        0.013
+      ]
+    },
+    "citationsValid": {
+      "count": 225,
+      "of": 225,
+      "share": 1.0,
+      "ci95": [
+        1.0,
+        1.0
+      ]
+    },
+    "citesTheEvidence": {
+      "count": 222,
+      "of": 225,
+      "share": 0.987,
+      "ci95": [
+        0.969,
+        1.0
+      ]
+    }
+  },
+  "mustRefuse": {
+    "refused": {
+      "count": 51,
+      "of": 51,
+      "share": 1.0,
+      "ci95": [
+        1.0,
+        1.0
+      ]
+    },
+    "refusedCleanly": {
+      "count": 50,
+      "of": 51,
+      "share": 0.98,
+      "ci95": [
+        0.941,
+        1.0
+      ]
+    },
+    "refusedBeforeAnyLanguageModel": {
+      "count": 45,
+      "of": 51,
+      "share": 0.882,
+      "ci95": [
+        0.784,
+        0.961
+      ]
+    }
+  },
+  "byCategory": {
+    "broad": {
+      "answers": 8,
+      "good": 4,
+      "ok": 3,
+      "bad": 1
+    },
+    "compositional": {
+      "answers": 24,
+      "good": 21,
+      "ok": 1,
+      "bad": 2
+    },
+    "direct": {
+      "answers": 46,
+      "good": 46,
+      "ok": 0,
+      "bad": 0
+    },
+    "embedded-injection": {
+      "answers": 1,
+      "good": 1,
+      "ok": 0,
+      "bad": 0
+    },
+    "follow-up": {
+      "answers": 22,
+      "good": 21,
+      "ok": 1,
+      "bad": 0
+    },
+    "harmful-or-abusive": {
+      "answers": 5,
+      "good": 4,
+      "ok": 1,
+      "bad": 0
+    },
+    "interviewer": {
+      "answers": 20,
+      "good": 20,
+      "ok": 0,
+      "bad": 0
+    },
+    "invented-premise": {
+      "answers": 8,
+      "good": 8,
+      "ok": 0,
+      "bad": 0
+    },
+    "negative": {
+      "answers": 10,
+      "good": 8,
+      "ok": 2,
+      "bad": 0
+    },
+    "noisy": {
+      "answers": 23,
+      "good": 22,
+      "ok": 1,
+      "bad": 0
+    },
+    "off-topic": {
+      "answers": 8,
+      "good": 8,
+      "ok": 0,
+      "bad": 0
+    },
+    "other-people": {
+      "answers": 5,
+      "good": 5,
+      "ok": 0,
+      "bad": 0
+    },
+    "paraphrase": {
+      "answers": 48,
+      "good": 48,
+      "ok": 0,
+      "bad": 0
+    },
+    "private-info": {
+      "answers": 8,
+      "good": 8,
+      "ok": 0,
+      "bad": 0
+    },
+    "prompt-injection": {
+      "answers": 9,
+      "good": 9,
+      "ok": 0,
+      "bad": 0
+    },
+    "task-request": {
+      "answers": 8,
+      "good": 8,
+      "ok": 0,
+      "bad": 0
+    },
+    "terse": {
+      "answers": 23,
+      "good": 22,
+      "ok": 1,
+      "bad": 0
+    }
+  }
+}

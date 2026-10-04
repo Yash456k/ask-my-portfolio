@@ -168,7 +168,7 @@
             {
               "source": "projects.md",
               "chunk_indexes": [
-                3
+                5
               ],
               "content_any_of": [
                 "Socket.IO[\\s\\S]*Google OAuth 2.0"
@@ -182,7 +182,7 @@
             {
               "source": "projects.md",
               "chunk_indexes": [
-                3
+                5
               ],
               "content_any_of": [
                 "AI chatbot powered by Google Gemini"
@@ -376,7 +376,7 @@
             {
               "source": "rag-playground-case-study.md",
               "chunk_indexes": [
-                3
+                4
               ],
               "content_any_of": [
                 "separate pgvector column[\\s\\S]*fixed server-side column allowlist"
@@ -419,7 +419,7 @@
             {
               "source": "rag-playground-case-study.md",
               "chunk_indexes": [
-                5
+                6
               ],
               "content_any_of": [
                 "keeps them resident[\\s\\S]*avoids repeated cold starts"
@@ -433,10 +433,10 @@
             {
               "source": "rag-playground-case-study.md",
               "chunk_indexes": [
-                7
+                8
               ],
               "content_any_of": [
-                "Generation is delegated to Groq[\\s\\S]*fallback models"
+                "Generation is delegated to hosted models[\\s\\S]*fallback models"
               ]
             }
           ]
@@ -455,7 +455,7 @@
           {
             "label": "provider tradeoff",
             "any_of": [
-              "Groq[\\s\\S]*(?:remote-provider dependency|dependency on (?:an? )?(?:remote|external) provider)",
+              "(?:Groq|OpenRouter|DeepSeek|hosted)[\\s\\S]*(?:remote-provider dependency|dependency on (?:an? )?(?:remote|external) provider)",
               "dependency on (?:an? )?(?:remote|external) provider[\\s\\S]*(?:fallback models?|fallback handling|records every attempt)"
             ]
           }

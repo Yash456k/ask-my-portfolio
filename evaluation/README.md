@@ -13,6 +13,21 @@ six-embedder run completed on 2026-08-14 and is preserved in
 `manual-chunking-challenge-v2-rigorous.{json,md}`. It is now ordinary regression data: do not tune
 chunking, qrels, gates, or model settings against that result.
 
+`challenge-v3.json` is the large set: 276 cases (225 answerable, 51 that must be refused) written
+by Claude Sonnet agents and labelled blind by separate ones, under the rules in
+`challenge-v3-rules/`. `challenge-v3-provenance.json` records, for every case, what the writer
+and the labeller each chose and how disagreements were settled. It was sealed in
+`challenge-v3.sha256` before its first run on 2026-10-04 and is now regression data. Its cases
+carry a `reference_answer` instead of regex answer contracts, so the answer scripts that depend
+on contracts skip it. `scripts.summarize_retrieval_runs` pools Jev and embedding runs into one
+comparison with bootstrap intervals and paired sign tests; the result is
+`retrieval-comparison-challenge-v3.json` and the write-up is `retrieval-challenge-v3.md`.
+
+`scripts.judge_answers` grades the answers `evaluate_answers` collects on challenge-v3, against each
+case's reference answer and the sources the chat was shown, and `scripts.judge_agreement` compares
+those grades with a person's from the grading page. The first full run is written up in
+`answers-challenge-v3.md`, with every answer and verdict in `answers-challenge-v3.judged.jsonl`.
+
 Each factual case contains source-and-chunk evidence groups. A qrel option combines a source,
 the current deterministic chunk indexes, and a section-specific content regex. The regex prevents
 an overlapping but wrong section from counting and makes intentional re-chunking easy to review.

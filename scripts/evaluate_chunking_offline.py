@@ -56,6 +56,18 @@ def _corpus_hash(chunks: list[dict[str, Any]]) -> str:
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
+def _abstention(rows: list[dict[str, Any]]) -> dict[str, int]:
+    """How often the score threshold alone refuses, on refusal cases and on answerable ones."""
+    refusals = [row for row in rows if row["refusalCase"]]
+    answerable = [row for row in rows if not row["refusalCase"]]
+    return {
+        "refusalCases": len(refusals),
+        "refusalCasesRefused": sum(row["refusedLocally"] for row in refusals),
+        "answerableCases": len(answerable),
+        "answerableCasesRefused": sum(row["refusedLocally"] for row in answerable),
+    }
+
+
 def run_model(
     *,
     pipeline,
@@ -120,6 +132,8 @@ def run_model(
         _sync(device)
         elapsed_ms = (time.perf_counter() - started) * 1000
         query_times.append(elapsed_ms)
+        refusal = case["answer_expectation"]["refusal"]
+        top_score = retrieved[0]["score"] if retrieved else None
         rows.append(
             {
                 "split": case["split"],
@@ -128,7 +142,13 @@ def run_model(
                 "question": case["question"],
                 "embedder": config.id,
                 "queryMs": round(elapsed_ms, 3),
-                "metrics": ranking_metrics(case["required_evidence"], retrieved),
+                "refusalCase": refusal,
+                "topScore": top_score,
+                # Production refuses without a language model when the best match is this weak.
+                "refusedLocally": top_score is None or top_score < config.minimum_score,
+                "metrics": None
+                if refusal
+                else ranking_metrics(case["required_evidence"], retrieved),
                 "retrievedChunks": retrieved,
             }
         )
@@ -210,8 +230,10 @@ def main() -> int:
         }
         for chunk in built
     ]
-    cases = select_cases(load_cases([args.split], args.evaluation_dir), include_refusals=False)
-    qrel_changes = remap_cases_to_chunks(cases, chunks)
+    cases = select_cases(load_cases([args.split], args.evaluation_dir))
+    qrel_changes = remap_cases_to_chunks(
+        [case for case in cases if not case["answer_expectation"]["refusal"]], chunks
+    )
     gates = load_gates(args.evaluation_dir)["retrieval"]
 
     rows: list[dict[str, Any]] = []
@@ -231,8 +253,13 @@ def main() -> int:
 
     by_embedder = {
         config.id: aggregate_embedder_rows(
-            [row for row in rows if row["embedder"] == config.id], gates
+            [row for row in rows if row["embedder"] == config.id and not row["refusalCase"]],
+            gates,
         )
+        for config in configs
+    }
+    abstention = {
+        config.id: _abstention([row for row in rows if row["embedder"] == config.id])
         for config in configs
     }
     passed = all(result["passed"] for result in by_embedder.values())
@@ -243,7 +270,8 @@ def main() -> int:
         "chunkingMode": args.chunking,
         "chunkCount": len(chunks),
         "corpusSha256": _corpus_hash(chunks),
-        "caseIds": [case["id"] for case in cases],
+        "caseIds": [case["id"] for case in cases if not case["answer_expectation"]["refusal"]],
+        "refusalCaseIds": [case["id"] for case in cases if case["answer_expectation"]["refusal"]],
         "qrelOptionsRemapped": qrel_changes,
         "topK": args.top_k,
         "retrievalProtocol": retrieval_protocol(args.top_k),
@@ -252,6 +280,7 @@ def main() -> int:
         "gatesEnforced": not args.no_gate,
         "gates": gates,
         "embedders": by_embedder,
+        "abstention": abstention,
         "runtime": runtimes,
         "passed": passed,
     }

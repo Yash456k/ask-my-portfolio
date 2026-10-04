@@ -1,6 +1,8 @@
 # Jev as an embedding-free retriever
 
-Measured 2026-10-04 with `scripts/evaluate_jev_retrieval.py --method hybrid` against TypeSafe `jev-1.13.0`, on the corpus that is live today (`ae1ffc04…`, 20 chunks). The six embedding models were run the same day on the same corpus and questions with `scripts/evaluate_chunking_offline.py`. Every number below is in [retrieval-comparison-2026-10-04.json](retrieval-comparison-2026-10-04.json).
+> A larger comparison on 276 questions is in [retrieval-challenge-v3.md](retrieval-challenge-v3.md). This page is the earlier set of 37 questions.
+
+Measured 2026-10-04 with `scripts/evaluate_jev_retrieval.py --method hybrid` against TypeSafe `jev-1.13.0`, on the 20-passage corpus of that date (`ae1ffc04…`). The six embedding models were run the same day on the same corpus and questions with `scripts/evaluate_chunking_offline.py`. Every number below is in [retrieval-comparison-2026-10-04.json](retrieval-comparison-2026-10-04.json).
 
 ## Method
 

@@ -22,6 +22,19 @@ The platform includes role-based access control, MSG91 OTP verification, JWT aut
 - Live site: https://www.nashiksportsklub.com
 - Public repository: https://github.com/Yash456k/NSK-Project-Public
 
+<!-- rag-chunk: hivenote-overview | HiveNote shared notebook for AI agents, why Yash built it, how notes work, and links -->
+## HiveNote - a shared notebook for AI agents
+
+HiveNote is an open-source npm package that Yash started in September 2026. It gives AI agents one shared notebook, so they save what they learn and hand work to each other instead of Yash copy-pasting between them. He built it because he uses Claude Code, Codex and a Hermes agent, and was carrying each one's findings over to the others by hand. Any agent that can run a shell command can use it, through the `hivenote` command and a short skill file that teaches the agent when to read and save.
+
+Every note has a name and a one-line description, so an agent lists the hive, opens only the notes its task needs, and updates them when it learns something new. Every version of a note is kept and can be restored. HiveNote is written in TypeScript on Node.js and keeps the whole hive in a single SQLite file.
+
+- npm package: https://www.npmjs.com/package/hivenote
+- Repository: https://github.com/Yash456k/hivenote
+
+<!-- rag-chunk: hivenote-tasks-sharing | HiveNote tasks, waiting on another agent, queen and worker machines, and the live dashboard -->
+A HiveNote note can also be a task. An agent marks the task as doing, which puts its name and the time on it for every agent to see, appends progress as it goes, and marks it done. Another agent can wait on that task and carry on within seconds of it finishing. To share one hive between machines, one machine becomes the queen by running `hivenote serve` and the others connect as workers, each with its own token. A browser dashboard shows the notes as cards or as a honeycomb, a task board that follows each task from To do to Done, and a live feed of which agent did what.
+
 <!-- rag-chunk: realtime-chat | Real-time MERN chat scale, authentication, data model, AI, and links -->
 ## Real-time MERN Chat Platform
 
