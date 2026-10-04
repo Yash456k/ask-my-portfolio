@@ -150,6 +150,40 @@ def run_method(
     return rows
 
 
+def _gate(scored: list[dict], refusals: list[dict], gates: dict[str, float]) -> dict[str, Any]:
+    """Compare one run with the jev gates: ranking, and refusing only what must be refused."""
+    refused = [row["answerableSignal"] <= 1 - jev.NONE_REFUSAL_THRESHOLD for row in refusals]
+    wrongly = [row["answerableSignal"] <= 1 - jev.NONE_REFUSAL_THRESHOLD for row in scored]
+    measured = {
+        "hitAt1": mean(float(row["metrics"]["reciprocalRankAt5"] == 1) for row in scored),
+        "mrrAt5": mean(row["metrics"]["reciprocalRankAt5"] for row in scored),
+        "mustRefuseRefusedShare": mean(map(float, refused)) if refused else 1.0,
+        "answerableRefusedShare": mean(map(float, wrongly)),
+    }
+    failures = [
+        name
+        for name, ok in (
+            ("hitAt1", measured["hitAt1"] >= gates["minHitAt1"]),
+            ("mrrAt5", measured["mrrAt5"] >= gates["minMrrAt5"]),
+            (
+                "mustRefuseRefusedShare",
+                measured["mustRefuseRefusedShare"] >= gates["minMustRefuseRefusedShare"],
+            ),
+            (
+                "answerableRefusedShare",
+                measured["answerableRefusedShare"] <= gates["maxAnswerableRefusedShare"],
+            ),
+        )
+        if not ok
+    ]
+    return {
+        "passed": not failures,
+        "failures": failures,
+        "measured": {name: round(value, 4) for name, value in measured.items()},
+        "gates": gates,
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--split", choices=SPLITS, action="append", required=True)
@@ -160,6 +194,9 @@ def main() -> int:
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--case", action="append", default=[])
     parser.add_argument("--output-dir", type=Path, default=Path("evaluation/results/jev"))
+    parser.add_argument(
+        "--gate", action="store_true", help="Exit 1 when a run misses the jev gates in gates.json"
+    )
     args = parser.parse_args()
     key = os.environ.get("TYPESAFE_API_KEY")
     if not key:
@@ -181,7 +218,9 @@ def main() -> int:
             for chunk in chunk_document(document, pipeline)
         )
     ]
-    gates = load_gates()["retrieval"]
+    all_gates = load_gates()
+    gates = all_gates["retrieval"]
+    failed = False
     with httpx.Client(timeout=60) as client:
         for split in args.split:
             cases = select_cases(load_cases([split]), case_ids=args.case)
@@ -229,11 +268,23 @@ def main() -> int:
                         ),
                     },
                 }
+                if args.gate:
+                    summary["gate"] = _gate(scored, refusals, all_gates["jev"])
+                    failed = failed or not summary["gate"]["passed"]
                 summary_path, _ = write_report(
                     args.output_dir, f"jev-{method}-{split}", summary, rows
                 )
-                print(json.dumps({"event": "complete", "summary": str(summary_path)}), flush=True)
-    return 0
+                print(
+                    json.dumps(
+                        {
+                            "event": "complete",
+                            "summary": str(summary_path),
+                            **summary.get("gate", {}),
+                        }
+                    ),
+                    flush=True,
+                )
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

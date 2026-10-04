@@ -27,7 +27,7 @@ METRICS = {
     "allEvidenceAt3": "allEvidenceAt3",
     "allEvidenceAt5": "allEvidenceAt5",
 }
-# Production refuses without a language model when Jev's answerable signal is below this.
+# Production refuses without a language model when Jev's answerable signal is at or below this.
 JEV_ANSWERABLE_THRESHOLD = 0.5
 
 
@@ -47,7 +47,7 @@ def _sign_test(wins: int, losses: int) -> float:
 
 def _refused(row: dict[str, Any]) -> bool:
     if "answerableSignal" in row:
-        return row["answerableSignal"] < JEV_ANSWERABLE_THRESHOLD
+        return row["answerableSignal"] <= JEV_ANSWERABLE_THRESHOLD
     return bool(row["refusedLocally"])
 
 

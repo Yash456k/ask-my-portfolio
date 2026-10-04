@@ -7,6 +7,12 @@
     "minMrrAt5": 0.72,
     "minRequiredCoverage": 0.9
   },
+  "jev": {
+    "minHitAt1": 0.97,
+    "minMrrAt5": 0.97,
+    "minMustRefuseRefusedShare": 0.8,
+    "maxAnswerableRefusedShare": 0.01
+  },
   "answer": {
     "minPassRate": 0.9,
     "minCompletionRate": 1.0,

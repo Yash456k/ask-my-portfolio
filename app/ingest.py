@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 import logging
 import re
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -238,6 +240,28 @@ def _unchanged(
     return stored == wanted and all(row[4] for row in rows)
 
 
+def embedder_fingerprint(pipeline: PipelineConfig) -> str:
+    """Names the embedders a stored vector came from, so a changed model is never reused."""
+    described = [
+        [c.id, c.model, c.revision, c.dimensions, c.column, c.document_prefix, c.dtype]
+        for c in pipeline.embedders
+    ]
+    return content_digest(json.dumps(described))
+
+
+def _reusable_vectors(connection: psycopg.Connection, pipeline: PipelineConfig) -> dict[str, tuple]:
+    """Stored vectors by passage text, if every one of them came from today's embedders."""
+    recorded = {
+        row[0]
+        for row in connection.execute("SELECT metadata->>'embedders' FROM documents").fetchall()
+    }
+    if recorded != {embedder_fingerprint(pipeline)}:
+        return {}
+    columns = sql.SQL(", ").join(sql.Identifier(config.column) for config in pipeline.embedders)
+    rows = connection.execute(sql.SQL("SELECT content, {} FROM chunks").format(columns)).fetchall()
+    return {row[0]: tuple(row[1:]) for row in rows if all(v is not None for v in row[1:])}
+
+
 def ingest(corpus_path: Path, *, reason: str = "re-ingest", force: bool = False) -> None:
     settings = get_settings()
     pipeline = load_pipeline()
@@ -252,17 +276,36 @@ def ingest(corpus_path: Path, *, reason: str = "re-ingest", force: bool = False)
         connection.execute(schema)
         connection.commit()
         register_vector(connection)
-        if not force and _unchanged(connection, chunks, pipeline):
+        # A passage whose text is already stored keeps its vectors; only new text is embedded.
+        vectors = {} if force else _reusable_vectors(connection, pipeline)
+        fresh = sorted({chunk.content for chunk in chunks} - set(vectors))
+        if not force and not fresh and _unchanged(connection, chunks, pipeline):
             logger.info("Corpus unchanged and every vector column is filled; nothing to ingest")
             return
         connection.commit()
-
-        registry = asyncio.run(load_registry(pipeline))
-        texts = [chunk.content for chunk in chunks]
-        vectors = {
-            config.id: registry.encode_documents(config.id, texts).tolist()
-            for config in pipeline.embedders
-        }
+        logger.info(
+            "Embedding %d of %d passages; %d keep their stored vectors",
+            len(fresh),
+            len(chunks),
+            len(chunks) - sum(chunk.content in fresh for chunk in chunks),
+        )
+        if fresh:
+            started = time.monotonic()
+            registry = asyncio.run(load_registry(pipeline))
+            loaded = time.monotonic()
+            encoded = [
+                registry.encode_documents(config.id, fresh).tolist()
+                for config in pipeline.embedders
+            ]
+            logger.info(
+                "Models loaded in %.0f s; %d passages embedded in %.0f s",
+                loaded - started,
+                len(fresh),
+                time.monotonic() - loaded,
+            )
+            for position, text in enumerate(fresh):
+                vectors[text] = tuple(model[position] for model in encoded)
+        fingerprint = json.dumps({"embedders": embedder_fingerprint(pipeline)})
 
         # One transaction: the API reads the old corpus until commit, then the new one.
         with connection.transaction():
@@ -282,14 +325,19 @@ def ingest(corpus_path: Path, *, reason: str = "re-ingest", force: bool = False)
                     VALUES (%s, %s, %s, %s::jsonb)
                     RETURNING id
                     """,
-                    (document.source, document.title, content_digest(document.content), "{}"),
+                    (
+                        document.source,
+                        document.title,
+                        content_digest(document.content),
+                        fingerprint,
+                    ),
                 ).fetchone()
                 if row is None:
                     raise RuntimeError(f"Failed to insert {document.source}")
                 document_ids[document.source] = int(row[0])
 
             rows = []
-            for index, chunk in enumerate(chunks):
+            for chunk in chunks:
                 rows.append(
                     (
                         document_ids[chunk.source],
@@ -297,7 +345,7 @@ def ingest(corpus_path: Path, *, reason: str = "re-ingest", force: bool = False)
                         chunk.title,
                         chunk.index,
                         chunk.content,
-                        *(vectors[config.id][index] for config in pipeline.embedders),
+                        *vectors[chunk.content],
                     )
                 )
             insert_columns = [
@@ -331,7 +379,7 @@ def main() -> None:
         "--reason", default="re-ingest", help="Recorded with the replaced chunks in chunk_history"
     )
     parser.add_argument(
-        "--force", action="store_true", help="Re-embed even when the corpus is unchanged"
+        "--force", action="store_true", help="Re-embed every passage, changed or not"
     )
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")

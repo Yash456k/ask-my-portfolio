@@ -66,7 +66,7 @@ docker compose run --rm --no-deps api python -m app.ingest --corpus /app/corpus
 docker compose up -d api
 ```
 
-On a running deployment, `scripts/ingest.sh` puts corpus changes from `main` live in one step while the API keeps serving.
+Content updates are one command from my laptop, `scripts/deploy_corpus.sh`: it runs the 276-question retrieval evaluation as a gate, then has the server pull `main` and swap the new passages in while the API keeps serving. Only passages whose text changed are embedded again.
 
 Tests run with `pytest -q` and `npm --prefix frontend run check`, and the evaluation suites are described in [evaluation/README.md](evaluation/README.md).
 
