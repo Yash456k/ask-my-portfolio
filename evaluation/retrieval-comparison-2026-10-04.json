@@ -1,0 +1,292 @@
+{
+  "measured": "2026-10-04",
+  "corpusSha256": "ae1ffc040ca3bc51b16f199634ab06a9eb9d5cc0f84a7226cf51b29b54fe6799",
+  "chunkCount": 20,
+  "answerableCases": 37,
+  "refusalCases": 9,
+  "intervals": "percentile bootstrap over cases, 10,000 resamples, seed 7",
+  "routes": {
+    "jev-hybrid": {
+      "recallAt1": 0.946,
+      "recallAt3": 0.986,
+      "recallAt5": 0.986,
+      "mrrAt5": 1.0,
+      "allEvidenceAt5": 0.973,
+      "cases": 37,
+      "recallAt1Ci95": [
+        0.892,
+        0.986
+      ],
+      "bySplit": {
+        "dev": {
+          "cases": 12,
+          "recallAt1": 0.958,
+          "mrrAt5": 1.0
+        },
+        "heldout": {
+          "cases": 7,
+          "recallAt1": 1.0,
+          "mrrAt5": 1.0
+        },
+        "challenge-v2": {
+          "cases": 18,
+          "recallAt1": 0.917,
+          "mrrAt5": 1.0
+        }
+      }
+    },
+    "bge-base": {
+      "recallAt1": 0.824,
+      "recallAt3": 0.959,
+      "recallAt5": 0.959,
+      "mrrAt5": 0.905,
+      "allEvidenceAt5": 0.946,
+      "cases": 37,
+      "recallAt1Ci95": [
+        0.703,
+        0.932
+      ],
+      "bySplit": {
+        "dev": {
+          "cases": 12,
+          "recallAt1": 0.875,
+          "mrrAt5": 0.944
+        },
+        "heldout": {
+          "cases": 7,
+          "recallAt1": 0.714,
+          "mrrAt5": 0.762
+        },
+        "challenge-v2": {
+          "cases": 18,
+          "recallAt1": 0.833,
+          "mrrAt5": 0.935
+        }
+      },
+      "jevMinusThisRecallAt1": {
+        "mean": 0.122,
+        "ci95": [
+          0.027,
+          0.23
+        ],
+        "jevBetter": 5,
+        "jevWorse": 0
+      }
+    },
+    "portfolio-e5-small": {
+      "recallAt1": 0.811,
+      "recallAt3": 0.959,
+      "recallAt5": 0.986,
+      "mrrAt5": 0.923,
+      "allEvidenceAt5": 0.973,
+      "cases": 37,
+      "recallAt1Ci95": [
+        0.689,
+        0.919
+      ],
+      "bySplit": {
+        "dev": {
+          "cases": 12,
+          "recallAt1": 0.875,
+          "mrrAt5": 0.958
+        },
+        "heldout": {
+          "cases": 7,
+          "recallAt1": 0.714,
+          "mrrAt5": 0.833
+        },
+        "challenge-v2": {
+          "cases": 18,
+          "recallAt1": 0.806,
+          "mrrAt5": 0.935
+        }
+      },
+      "jevMinusThisRecallAt1": {
+        "mean": 0.135,
+        "ci95": [
+          0.027,
+          0.243
+        ],
+        "jevBetter": 5,
+        "jevWorse": 0
+      }
+    },
+    "qwen3-embedding": {
+      "recallAt1": 0.716,
+      "recallAt3": 0.946,
+      "recallAt5": 0.986,
+      "mrrAt5": 0.863,
+      "allEvidenceAt5": 0.973,
+      "cases": 37,
+      "recallAt1Ci95": [
+        0.581,
+        0.851
+      ],
+      "bySplit": {
+        "dev": {
+          "cases": 12,
+          "recallAt1": 0.75,
+          "mrrAt5": 0.861
+        },
+        "heldout": {
+          "cases": 7,
+          "recallAt1": 0.429,
+          "mrrAt5": 0.69
+        },
+        "challenge-v2": {
+          "cases": 18,
+          "recallAt1": 0.806,
+          "mrrAt5": 0.931
+        }
+      },
+      "jevMinusThisRecallAt1": {
+        "mean": 0.23,
+        "ci95": [
+          0.108,
+          0.365
+        ],
+        "jevBetter": 9,
+        "jevWorse": 0
+      }
+    },
+    "bge-small": {
+      "recallAt1": 0.703,
+      "recallAt3": 0.905,
+      "recallAt5": 0.973,
+      "mrrAt5": 0.832,
+      "allEvidenceAt5": 0.973,
+      "cases": 37,
+      "recallAt1Ci95": [
+        0.554,
+        0.838
+      ],
+      "bySplit": {
+        "dev": {
+          "cases": 12,
+          "recallAt1": 0.833,
+          "mrrAt5": 0.917
+        },
+        "heldout": {
+          "cases": 7,
+          "recallAt1": 0.714,
+          "mrrAt5": 0.779
+        },
+        "challenge-v2": {
+          "cases": 18,
+          "recallAt1": 0.611,
+          "mrrAt5": 0.796
+        }
+      },
+      "jevMinusThisRecallAt1": {
+        "mean": 0.243,
+        "ci95": [
+          0.122,
+          0.378
+        ],
+        "jevBetter": 10,
+        "jevWorse": 0
+      }
+    },
+    "minilm-l6": {
+      "recallAt1": 0.676,
+      "recallAt3": 0.865,
+      "recallAt5": 1.0,
+      "mrrAt5": 0.8,
+      "allEvidenceAt5": 1.0,
+      "cases": 37,
+      "recallAt1Ci95": [
+        0.527,
+        0.824
+      ],
+      "bySplit": {
+        "dev": {
+          "cases": 12,
+          "recallAt1": 0.667,
+          "mrrAt5": 0.785
+        },
+        "heldout": {
+          "cases": 7,
+          "recallAt1": 0.571,
+          "mrrAt5": 0.671
+        },
+        "challenge-v2": {
+          "cases": 18,
+          "recallAt1": 0.722,
+          "mrrAt5": 0.861
+        }
+      },
+      "jevMinusThisRecallAt1": {
+        "mean": 0.27,
+        "ci95": [
+          0.135,
+          0.419
+        ],
+        "jevBetter": 11,
+        "jevWorse": 0
+      }
+    },
+    "portfolio-gte-small": {
+      "recallAt1": 0.608,
+      "recallAt3": 0.919,
+      "recallAt5": 0.946,
+      "mrrAt5": 0.776,
+      "allEvidenceAt5": 0.946,
+      "cases": 37,
+      "recallAt1Ci95": [
+        0.459,
+        0.757
+      ],
+      "bySplit": {
+        "dev": {
+          "cases": 12,
+          "recallAt1": 0.708,
+          "mrrAt5": 0.861
+        },
+        "heldout": {
+          "cases": 7,
+          "recallAt1": 0.571,
+          "mrrAt5": 0.671
+        },
+        "challenge-v2": {
+          "cases": 18,
+          "recallAt1": 0.556,
+          "mrrAt5": 0.759
+        }
+      },
+      "jevMinusThisRecallAt1": {
+        "mean": 0.338,
+        "ci95": [
+          0.189,
+          0.486
+        ],
+        "jevBetter": 13,
+        "jevWorse": 0
+      }
+    }
+  },
+  "jevRefusals": {
+    "threshold": 0.5,
+    "highestRefusalCaseSignal": 0.33,
+    "lowestAnswerableSignal": 0.97,
+    "signals": {
+      "dev-refuse-general-coding": 0.2,
+      "dev-refuse-prompt-injection": 0.14,
+      "dev-refuse-unsupported-salary": 0.09,
+      "challenge-refusal-salary": 0.33,
+      "challenge-refusal-coding-task": 0.28,
+      "challenge-refusal-prompt-injection": 0.2,
+      "challenge-refusal-invented-scale": 0.04,
+      "heldout-refuse-history-injection": 0.14,
+      "heldout-refuse-kubernetes": 0.12
+    }
+  },
+  "jevCost": {
+    "medianMs": 441,
+    "p90Ms": 559,
+    "meanInputTokens": 6375
+  },
+  "commands": [
+    "python -m scripts.evaluate_jev_retrieval --split <split> --method hybrid",
+    "python -m scripts.evaluate_chunking_offline --split <split> --chunking manual --artifact-root model-artifacts --no-gate"
+  ]
+}
