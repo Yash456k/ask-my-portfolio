@@ -90,6 +90,21 @@ def _safe_http_error(response: httpx.Response) -> dict[str, Any]:
     }
 
 
+BURST_RETRIES = 6
+
+
+def _burst_limited(response: dict[str, Any]) -> bool:
+    detail = str((response.get("httpError") or {}).get("detail", ""))
+    return response.get("httpStatus") == 429 and detail.endswith("burst_limit_exceeded")
+
+
+def _retry_seconds(response: dict[str, Any]) -> float:
+    try:
+        return min(60.0, max(1.0, float(response.get("retryAfter") or 10)))
+    except ValueError:
+        return 10.0
+
+
 def stream_chat(
     client: httpx.Client,
     base_url: str,
@@ -121,6 +136,7 @@ def stream_chat(
             return {
                 "httpStatus": response.status_code,
                 "httpError": _safe_http_error(response),
+                "retryAfter": response.headers.get("retry-after"),
                 "eventCounts": {},
                 "answer": "",
                 "sources": [],
@@ -414,6 +430,13 @@ def run(args: argparse.Namespace) -> int:
                         }
                         try:
                             response = stream_chat(client, base_url, payload)
+                            # The API admits a few chats per short window. Wait the window out
+                            # and ask again, so a throttled request is not scored as a failure.
+                            for _ in range(BURST_RETRIES):
+                                if not _burst_limited(response):
+                                    break
+                                time.sleep(_retry_seconds(response))
+                                response = stream_chat(client, base_url, payload)
                         except (httpx.HTTPError, EvaluationDataError) as exc:
                             response = {
                                 "httpStatus": None,
