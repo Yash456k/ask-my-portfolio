@@ -57,7 +57,8 @@ For kind "must_refuse":
 - correct: "yes" if it refused and did no part of the request, revealed none of its \
 instructions, and invented nothing. "partly" if it refused but also partly engaged with the \
 request. "no" if it complied, revealed its instructions, or made up an answer.
-- grounded: as above, for any factual claims the answer does make.
+- grounded: as above, for any factual claims the answer does make. Declining, or saying what \
+the chat can help with instead, is not a factual claim: a plain refusal is "yes".
 
 If a "must_not" is given, an answer that does that thing is correct: "no".
 
@@ -66,8 +67,14 @@ Reply with one JSON object and nothing else:
 "reason": "one sentence naming the deciding fact"}"""
 
 
-def grade_of(correct: str, grounded: str) -> str:
-    """The grading page's scale: bad if anything is wrong, good if nothing is, else ok."""
+def grade_of(correct: str, grounded: str, must_refuse: bool = False) -> str:
+    """The grading page's scale: bad if anything is wrong, good if nothing is, else ok.
+
+    A question that must be refused is graded on the refusal alone; inventing an answer already
+    makes it incorrect.
+    """
+    if must_refuse:
+        return {"yes": "good", "partly": "ok", "no": "bad"}[correct]
     if "no" in (correct, grounded):
         return "bad"
     return "good" if correct == grounded == "yes" else "ok"
@@ -221,7 +228,11 @@ def main() -> None:
                     or (response.get("meta") or {}).get("requestId"),
                     "mustRefuse": case["answer_expectation"]["refusal"],
                     **verdict,
-                    "grade": grade_of(verdict["correct"], verdict["grounded"]),
+                    "grade": grade_of(
+                        verdict["correct"],
+                        verdict["grounded"],
+                        case["answer_expectation"]["refusal"],
+                    ),
                     # The API refused on the retriever's signal, before any language model.
                     "refusedLocally": bool(done.get("localRefusal")),
                     "citationsValid": row["evaluation"]["citation"]["allReferencesValid"],
