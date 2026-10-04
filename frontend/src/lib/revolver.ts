@@ -14,24 +14,30 @@ export function springStep(position: number, velocity: number, target: number, s
   }
 }
 
-const AXIS_START = Date.UTC(2024, 0, 1)
-const AXIS_MIDDLE = Date.UTC(2026, 0, 1)
+const MONTH = 30.44 * 24 * 60 * 60 * 1000
+const AXIS_START = Date.UTC(2022, 0, 1)
+// Little happened before mid-2024, so those years share a small gap at the start of the rail.
+const AXIS_KNEE = Date.UTC(2024, 6, 1)
+const KNEE_AT = .07
+const STRETCH = 6 * MONTH
 
-// The timeline stops are 2024, 2026 and Now, where Now is today. Work started after 2026
-// spreads across the last half up to today, so a project drifts back as days pass.
-export function projectDatePosition(isoDate: string, today: number = Date.now()) {
+// The rail runs from 2022 to today. Past the knee, recent months get more room than old ones:
+// a date's distance from the right end grows with the logarithm of its age, so everything
+// drifts left as days pass.
+export function timelinePosition(isoDate: string, today: number = Date.now()) {
   const time = Date.parse(isoDate)
   if (Number.isNaN(time)) return 1
   if (time <= AXIS_START) return 0
-  if (time <= AXIS_MIDDLE) return ((time - AXIS_START) / (AXIS_MIDDLE - AXIS_START)) * .5
-  return .5 + .5 * Math.min(1, (time - AXIS_MIDDLE) / Math.max(1, today - AXIS_MIDDLE))
+  if (time <= AXIS_KNEE) return ((time - AXIS_START) / (AXIS_KNEE - AXIS_START)) * KNEE_AT
+  const age = Math.max(0, today - time)
+  return 1 - (1 - KNEE_AT) * Math.log1p(age / STRETCH) / Math.log1p((today - AXIS_KNEE) / STRETCH)
 }
 
 export function projectPointerPosition(position: number, dates: readonly string[], today: number = Date.now()) {
   const lower = Math.floor(position)
   const fraction = position - lower
-  const from = projectDatePosition(dates[wrapIndex(lower, dates.length)], today)
-  const to = projectDatePosition(dates[wrapIndex(lower + 1, dates.length)], today)
+  const from = timelinePosition(dates[wrapIndex(lower, dates.length)], today)
+  const to = timelinePosition(dates[wrapIndex(lower + 1, dates.length)], today)
   return from + (to - from) * fraction
 }
 

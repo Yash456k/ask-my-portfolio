@@ -29,9 +29,9 @@
 .tactile-work .project-view-stack { height: auto; min-height: 480px; max-height: none; }
 .tactile-work .project-selector-view { grid-template-rows: auto auto; align-content: start; }
 .career-deck { padding-right: 22px; }
-.career-dates { display: flex; align-items: center; justify-content: space-between; margin-bottom: 50px; position: relative; }
+.career-dates { position: relative; height: 50px; margin-bottom: 50px; }
 .career-dates::before { content: ''; position: absolute; height: 1px; background: rgb(var(--theme-surface-alt-rgb, 203 205 191)); left: 5px; right: 5px; top: 9px; }
-.career-dates button { position: relative; display: flex; align-items: center; flex-direction: column; gap: 12px; border: 0; padding: 4px 0; color: rgb(var(--theme-muted-rgb, 122 128 112)); background: transparent; font-size: 12px; min-width: 36px; }
+.career-dates button { position: absolute; z-index: 2; top: -5px; left: calc(18px + (100% - 36px) * var(--at)); display: grid; place-items: center; width: 28px; height: 28px; margin-left: -14px; border: 0; padding: 0; background: transparent; }
 .career-dates button > span { width: 10px; height: 10px; border: 2px solid rgb(var(--theme-line-rgb, 247 242 233)); box-shadow: 0 0 0 1px rgb(var(--theme-shadow-rgb, 183 188 170)); border-radius: 50%; background: rgb(var(--theme-surface-rgb, 247 242 233)); transition: background 250ms,box-shadow 250ms; }
 .career-dates button[aria-selected='true'] { color: rgb(var(--theme-accent-rgb, 155 72 54)); }
 .career-dates button[aria-selected='true'] > span { background: rgb(var(--theme-accent-rgb, 175 70 54)); box-shadow: 0 0 0 1px rgb(var(--theme-shadow-rgb, 175 70 54)); }
@@ -193,14 +193,18 @@
 .career-dates button[aria-selected='true'] { color: rgb(var(--theme-secondary-rgb, 75 103 66)); }
 .career-dates button[aria-selected='true'] > span { background: rgb(var(--theme-secondary-rgb, 98 123 79)); box-shadow: 0 0 0 1px rgb(var(--theme-shadow-rgb, 98 123 79)); }
 
-/* A bracket under the rail spans the selected role's months, and a stem drops from its
-   middle to the card. It draws outwards from the stem each time the role changes. */
-.career-span { position: absolute; top: calc(100% + 7px); left: calc(18px + (100% - 36px) * var(--from)); width: calc((100% - 36px) * (var(--to) - var(--from))); height: 9px; box-sizing: border-box; border: solid rgb(var(--theme-secondary-rgb, 98 123 79)); border-width: 0 1.5px 1.5px; border-radius: 0 0 7px 7px; pointer-events: none; animation: career-span-draw 520ms cubic-bezier(.22,1,.36,1) both; }
-.career-span.is-open-start { border-left-width: 0; border-bottom-left-radius: 0; }
-.career-span::after { content: ''; position: absolute; top: 100%; left: 50%; width: 0; height: 34px; margin-left: -.75px; border-left: 1.5px solid rgb(var(--theme-secondary-rgb, 98 123 79)); transform-origin: top; animation: career-span-stem 300ms ease-out 240ms both; }
-@keyframes career-span-draw { from { clip-path: inset(0 50% -40px 50%); } to { clip-path: inset(0 0 -40px 0); } }
-@keyframes career-span-stem { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-@media (prefers-reduced-motion: reduce) { .career-span, .career-span::after { animation: none; } }
+/* The rail is a time axis. Years sit under it, each role's dot sits where the role starts, and
+   the selected role's months are drawn on the rail itself, with a stem from their middle to the
+   card. The run draws outwards from the stem each time the role changes. */
+.career-year { position: absolute; top: 30px; left: calc(18px + (100% - 36px) * var(--at)); transform: translateX(-50%); color: rgb(var(--theme-muted-rgb, 122 128 112)); font-size: 12px; line-height: 16px; white-space: nowrap; pointer-events: none; transition: opacity 200ms; }
+.career-year::before { content: ''; position: absolute; top: -25px; left: 50%; width: 1px; height: 9px; background: rgb(var(--theme-surface-alt-rgb, 203 205 191)); }
+.career-year.is-covered { opacity: 0; }
+.career-run { position: absolute; z-index: 1; top: 8px; left: calc(18px + (100% - 36px) * var(--from)); width: calc((100% - 36px) * (var(--to) - var(--from))); height: 3px; border-radius: 2px; background: rgb(var(--theme-secondary-rgb, 98 123 79)); pointer-events: none; animation: career-run-draw 520ms cubic-bezier(.22,1,.36,1) both; }
+.career-run.is-ended::before { content: ''; position: absolute; top: -4px; right: 0; width: 0; height: 11px; border-left: 1.5px solid rgb(var(--theme-secondary-rgb, 98 123 79)); }
+.career-run::after { content: ''; position: absolute; top: 100%; left: 50%; width: 0; height: 89px; margin-left: -.75px; border-left: 1.5px solid rgb(var(--theme-secondary-rgb, 98 123 79)); transform-origin: top; animation: career-run-stem 300ms ease-out 240ms both; }
+@keyframes career-run-draw { from { clip-path: inset(-6px 50% -100px 50%); } to { clip-path: inset(-6px 0 -100px 0); } }
+@keyframes career-run-stem { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) { .career-run, .career-run::after { animation: none; } }
 
 /* Horizontal dragging lifts the top card; a committed gesture peels it away. */
 .career-stack { cursor: grab; user-select: none; }

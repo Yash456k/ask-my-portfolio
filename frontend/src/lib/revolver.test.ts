@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cardSwipeDirection, projectDatePosition, projectPointerPosition, springStep, wrapIndex } from './revolver'
+import { cardSwipeDirection, timelinePosition, projectPointerPosition, springStep, wrapIndex } from './revolver'
 
 describe('continuous project rotation', () => {
   it('wraps repeated travel in either direction', () => {
@@ -29,20 +29,21 @@ describe('continuous project rotation', () => {
 describe('project pointer and card gestures', () => {
   const today = Date.UTC(2026, 8, 24)
   const dates = ['2025-08-14', '2026-07-11', '2024-06-27']
-  it('places projects on a real time axis ending today', () => {
-    expect(projectDatePosition('2024-01-01', today)).toBe(0)
-    expect(projectDatePosition('2026-01-01', today)).toBe(.5)
-    expect(projectDatePosition('2026-09-24', today)).toBe(1)
-    expect(projectDatePosition('2025-01-01', today)).toBeCloseTo(.25, 2)
-    expect(projectDatePosition('2026-07-11', today)).toBeCloseTo(.859, 3)
+  it('squeezes the early years and gives recent months more room', () => {
+    expect(timelinePosition('2022-01-01', today)).toBe(0)
+    expect(timelinePosition('2024-07-01', today)).toBeCloseTo(.07, 5)
+    expect(timelinePosition('2026-09-24', today)).toBe(1)
+    const month = (from: string, to: string) => timelinePosition(to, today) - timelinePosition(from, today)
+    expect(month('2026-08-01', '2026-09-01')).toBeGreaterThan(2 * month('2025-01-01', '2025-02-01'))
+    expect(month('2025-01-01', '2025-02-01')).toBeGreaterThan(4 * month('2023-01-01', '2023-02-01'))
   })
   it('lets recent work drift back as days pass', () => {
     const later = Date.UTC(2026, 11, 24)
-    expect(projectDatePosition('2026-07-11', later)).toBeLessThan(projectDatePosition('2026-07-11', today))
-    expect(projectDatePosition('2025-08-14', later)).toBe(projectDatePosition('2025-08-14', today))
+    expect(timelinePosition('2026-07-11', later)).toBeLessThan(timelinePosition('2026-07-11', today))
+    expect(timelinePosition('2023-06-01', later)).toBe(timelinePosition('2023-06-01', today))
   })
   it('tracks fractional barrel movement, including reverse and wraparound', () => {
-    const [nsk, rag, chat] = dates.map((date) => projectDatePosition(date, today))
+    const [nsk, rag, chat] = dates.map((date) => timelinePosition(date, today))
     expect(projectPointerPosition(.5, dates, today)).toBeCloseTo((nsk + rag) / 2)
     expect(projectPointerPosition(1.5, dates, today)).toBeCloseTo((rag + chat) / 2)
     expect(projectPointerPosition(2.5, dates, today)).toBeCloseTo((chat + nsk) / 2)

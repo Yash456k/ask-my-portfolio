@@ -1,17 +1,23 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, PointerEvent } from 'react'
 import { experienceItems } from '../data/experience'
-import { cardSwipeDirection, projectDatePosition, wrapIndex } from '../lib/revolver'
+import { cardSwipeDirection, timelinePosition, wrapIndex } from '../lib/revolver'
 import type { ProjectItem } from './projectTypes'
 
 const chapters = [experienceItems[2], experienceItems[1], experienceItems[0]]
-const labels = ['2024', '2026', 'Now']
-// Where each role starts and ends along the rail. A role that began before the rail does
-// (the degree) has no start tick.
+// Where each role starts and ends along the rail. Its dot sits at the start.
 const spans = chapters.map((chapter) => {
-  const from = projectDatePosition(chapter.start)
-  return { from, to: chapter.end ? projectDatePosition(chapter.end) : 1, openStart: from === 0 }
+  const from = timelinePosition(chapter.start)
+  const to = chapter.end ? timelinePosition(chapter.end) : 1
+  return { from, to, middle: (from + to) / 2, ended: Boolean(chapter.end) }
 })
+// Years named under the rail. 2023 and 2024 fall in the squeezed start and are left out.
+const marks = [
+  { label: '2022', at: 0 },
+  { label: '2025', at: timelinePosition('2025-01-01') },
+  { label: '2026', at: timelinePosition('2026-01-01') },
+  { label: 'Now', at: 1 },
+]
 const dragHintKey = 'portfolio:experience-drag-hint:v1'
 type Props = { project: ProjectItem; projectOpen: boolean }
 type Drag = { startX: number; startY: number; x: number; y: number; previousX: number; time: number; velocity: number; moved: boolean; width: number }
@@ -127,9 +133,11 @@ export function ExperienceTimeline({ project, projectOpen }: Props) {
           <span className="project-marker-label"><b>{project.number}</b><span>{project.date}</span></span>
         </div>
         <div className="career-dates" role="tablist" aria-label="Experience timeline">
-          {chapters.map((chapter, index) => <button key={chapter.id} ref={(element) => { buttons.current[index] = element }} type="button" role="tab" id={`career-tab-${chapter.id}`} aria-controls={`career-${chapter.id}`} aria-selected={active === index} tabIndex={active === index ? 0 : -1} onClick={() => select(index)} onPointerEnter={(event) => { if (event.pointerType !== 'mouse') return; clearHover(); hoverTimer.current = window.setTimeout(() => select(index), 90) }} onPointerLeave={clearHover} onKeyDown={(event) => keyboard(event, index)}><span aria-hidden="true" />{labels[index]}</button>)}
+          {/* A year hides while the stem to the card runs through it. */}
+          {marks.map((mark) => <span key={mark.label} className={`career-year ${Math.abs(mark.at - spans[active].middle) < .06 ? 'is-covered' : ''}`} style={{ '--at': mark.at } as CSSProperties} aria-hidden="true">{mark.label}</span>)}
+          <span key={active} className={`career-run ${spans[active].ended ? 'is-ended' : ''}`} style={{ '--from': spans[active].from, '--to': spans[active].to } as CSSProperties} aria-hidden="true" />
+          {chapters.map((chapter, index) => <button key={chapter.id} ref={(element) => { buttons.current[index] = element }} type="button" role="tab" id={`career-tab-${chapter.id}`} aria-controls={`career-${chapter.id}`} aria-selected={active === index} aria-label={`${chapter.title}, ${chapter.period}`} tabIndex={active === index ? 0 : -1} style={{ '--at': spans[index].from } as CSSProperties} onClick={() => select(index)} onPointerEnter={(event) => { if (event.pointerType !== 'mouse') return; clearHover(); hoverTimer.current = window.setTimeout(() => select(index), 90) }} onPointerLeave={clearHover} onKeyDown={(event) => keyboard(event, index)}><span aria-hidden="true" /></button>)}
         </div>
-        <span key={active} className={`career-span ${spans[active].openStart ? 'is-open-start' : ''}`} style={{ '--from': spans[active].from, '--to': spans[active].to } as CSSProperties} aria-hidden="true" />
       </div>
       <div ref={stack} className={`career-stack ${dragging ? 'is-dragging' : ''} ${hint === 'visible' ? 'is-hinting' : ''}`} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={(event) => finishDrag(event)} onPointerCancel={(event) => finishDrag(event, true)}>
         {chapters.map((chapter, index) => {
