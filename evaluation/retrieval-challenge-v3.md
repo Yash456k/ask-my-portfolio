@@ -1,24 +1,24 @@
 # Retrieval on 276 questions (challenge-v3)
 
-Measured 2026-10-04 on the 23-passage corpus (`8c6afb71…`). All seven retrieval routes ran the same 276 questions: 225 the portfolio can answer and 51 it must refuse. Every number below is in [retrieval-comparison-challenge-v3.json](retrieval-comparison-challenge-v3.json), which `scripts/summarize_retrieval_runs.py` builds from the per-question results.
+Measured 2026-10-04 on the 23-passage corpus that is live (`0cc17bec…`). All seven retrieval routes ran the same 276 questions: 225 the portfolio can answer and 51 it must refuse. Every number below is in [retrieval-comparison-challenge-v3.json](retrieval-comparison-challenge-v3.json), which `scripts/summarize_retrieval_runs.py` builds from the per-question results.
 
 ## Results
 
 | Route | Right passage first | 95% interval | MRR@5 | Recall@3 | All needed passages in top 5 |
 |---|---:|---:|---:|---:|---:|
-| **Jev** | **0.996** | 0.987 to 1.000 | **0.998** | **0.993** | **0.991** |
-| Qwen3 Embedding 0.6B | 0.796 | 0.742 to 0.844 | 0.877 | 0.949 | 0.969 |
-| Portfolio E5 Small (fine-tuned) | 0.791 | 0.738 to 0.844 | 0.867 | 0.940 | 0.960 |
-| Portfolio GTE Small (fine-tuned) | 0.764 | 0.707 to 0.818 | 0.852 | 0.931 | 0.956 |
-| MiniLM L6 | 0.756 | 0.698 to 0.809 | 0.839 | 0.913 | 0.951 |
-| BGE Small | 0.747 | 0.689 to 0.804 | 0.842 | 0.918 | 0.947 |
-| BGE Base | 0.742 | 0.684 to 0.796 | 0.847 | 0.947 | 0.978 |
+| **Jev** | **1.000** | 0.984 to 1.000 | **1.000** | **0.993** | **0.991** |
+| Qwen3 Embedding 0.6B | 0.800 | 0.747 to 0.849 | 0.880 | 0.947 | 0.964 |
+| Portfolio E5 Small (fine-tuned) | 0.773 | 0.716 to 0.827 | 0.856 | 0.936 | 0.956 |
+| Portfolio GTE Small (fine-tuned) | 0.756 | 0.698 to 0.809 | 0.845 | 0.933 | 0.951 |
+| MiniLM L6 | 0.747 | 0.689 to 0.800 | 0.831 | 0.898 | 0.942 |
+| BGE Small | 0.747 | 0.689 to 0.804 | 0.840 | 0.913 | 0.947 |
+| BGE Base | 0.729 | 0.671 to 0.787 | 0.836 | 0.938 | 0.973 |
 
-"Right passage first" is the share of the 225 answerable questions where the top-ranked passage is one that holds the answer. Jev got 224 of them. Its one miss is "why would you hire this guy", where it led with the skills passage and the labels wanted education, experience or problem solving.
+"Right passage first" is the share of the 225 answerable questions where the top-ranked passage is one that holds the answer. Jev got all 225 in this run. In the run before the last corpus edit it got 224: on "why would you hire this guy" it led with the skills passage, where the labels wanted education, experience or problem solving. Jev is not deterministic, so expect 224 or 225.
 
-**The gap is not noise.** Compared question by question, Jev beats the best embedding model (Qwen3) by 0.200 (95% interval 0.151 to 0.253). It ranked a right passage first on 45 questions where Qwen3 did not, and the reverse never happened (exact sign test, p < 0.0001). The same holds against every other embedding route: between 45 and 57 questions better, at most 1 worse.
+**The gap is not noise.** Compared question by question, Jev beats the best embedding model (Qwen3) by 0.200 (95% interval 0.147 to 0.253). It ranked a right passage first on 45 questions where Qwen3 did not, and the reverse never happened (exact sign test, p < 0.0001). The same holds against every other embedding route: between 45 and 61 questions better, none worse.
 
-Intervals are percentile bootstraps over questions, 10,000 resamples.
+Intervals are percentile bootstraps over questions, 10,000 resamples. Jev's own interval is the exact binomial one, since a bootstrap of 225 out of 225 has no spread.
 
 ## By kind of question
 
@@ -26,15 +26,15 @@ Share of questions with a right passage first.
 
 | Kind | Questions | Jev | Qwen3 | Portfolio E5 | BGE Base |
 |---|---:|---:|---:|---:|---:|
-| Direct | 46 | 1.00 | 0.80 | 0.78 | 0.76 |
-| Paraphrase (none of the passage's own words) | 48 | 1.00 | 0.65 | 0.65 | 0.62 |
+| Direct | 46 | 1.00 | 0.83 | 0.76 | 0.74 |
+| Paraphrase (none of the passage's own words) | 48 | 1.00 | 0.65 | 0.62 | 0.60 |
 | Terse ("contact info") | 23 | 1.00 | 0.78 | 0.65 | 0.70 |
-| Noisy (typos) | 23 | 1.00 | 0.87 | 0.87 | 0.74 |
-| Follow-up (needs the earlier turn) | 22 | 1.00 | 0.95 | 0.91 | 0.68 |
-| Interviewer (why and how) | 20 | 1.00 | 0.75 | 0.90 | 0.90 |
+| Noisy (typos) | 23 | 1.00 | 0.87 | 0.83 | 0.74 |
+| Follow-up (needs the earlier turn) | 22 | 1.00 | 0.95 | 0.91 | 0.64 |
+| Interviewer (why and how) | 20 | 1.00 | 0.75 | 0.85 | 0.90 |
 | Negative ("Does he know Rust?") | 10 | 1.00 | 0.90 | 0.90 | 0.80 |
 | Two-passage | 24 | 1.00 | 0.92 | 0.92 | 0.88 |
-| Broad ("who is yash") | 8 | 0.88 | 0.62 | 0.75 | 0.75 |
+| Broad ("who is yash") | 8 | 1.00 | 0.62 | 0.75 | 0.75 |
 
 Embedding models lose most on paraphrases, where the question shares no distinctive words with the passage. On two-passage questions Jev had both passages in its top three on 21 of 24.
 
@@ -67,7 +67,7 @@ The six Jev let through are close to the portfolio's own topics: bypassing this 
 
 - No person has reviewed the questions yet. Two models agreeing is not the same as a human checking.
 - The questions were written by a language model reading the passages, and Jev is a language model reading the passages. That setting may favour it over embeddings more than real visitor questions would.
-- The corpus is 23 passages. Jev reads all of them for every question (about 7.8k input tokens, median 366 ms), which stops working past TypeSafe's 255-option limit; a bigger corpus would need embeddings to shortlist and Jev to rerank.
+- The corpus is 23 passages. Jev reads all of them for every question (about 7.9k input tokens, median 388 ms), which stops working past TypeSafe's 255-option limit; a bigger corpus would need embeddings to shortlist and Jev to rerank.
 - Recall@5 is close to saturated for every route on a corpus this small. The differences are in what comes first.
 - This set is now regression data. Nothing should be tuned against it.
 
