@@ -193,6 +193,15 @@
 .career-dates button[aria-selected='true'] { color: rgb(var(--theme-secondary-rgb, 75 103 66)); }
 .career-dates button[aria-selected='true'] > span { background: rgb(var(--theme-secondary-rgb, 98 123 79)); box-shadow: 0 0 0 1px rgb(var(--theme-shadow-rgb, 98 123 79)); }
 
+/* A bracket under the rail spans the selected role's months, and a stem drops from its
+   middle to the card. It draws outwards from the stem each time the role changes. */
+.career-span { position: absolute; top: calc(100% + 7px); left: calc(18px + (100% - 36px) * var(--from)); width: calc((100% - 36px) * (var(--to) - var(--from))); height: 9px; box-sizing: border-box; border: solid rgb(var(--theme-secondary-rgb, 98 123 79)); border-width: 0 1.5px 1.5px; border-radius: 0 0 7px 7px; pointer-events: none; animation: career-span-draw 520ms cubic-bezier(.22,1,.36,1) both; }
+.career-span.is-open-start { border-left-width: 0; border-bottom-left-radius: 0; }
+.career-span::after { content: ''; position: absolute; top: 100%; left: 50%; width: 0; height: 34px; margin-left: -.75px; border-left: 1.5px solid rgb(var(--theme-secondary-rgb, 98 123 79)); transform-origin: top; animation: career-span-stem 300ms ease-out 240ms both; }
+@keyframes career-span-draw { from { clip-path: inset(0 50% -40px 50%); } to { clip-path: inset(0 0 -40px 0); } }
+@keyframes career-span-stem { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) { .career-span, .career-span::after { animation: none; } }
+
 /* Horizontal dragging lifts the top card; a committed gesture peels it away. */
 .career-stack { cursor: grab; user-select: none; }
 .career-stack.is-dragging { cursor: grabbing; }

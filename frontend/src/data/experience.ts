@@ -2,6 +2,9 @@ export type ExperienceItem = {
   id: string
   year: string
   period: string
+  // ISO dates the timeline draws the role across. No end means it is still going.
+  start: string
+  end?: string
   title: string
   organization: string
   label: string
@@ -16,6 +19,7 @@ export const experienceItems: readonly ExperienceItem[] = [
     id: 'aivid-fulltime',
     year: '2026',
     period: 'Mar 2026 — Present',
+    start: '2026-03-01',
     title: 'Full-stack engineer',
     organization: 'AIVID Techvision',
     label: 'The next chapter',
@@ -31,6 +35,8 @@ export const experienceItems: readonly ExperienceItem[] = [
     id: 'graduation',
     year: '2026',
     period: 'Graduated Jun 2026',
+    start: '2022-07-01',
+    end: '2026-06-30',
     title: 'B.Tech, Computer Engineering',
     organization: 'Indus University',
     label: 'The foundation',
@@ -45,6 +51,8 @@ export const experienceItems: readonly ExperienceItem[] = [
     id: 'aivid-internship',
     year: '2024',
     period: 'Sep 2024 — Sep 2025',
+    start: '2024-09-01',
+    end: '2025-09-30',
     title: 'Full-stack intern',
     organization: 'AIVID Techvision',
     label: 'Into production',

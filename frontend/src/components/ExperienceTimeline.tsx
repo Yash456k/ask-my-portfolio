@@ -1,11 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, PointerEvent } from 'react'
 import { experienceItems } from '../data/experience'
-import { cardSwipeDirection, wrapIndex } from '../lib/revolver'
+import { cardSwipeDirection, projectDatePosition, wrapIndex } from '../lib/revolver'
 import type { ProjectItem } from './projectTypes'
 
 const chapters = [experienceItems[2], experienceItems[1], experienceItems[0]]
 const labels = ['2024', '2026', 'Now']
+// Where each role starts and ends along the rail. A role that began before the rail does
+// (the degree) has no start tick.
+const spans = chapters.map((chapter) => {
+  const from = projectDatePosition(chapter.start)
+  return { from, to: chapter.end ? projectDatePosition(chapter.end) : 1, openStart: from === 0 }
+})
 const dragHintKey = 'portfolio:experience-drag-hint:v1'
 type Props = { project: ProjectItem; projectOpen: boolean }
 type Drag = { startX: number; startY: number; x: number; y: number; previousX: number; time: number; velocity: number; moved: boolean; width: number }
@@ -123,6 +129,7 @@ export function ExperienceTimeline({ project, projectOpen }: Props) {
         <div className="career-dates" role="tablist" aria-label="Experience timeline">
           {chapters.map((chapter, index) => <button key={chapter.id} ref={(element) => { buttons.current[index] = element }} type="button" role="tab" id={`career-tab-${chapter.id}`} aria-controls={`career-${chapter.id}`} aria-selected={active === index} tabIndex={active === index ? 0 : -1} onClick={() => select(index)} onPointerEnter={(event) => { if (event.pointerType !== 'mouse') return; clearHover(); hoverTimer.current = window.setTimeout(() => select(index), 90) }} onPointerLeave={clearHover} onKeyDown={(event) => keyboard(event, index)}><span aria-hidden="true" />{labels[index]}</button>)}
         </div>
+        <span key={active} className={`career-span ${spans[active].openStart ? 'is-open-start' : ''}`} style={{ '--from': spans[active].from, '--to': spans[active].to } as CSSProperties} aria-hidden="true" />
       </div>
       <div ref={stack} className={`career-stack ${dragging ? 'is-dragging' : ''} ${hint === 'visible' ? 'is-hinting' : ''}`} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={(event) => finishDrag(event)} onPointerCancel={(event) => finishDrag(event, true)}>
         {chapters.map((chapter, index) => {
