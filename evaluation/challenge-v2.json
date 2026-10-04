@@ -221,7 +221,7 @@
                 "more than 100 users[\\s\\S]*more than 500 messages[\\s\\S]*MongoDB schemas for users, chats, and messages"
               ],
               "chunk_indexes": [
-                3
+                5
               ]
             }
           ]
@@ -267,7 +267,7 @@
                 "portfolio and hiring questions[\\s\\S]*E5 Small v2 and GTE Small[\\s\\S]*locked interviewer questions are excluded"
               ],
               "chunk_indexes": [
-                2
+                3
               ]
             }
           ]
@@ -313,7 +313,7 @@
                 "Exact cosine scans are intentional[\\s\\S]*preserve exact recall[\\s\\S]*approximate index should be considered only after the corpus grows"
               ],
               "chunk_indexes": [
-                4
+                5
               ]
             }
           ]
@@ -366,7 +366,7 @@
                 "atomically enforces a salted per-IP daily limit[\\s\\S]*CORS accepts only explicit HTTPS frontend origins[\\s\\S]*strict size limits"
               ],
               "chunk_indexes": [
-                8
+                9
               ]
             }
           ]
@@ -413,7 +413,7 @@
                 "keeps them resident[\\s\\S]*more memory[\\s\\S]*avoids repeated cold starts"
               ],
               "chunk_indexes": [
-                5
+                6
               ]
             }
           ]
@@ -424,10 +424,10 @@
             {
               "source": "rag-playground-case-study.md",
               "content_any_of": [
-                "Generation is delegated to Groq[\\s\\S]*keeps local memory available[\\s\\S]*remote-provider dependency"
+                "Generation is delegated to hosted models[\\s\\S]*keeps local memory available[\\s\\S]*remote-provider dependency"
               ],
               "chunk_indexes": [
-                7
+                8
               ]
             }
           ]
@@ -445,7 +445,7 @@
           {
             "label": "remote generation tradeoff",
             "any_of": [
-              "Groq[\\s\\S]*local memory[\\s\\S]*(?:provider|remote).*dependency"
+              "(?:Groq|OpenRouter|DeepSeek|hosted)[\\s\\S]*local memory[\\s\\S]*(?:provider|remote).*dependency"
             ]
           }
         ],
@@ -465,15 +465,15 @@
       "history": [],
       "required_evidence": [
         {
-          "label": "loopback services and Caddy edge",
+          "label": "loopback services and the tunnel edge",
           "any_of": [
             {
               "source": "rag-playground-case-study.md",
               "content_any_of": [
-                "API and pgvector database bind only to host loopback[\\s\\S]*Caddy container is the public HTTPS edge"
+                "API and pgvector database bind only to host loopback[\\s\\S]*Cloudflare Tunnel to a small Caddy proxy"
               ],
               "chunk_indexes": [
-                6
+                7
               ]
             }
           ]
@@ -484,10 +484,10 @@
             {
               "source": "rag-playground-case-study.md",
               "content_any_of": [
-                "frontend contains only the public API URL[\\s\\S]*Groq key and operator verification token remain on the server"
+                "frontend contains only the public API URL[\\s\\S]*provider keys and the operator verification token remain on the server"
               ],
               "chunk_indexes": [
-                6
+                7
               ]
             }
           ]
@@ -505,7 +505,7 @@
           {
             "label": "secret isolation",
             "any_of": [
-              "frontend[\\s\\S]*public API URL[\\s\\S]*(?:Groq key|verification token)[\\s\\S]*server"
+              "frontend[\\s\\S]*public API URL[\\s\\S]*(?:Groq key|provider keys?|verification token)[\\s\\S]*server"
             ]
           }
         ],
@@ -552,7 +552,7 @@
                 "deterministic retrieval evaluation[\\s\\S]*live SSE validation[\\s\\S]*prompt-injection and unsupported-question refusal checks"
               ],
               "chunk_indexes": [
-                9
+                10
               ]
             }
           ]
@@ -614,7 +614,7 @@
                 "Socket.IO for real-time conversations[\\s\\S]*AI chatbot powered by Google Gemini"
               ],
               "chunk_indexes": [
-                3
+                5
               ]
             }
           ]
@@ -778,7 +778,7 @@
                 "keeps them resident[\\s\\S]*more memory than loading a model per request[\\s\\S]*avoids repeated cold starts"
               ],
               "chunk_indexes": [
-                5
+                6
               ]
             }
           ]

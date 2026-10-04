@@ -132,7 +132,7 @@
             {
               "source": "rag-playground-case-study.md",
               "chunk_indexes": [
-                2
+                3
               ],
               "content_any_of": [
                 "fine-tuned[\\s\\S]*E5 Small v2 and GTE Small[\\s\\S]*locked interviewer questions are excluded"
@@ -187,7 +187,7 @@
             {
               "source": "rag-playground-case-study.md",
               "chunk_indexes": [
-                4
+                5
               ],
               "content_any_of": [
                 "Exact cosine scans are intentional[\\s\\S]*scale linearly[\\s\\S]*approximate index"
@@ -289,7 +289,7 @@
             {
               "source": "rag-playground-case-study.md",
               "chunk_indexes": [
-                2
+                3
               ],
               "content_any_of": [
                 "Two additional 384-dimensional models[\\s\\S]*E5 Small v2 and GTE Small"
@@ -338,20 +338,20 @@
         },
         {
           "role": "assistant",
-          "content": "The API and pgvector database bind to loopback, with Caddy at the HTTPS edge."
+          "content": "The API and pgvector database bind to loopback, behind a Cloudflare Tunnel and a Caddy proxy."
         }
       ],
       "required_evidence": [
         {
-          "label": "loopback isolation and public Caddy edge",
+          "label": "loopback isolation and the tunnel edge",
           "any_of": [
             {
               "source": "rag-playground-case-study.md",
               "chunk_indexes": [
-                6
+                7
               ],
               "content_any_of": [
-                "bind only to host loopback addresses[\\s\\S]*Caddy container is the public HTTPS edge"
+                "bind only to host loopback addresses[\\s\\S]*Cloudflare Tunnel to a small Caddy proxy"
               ]
             }
           ]
@@ -371,6 +371,7 @@
             "label": "public edge",
             "any_of": [
               "Caddy[\\s\\S]*public HTTPS edge",
+              "Cloudflare Tunnel[\\s\\S]*Caddy",
               "public HTTPS edge[\\s\\S]*reverse-prox"
             ]
           }
