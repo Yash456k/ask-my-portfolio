@@ -35,7 +35,7 @@ from app.retrieval_protocol import retrieval_candidate_depth
 from app.retrieval_query import build_retrieval_query
 from app.retrieval_selection import select_diverse_chunks
 from app.schemas import ChatRequest
-from evaluation.eval_lib import SPLITS, load_cases, load_gates, select_cases
+from evaluation.eval_lib import CONTRACT_SPLITS, load_cases, load_gates, select_cases
 from scripts.evaluate_answers import evaluate_answer
 from scripts.remap_evaluation_qrels import remap_cases_to_chunks
 
@@ -280,7 +280,7 @@ def main() -> int:
 
     pipeline = load_pipeline(Path("config/pipeline.yaml"))
     chunks = _chunks()
-    cases = select_cases(load_cases(list(SPLITS)))
+    cases = select_cases(load_cases(list(CONTRACT_SPLITS)))
     remap_cases_to_chunks([case for case in cases if case.get("required_evidence")], chunks)
     retrieval = _retrieve(cases, chunks, args.output_dir / "retrieval-cache.json")
     prices = _prices(pipeline, args.model)

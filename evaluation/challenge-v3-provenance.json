@@ -1,0 +1,4563 @@
+{
+  "candidatesWritten": 280,
+  "kept": 276,
+  "dropped": [
+    {
+      "qid": "q048",
+      "question": "HiveNote is written in TypeScript on Node.js; what other backend technologies has Yash worked with on Node.js?",
+      "style": "compositional",
+      "reason": "the question states its first fact itself, so only one passage is needed"
+    },
+    {
+      "qid": "q089",
+      "question": "How well covered is Yash's toolkit for real-time and authenticated backend services?",
+      "style": "interviewer",
+      "reason": "too vague to have one right passage"
+    },
+    {
+      "qid": "q173",
+      "question": "HiveNote has a live dashboard; what does Ask my portfolio show visitors alongside each answer?",
+      "style": "compositional",
+      "reason": "the question states its first fact itself, so only one passage is needed"
+    },
+    {
+      "qid": "q219",
+      "question": "Which of those has he used on the backend?",
+      "style": "follow-up",
+      "reason": "the passage lists backend tools, not which languages were used on the backend"
+    }
+  ],
+  "agreedWithoutAdjudication": 253,
+  "adjudicated": 23,
+  "cases": [
+    {
+      "id": "v3-broad-q027",
+      "writerBatch": 5,
+      "decision": "adjudicated",
+      "note": "the booking passage is not about his problem-solving record",
+      "writerEvidence": [
+        [
+          "problem-solving",
+          "nsk-concurrency"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-broad-q078",
+      "writerBatch": 5,
+      "decision": "adjudicated",
+      "note": "the booking platform is a project, not work experience",
+      "writerEvidence": [
+        [
+          "aivid-current",
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-current",
+          "aivid-impact",
+          "nsk-concurrency"
+        ]
+      ]
+    },
+    {
+      "id": "v3-broad-q117",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "rag-project-overview",
+          "nsk-concurrency",
+          "hivenote-overview",
+          "realtime-chat"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview",
+          "nsk-concurrency",
+          "hivenote-overview",
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-broad-q133",
+      "writerBatch": 5,
+      "decision": "adjudicated",
+      "note": "broad question: the passages both sides chose",
+      "writerEvidence": [
+        [
+          "rag-project-overview",
+          "inspectable-product",
+          "jev-default-retriever",
+          "retrieval-model-training"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview",
+          "jev-default-retriever",
+          "inspectable-product",
+          "remote-generation",
+          "grounded-scope-privacy"
+        ]
+      ]
+    },
+    {
+      "id": "v3-broad-q200",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "profile-education",
+          "aivid-current",
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education",
+          "aivid-current",
+          "aivid-impact"
+        ]
+      ]
+    },
+    {
+      "id": "v3-broad-q208",
+      "writerBatch": 5,
+      "decision": "adjudicated",
+      "note": "broad question: the passages both sides chose",
+      "writerEvidence": [
+        [
+          "profile-education",
+          "aivid-current",
+          "aivid-impact",
+          "problem-solving",
+          "nsk-concurrency"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education",
+          "aivid-current",
+          "aivid-impact",
+          "technical-skills",
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-broad-q214",
+      "writerBatch": 5,
+      "decision": "adjudicated",
+      "note": "broad question: the passage both sides chose",
+      "writerEvidence": [
+        [
+          "technical-skills",
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ]
+    },
+    {
+      "id": "v3-broad-q221",
+      "writerBatch": 5,
+      "decision": "adjudicated",
+      "note": "broad question: the passages both sides chose",
+      "writerEvidence": [
+        [
+          "profile-education",
+          "aivid-current",
+          "aivid-impact",
+          "technical-skills"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education",
+          "aivid-current",
+          "technical-skills",
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q012",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "realtime-chat"
+        ],
+        [
+          "hivenote-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-overview"
+        ],
+        [
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q042",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-concurrency"
+        ],
+        [
+          "verification-gates"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-concurrency"
+        ],
+        [
+          "verification-gates"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q046",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "contact-links"
+        ],
+        [
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "contact-links"
+        ],
+        [
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q047",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "jev-default-retriever"
+        ],
+        [
+          "retrieval-model-training"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "jev-default-retriever"
+        ],
+        [
+          "retrieval-model-training"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q058",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "technical-skills"
+        ],
+        [
+          "problem-solving"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "technical-skills"
+        ],
+        [
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q064",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-current"
+        ],
+        [
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-current"
+        ],
+        [
+          "aivid-impact"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q065",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "realtime-chat"
+        ],
+        [
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "realtime-chat"
+        ],
+        [
+          "aivid-impact"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q081",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "abuse-controls"
+        ],
+        [
+          "verification-gates"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "abuse-controls"
+        ],
+        [
+          "verification-gates"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q087",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-concurrency"
+        ],
+        [
+          "nsk-security-delivery"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-concurrency"
+        ],
+        [
+          "nsk-security-delivery"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q103",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "vector-isolation"
+        ],
+        [
+          "exact-cosine"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "vector-isolation"
+        ],
+        [
+          "exact-cosine"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q105",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "problem-solving"
+        ],
+        [
+          "contact-links"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "problem-solving"
+        ],
+        [
+          "contact-links"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q107",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "rag-project-overview"
+        ],
+        [
+          "nsk-concurrency"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview"
+        ],
+        [
+          "nsk-concurrency"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q112",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-overview"
+        ],
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-overview"
+        ],
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q114",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-security-delivery"
+        ],
+        [
+          "realtime-chat"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-security-delivery"
+        ],
+        [
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q135",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "resident-runtime"
+        ],
+        [
+          "private-network-boundary"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "resident-runtime"
+        ],
+        [
+          "private-network-boundary"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q140",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "remote-generation"
+        ],
+        [
+          "abuse-controls",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "remote-generation"
+        ],
+        [
+          "abuse-controls",
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q143",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "retrieval-model-training"
+        ],
+        [
+          "vector-isolation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "retrieval-model-training"
+        ],
+        [
+          "vector-isolation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q206",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "jev-default-retriever"
+        ],
+        [
+          "grounded-scope-privacy"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "jev-default-retriever"
+        ],
+        [
+          "grounded-scope-privacy"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q207",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "inspectable-product",
+          "rag-project-overview"
+        ],
+        [
+          "jev-default-retriever"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "inspectable-product",
+          "rag-project-overview"
+        ],
+        [
+          "jev-default-retriever"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q223",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "verification-gates"
+        ],
+        [
+          "grounded-scope-privacy"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "verification-gates"
+        ],
+        [
+          "grounded-scope-privacy"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q246",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-impact"
+        ],
+        [
+          "technical-skills"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-impact"
+        ],
+        [
+          "technical-skills"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q262",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "private-network-boundary"
+        ],
+        [
+          "remote-generation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "private-network-boundary"
+        ],
+        [
+          "remote-generation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q269",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "profile-education"
+        ],
+        [
+          "aivid-current"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education"
+        ],
+        [
+          "aivid-current"
+        ]
+      ]
+    },
+    {
+      "id": "v3-compositional-q277",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "exact-cosine"
+        ],
+        [
+          "resident-runtime"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "exact-cosine"
+        ],
+        [
+          "resident-runtime"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q002",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "remote-generation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "remote-generation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q005",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q008",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "profile-education"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q009",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q020",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "profile-education"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q022",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q031",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "contact-links"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "contact-links"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q032",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q050",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q055",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q057",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q063",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q066",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q070",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q073",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q091",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "jev-default-retriever"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "jev-default-retriever"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q097",
+      "writerBatch": 3,
+      "decision": "adjudicated",
+      "note": "the overview only implies that a visitor chooses",
+      "writerEvidence": [
+        [
+          "inspectable-product",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "inspectable-product"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q099",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q121",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q126",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q136",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q146",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q158",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "abuse-controls"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "abuse-controls"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q160",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "vector-isolation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "vector-isolation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q161",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q162",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "remote-generation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "remote-generation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q167",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "contact-links"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "contact-links"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q176",
+      "writerBatch": 4,
+      "decision": "adjudicated",
+      "note": "the overview also says the per-IP limit is daily",
+      "writerEvidence": [
+        [
+          "abuse-controls",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "abuse-controls"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q181",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q182",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q189",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q192",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q194",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "vector-isolation",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "vector-isolation",
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q198",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q213",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "jev-default-retriever"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "jev-default-retriever"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q217",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q226",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q237",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q241",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q244",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q253",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q263",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q266",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q273",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q274",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "inspectable-product"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "inspectable-product"
+        ]
+      ]
+    },
+    {
+      "id": "v3-direct-q280",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-embedded-injection-q085",
+      "writerBatch": 6,
+      "decision": "adjudicated",
+      "note": "a real question with an injected instruction: answer the rating, reveal nothing",
+      "writerEvidence": [],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q017",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "rag-project-overview",
+          "grounded-scope-privacy"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "grounded-scope-privacy",
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q019",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "remote-generation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "remote-generation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q041",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "profile-education"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q051",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q053",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "contact-links"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "contact-links"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q083",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q100",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q106",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q119",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "abuse-controls",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "abuse-controls",
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q123",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q147",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q154",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q164",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q171",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "jev-default-retriever"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "jev-default-retriever"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q187",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "vector-isolation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "vector-isolation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q191",
+      "writerBatch": 3,
+      "decision": "adjudicated",
+      "note": "the overview also says each stage's latency is shown",
+      "writerEvidence": [
+        [
+          "inspectable-product"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "inspectable-product",
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q195",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q203",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q210",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q220",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q252",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-follow-up-q258",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ]
+    },
+    {
+      "id": "v3-harmful-or-abusive-q040",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-harmful-or-abusive-q092",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-harmful-or-abusive-q142",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-harmful-or-abusive-q222",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-harmful-or-abusive-q270",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-interviewer-q013",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q014",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q021",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q056",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "inspectable-product",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "inspectable-product",
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q071",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "abuse-controls"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "abuse-controls"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q079",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q102",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q108",
+      "writerBatch": 3,
+      "decision": "adjudicated",
+      "note": "the overview only names corpus-only prompting",
+      "writerEvidence": [
+        [
+          "grounded-scope-privacy",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q118",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "jev-default-retriever"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "jev-default-retriever"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q163",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q175",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "remote-generation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "remote-generation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q197",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "vector-isolation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "vector-isolation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q205",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "profile-education"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q209",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q218",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "rag-project-overview",
+          "inspectable-product"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview",
+          "inspectable-product"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q228",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q248",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q250",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q259",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-interviewer-q265",
+      "writerBatch": 3,
+      "decision": "adjudicated",
+      "note": "the gates passage also describes the unseen-question gate",
+      "writerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "retrieval-model-training",
+          "verification-gates"
+        ]
+      ]
+    },
+    {
+      "id": "v3-invented-premise-q011",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-invented-premise-q029",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-invented-premise-q098",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-invented-premise-q104",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-invented-premise-q132",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-invented-premise-q216",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-invented-premise-q254",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-invented-premise-q275",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-negative-q061",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-negative-q153",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "rag-project-overview",
+          "private-network-boundary"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview",
+          "private-network-boundary"
+        ]
+      ]
+    },
+    {
+      "id": "v3-negative-q156",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "remote-generation",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview",
+          "remote-generation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-negative-q169",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-current",
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-current",
+          "aivid-impact"
+        ]
+      ]
+    },
+    {
+      "id": "v3-negative-q172",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "profile-education"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education"
+        ]
+      ]
+    },
+    {
+      "id": "v3-negative-q174",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "rag-project-overview",
+          "vector-isolation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview",
+          "vector-isolation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-negative-q190",
+      "writerBatch": 5,
+      "decision": "adjudicated",
+      "note": "the skills list does not say what the chat app uses",
+      "writerEvidence": [
+        [
+          "realtime-chat",
+          "technical-skills"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-negative-q240",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ]
+    },
+    {
+      "id": "v3-negative-q242",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ]
+    },
+    {
+      "id": "v3-negative-q247",
+      "writerBatch": 5,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q016",
+      "writerBatch": 3,
+      "decision": "adjudicated",
+      "note": "the overview also says Jev reads passages as plain text",
+      "writerEvidence": [
+        [
+          "jev-default-retriever"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "jev-default-retriever",
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q025",
+      "writerBatch": 3,
+      "decision": "adjudicated",
+      "note": "remote-generation says the served model is reported",
+      "writerEvidence": [
+        [
+          "inspectable-product"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "inspectable-product",
+          "remote-generation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q049",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q060",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q088",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "contact-links"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "contact-links"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q125",
+      "writerBatch": 4,
+      "decision": "adjudicated",
+      "note": "the overview only names provider fallback",
+      "writerEvidence": [
+        [
+          "remote-generation",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "remote-generation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q134",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q138",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q145",
+      "writerBatch": 1,
+      "decision": "adjudicated",
+      "note": "the skills list is the answer; project passages each give one database",
+      "writerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "technical-skills",
+          "rag-project-overview"
+        ],
+        [
+          "technical-skills",
+          "nsk-concurrency",
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q148",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "retrieval-model-training",
+          "rag-project-overview",
+          "resident-runtime"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview",
+          "retrieval-model-training",
+          "resident-runtime"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q170",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q179",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q184",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q199",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q204",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "rag-project-overview",
+          "remote-generation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview",
+          "remote-generation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q211",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q229",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q230",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q233",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "profile-education"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q235",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "abuse-controls"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "abuse-controls"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q257",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q261",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "vector-isolation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "vector-isolation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-noisy-q267",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ]
+    },
+    {
+      "id": "v3-off-topic-q036",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-off-topic-q052",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-off-topic-q054",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-off-topic-q151",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-off-topic-q157",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-off-topic-q193",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-off-topic-q234",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-off-topic-q238",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-other-people-q094",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-other-people-q144",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-other-people-q212",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-other-people-q225",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-other-people-q260",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-paraphrase-q001",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q004",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "remote-generation",
+          "inspectable-product"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "remote-generation",
+          "inspectable-product"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q006",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "abuse-controls"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "abuse-controls"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q007",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q018",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "rag-project-overview",
+          "private-network-boundary"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview",
+          "private-network-boundary"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q023",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q024",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q028",
+      "writerBatch": 4,
+      "decision": "adjudicated",
+      "note": "both say where secrets are kept out of",
+      "writerEvidence": [
+        [
+          "abuse-controls"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "abuse-controls",
+          "private-network-boundary"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q034",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q038",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "remote-generation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "remote-generation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q039",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q044",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q045",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q059",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "jev-default-retriever",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "jev-default-retriever",
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q068",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "rag-project-overview",
+          "abuse-controls"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "abuse-controls",
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q076",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "profile-education"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q082",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "contact-links"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "contact-links"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q084",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q090",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q095",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q096",
+      "writerBatch": 3,
+      "decision": "adjudicated",
+      "note": "the overview mentions the tags but not the extra request",
+      "writerEvidence": [
+        [
+          "jev-default-retriever",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "jev-default-retriever"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q109",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q110",
+      "writerBatch": 3,
+      "decision": "adjudicated",
+      "note": "the network passage mentions pgvector only in passing",
+      "writerEvidence": [
+        [
+          "vector-isolation",
+          "rag-project-overview",
+          "private-network-boundary"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "vector-isolation",
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q111",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q115",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q116",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "inspectable-product",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview",
+          "inspectable-product"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q120",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "contact-links"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "contact-links"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q124",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q149",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q150",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q155",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q165",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q168",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "profile-education"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q178",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "vector-isolation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "vector-isolation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q188",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q201",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q224",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q227",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "contact-links"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "contact-links"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q236",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q245",
+      "writerBatch": 3,
+      "decision": "adjudicated",
+      "note": "the overview does not give the intention",
+      "writerEvidence": [
+        [
+          "inspectable-product",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "inspectable-product"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q249",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q255",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q256",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q264",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q268",
+      "writerBatch": 3,
+      "decision": "adjudicated",
+      "note": "the overview only names corpus-only prompting",
+      "writerEvidence": [
+        [
+          "grounded-scope-privacy",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q271",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q278",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ]
+    },
+    {
+      "id": "v3-paraphrase-q279",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ]
+    },
+    {
+      "id": "v3-private-info-q030",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-private-info-q037",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-private-info-q067",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-private-info-q113",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-private-info-q122",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-private-info-q130",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-private-info-q166",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-private-info-q186",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-prompt-injection-q010",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-prompt-injection-q043",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-prompt-injection-q062",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-prompt-injection-q080",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-prompt-injection-q139",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-prompt-injection-q141",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-prompt-injection-q177",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-prompt-injection-q239",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-prompt-injection-q243",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-task-request-q033",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-task-request-q127",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-task-request-q131",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-task-request-q152",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-task-request-q196",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-task-request-q232",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-task-request-q251",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-task-request-q272",
+      "writerBatch": 6,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [],
+      "labellerVerdict": "refuse",
+      "labellerEvidence": []
+    },
+    {
+      "id": "v3-terse-q003",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q015",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "hivenote-tasks-sharing"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q026",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "verification-gates"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q035",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "technical-skills"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q069",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "vector-isolation"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "vector-isolation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q072",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-impact"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q074",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "contact-links"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "contact-links"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q075",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "resident-runtime"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q077",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-concurrency"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q086",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "nsk-security-delivery"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q093",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "realtime-chat"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q101",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "jev-default-retriever",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "jev-default-retriever",
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q128",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "problem-solving"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q129",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "retrieval-model-training"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q137",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "aivid-current"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q159",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "abuse-controls"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "abuse-controls"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q180",
+      "writerBatch": 3,
+      "decision": "adjudicated",
+      "note": "the overview only names query logging",
+      "writerEvidence": [
+        [
+          "grounded-scope-privacy",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "grounded-scope-privacy"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q183",
+      "writerBatch": 2,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "rag-project-overview",
+          "jev-default-retriever"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview",
+          "jev-default-retriever"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q185",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "inspectable-product",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "inspectable-product",
+          "rag-project-overview"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q202",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "private-network-boundary"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q215",
+      "writerBatch": 4,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "remote-generation",
+          "rag-project-overview"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "rag-project-overview",
+          "remote-generation"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q231",
+      "writerBatch": 1,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "profile-education"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "profile-education"
+        ]
+      ]
+    },
+    {
+      "id": "v3-terse-q276",
+      "writerBatch": 3,
+      "decision": "writer and blind labeller agreed",
+      "note": "",
+      "writerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ],
+      "labellerVerdict": "answerable",
+      "labellerEvidence": [
+        [
+          "exact-cosine"
+        ]
+      ]
+    }
+  ]
+}

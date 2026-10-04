@@ -1,0 +1,626 @@
+{
+  "corpusSha256": "8c6afb713bef3883e677b0a8a5094270300ab0ba2f18668fc9b111f0b689b068",
+  "chunkCount": 23,
+  "splits": [
+    "challenge-v3"
+  ],
+  "reference": "jev-hybrid",
+  "answerableCases": 225,
+  "refusalCases": 51,
+  "intervals": "percentile bootstrap over questions, 10000 resamples, seed 7",
+  "routes": {
+    "jev-hybrid": {
+      "hitAt1": 0.996,
+      "recallAt1": 0.942,
+      "recallAt3": 0.993,
+      "recallAt5": 0.996,
+      "mrrAt5": 0.998,
+      "allEvidenceAt3": 0.987,
+      "allEvidenceAt5": 0.991,
+      "hitAt1Ci95": [
+        0.987,
+        1.0
+      ],
+      "recallAt1Ci95": [
+        0.92,
+        0.962
+      ],
+      "mrrAt5Ci95": [
+        0.993,
+        1.0
+      ],
+      "byCategory": {
+        "broad": {
+          "cases": 8,
+          "hitAt1": 0.875,
+          "allEvidenceAt3": 1.0
+        },
+        "compositional": {
+          "cases": 24,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 0.875
+        },
+        "direct": {
+          "cases": 46,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "embedded-injection": {
+          "cases": 1,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "follow-up": {
+          "cases": 22,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "interviewer": {
+          "cases": 20,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "negative": {
+          "cases": 10,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "noisy": {
+          "cases": 23,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "paraphrase": {
+          "cases": 48,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "terse": {
+          "cases": 23,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        }
+      },
+      "refusals": {
+        "mustRefuse": 51,
+        "refusedWithoutLanguageModel": 45,
+        "answerable": 225,
+        "answerableWronglyRefused": 0
+      }
+    },
+    "qwen3-embedding": {
+      "hitAt1": 0.796,
+      "recallAt1": 0.747,
+      "recallAt3": 0.949,
+      "recallAt5": 0.976,
+      "mrrAt5": 0.877,
+      "allEvidenceAt3": 0.938,
+      "allEvidenceAt5": 0.969,
+      "hitAt1Ci95": [
+        0.742,
+        0.844
+      ],
+      "recallAt1Ci95": [
+        0.693,
+        0.798
+      ],
+      "mrrAt5Ci95": [
+        0.843,
+        0.909
+      ],
+      "byCategory": {
+        "broad": {
+          "cases": 8,
+          "hitAt1": 0.625,
+          "allEvidenceAt3": 1.0
+        },
+        "compositional": {
+          "cases": 24,
+          "hitAt1": 0.917,
+          "allEvidenceAt3": 0.792
+        },
+        "direct": {
+          "cases": 46,
+          "hitAt1": 0.804,
+          "allEvidenceAt3": 0.957
+        },
+        "embedded-injection": {
+          "cases": 1,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "follow-up": {
+          "cases": 22,
+          "hitAt1": 0.955,
+          "allEvidenceAt3": 1.0
+        },
+        "interviewer": {
+          "cases": 20,
+          "hitAt1": 0.75,
+          "allEvidenceAt3": 0.95
+        },
+        "negative": {
+          "cases": 10,
+          "hitAt1": 0.9,
+          "allEvidenceAt3": 1.0
+        },
+        "noisy": {
+          "cases": 23,
+          "hitAt1": 0.87,
+          "allEvidenceAt3": 1.0
+        },
+        "paraphrase": {
+          "cases": 48,
+          "hitAt1": 0.646,
+          "allEvidenceAt3": 0.896
+        },
+        "terse": {
+          "cases": 23,
+          "hitAt1": 0.783,
+          "allEvidenceAt3": 0.957
+        }
+      },
+      "refusals": {
+        "mustRefuse": 51,
+        "refusedWithoutLanguageModel": 18,
+        "answerable": 225,
+        "answerableWronglyRefused": 0
+      },
+      "referenceMinusThis": {
+        "hitAt1": 0.2,
+        "hitAt1Ci95": [
+          0.151,
+          0.253
+        ],
+        "referenceBetterOn": 45,
+        "referenceWorseOn": 0,
+        "signTestP": 0.0
+      }
+    },
+    "portfolio-e5-small": {
+      "hitAt1": 0.791,
+      "recallAt1": 0.742,
+      "recallAt3": 0.94,
+      "recallAt5": 0.967,
+      "mrrAt5": 0.867,
+      "allEvidenceAt3": 0.924,
+      "allEvidenceAt5": 0.96,
+      "hitAt1Ci95": [
+        0.738,
+        0.844
+      ],
+      "recallAt1Ci95": [
+        0.687,
+        0.796
+      ],
+      "mrrAt5Ci95": [
+        0.83,
+        0.902
+      ],
+      "byCategory": {
+        "broad": {
+          "cases": 8,
+          "hitAt1": 0.75,
+          "allEvidenceAt3": 0.75
+        },
+        "compositional": {
+          "cases": 24,
+          "hitAt1": 0.917,
+          "allEvidenceAt3": 0.708
+        },
+        "direct": {
+          "cases": 46,
+          "hitAt1": 0.783,
+          "allEvidenceAt3": 0.978
+        },
+        "embedded-injection": {
+          "cases": 1,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "follow-up": {
+          "cases": 22,
+          "hitAt1": 0.909,
+          "allEvidenceAt3": 0.909
+        },
+        "interviewer": {
+          "cases": 20,
+          "hitAt1": 0.9,
+          "allEvidenceAt3": 1.0
+        },
+        "negative": {
+          "cases": 10,
+          "hitAt1": 0.9,
+          "allEvidenceAt3": 1.0
+        },
+        "noisy": {
+          "cases": 23,
+          "hitAt1": 0.87,
+          "allEvidenceAt3": 1.0
+        },
+        "paraphrase": {
+          "cases": 48,
+          "hitAt1": 0.646,
+          "allEvidenceAt3": 0.938
+        },
+        "terse": {
+          "cases": 23,
+          "hitAt1": 0.652,
+          "allEvidenceAt3": 0.913
+        }
+      },
+      "refusals": {
+        "mustRefuse": 51,
+        "refusedWithoutLanguageModel": 9,
+        "answerable": 225,
+        "answerableWronglyRefused": 1
+      },
+      "referenceMinusThis": {
+        "hitAt1": 0.204,
+        "hitAt1Ci95": [
+          0.151,
+          0.258
+        ],
+        "referenceBetterOn": 47,
+        "referenceWorseOn": 1,
+        "signTestP": 0.0
+      }
+    },
+    "portfolio-gte-small": {
+      "hitAt1": 0.764,
+      "recallAt1": 0.716,
+      "recallAt3": 0.931,
+      "recallAt5": 0.964,
+      "mrrAt5": 0.852,
+      "allEvidenceAt3": 0.916,
+      "allEvidenceAt5": 0.956,
+      "hitAt1Ci95": [
+        0.707,
+        0.818
+      ],
+      "recallAt1Ci95": [
+        0.66,
+        0.769
+      ],
+      "mrrAt5Ci95": [
+        0.816,
+        0.887
+      ],
+      "byCategory": {
+        "broad": {
+          "cases": 8,
+          "hitAt1": 0.75,
+          "allEvidenceAt3": 0.875
+        },
+        "compositional": {
+          "cases": 24,
+          "hitAt1": 0.917,
+          "allEvidenceAt3": 0.667
+        },
+        "direct": {
+          "cases": 46,
+          "hitAt1": 0.848,
+          "allEvidenceAt3": 0.978
+        },
+        "embedded-injection": {
+          "cases": 1,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "follow-up": {
+          "cases": 22,
+          "hitAt1": 0.5,
+          "allEvidenceAt3": 0.818
+        },
+        "interviewer": {
+          "cases": 20,
+          "hitAt1": 0.85,
+          "allEvidenceAt3": 1.0
+        },
+        "negative": {
+          "cases": 10,
+          "hitAt1": 0.7,
+          "allEvidenceAt3": 1.0
+        },
+        "noisy": {
+          "cases": 23,
+          "hitAt1": 0.913,
+          "allEvidenceAt3": 1.0
+        },
+        "paraphrase": {
+          "cases": 48,
+          "hitAt1": 0.646,
+          "allEvidenceAt3": 0.917
+        },
+        "terse": {
+          "cases": 23,
+          "hitAt1": 0.739,
+          "allEvidenceAt3": 0.957
+        }
+      },
+      "refusals": {
+        "mustRefuse": 51,
+        "refusedWithoutLanguageModel": 16,
+        "answerable": 225,
+        "answerableWronglyRefused": 0
+      },
+      "referenceMinusThis": {
+        "hitAt1": 0.231,
+        "hitAt1Ci95": [
+          0.178,
+          0.289
+        ],
+        "referenceBetterOn": 52,
+        "referenceWorseOn": 0,
+        "signTestP": 0.0
+      }
+    },
+    "minilm-l6": {
+      "hitAt1": 0.756,
+      "recallAt1": 0.704,
+      "recallAt3": 0.913,
+      "recallAt5": 0.958,
+      "mrrAt5": 0.839,
+      "allEvidenceAt3": 0.893,
+      "allEvidenceAt5": 0.951,
+      "hitAt1Ci95": [
+        0.698,
+        0.809
+      ],
+      "recallAt1Ci95": [
+        0.647,
+        0.76
+      ],
+      "mrrAt5Ci95": [
+        0.8,
+        0.876
+      ],
+      "byCategory": {
+        "broad": {
+          "cases": 8,
+          "hitAt1": 0.75,
+          "allEvidenceAt3": 0.875
+        },
+        "compositional": {
+          "cases": 24,
+          "hitAt1": 0.958,
+          "allEvidenceAt3": 0.625
+        },
+        "direct": {
+          "cases": 46,
+          "hitAt1": 0.804,
+          "allEvidenceAt3": 0.957
+        },
+        "embedded-injection": {
+          "cases": 1,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "follow-up": {
+          "cases": 22,
+          "hitAt1": 0.727,
+          "allEvidenceAt3": 0.955
+        },
+        "interviewer": {
+          "cases": 20,
+          "hitAt1": 0.85,
+          "allEvidenceAt3": 1.0
+        },
+        "negative": {
+          "cases": 10,
+          "hitAt1": 0.5,
+          "allEvidenceAt3": 1.0
+        },
+        "noisy": {
+          "cases": 23,
+          "hitAt1": 0.826,
+          "allEvidenceAt3": 0.957
+        },
+        "paraphrase": {
+          "cases": 48,
+          "hitAt1": 0.583,
+          "allEvidenceAt3": 0.812
+        },
+        "terse": {
+          "cases": 23,
+          "hitAt1": 0.783,
+          "allEvidenceAt3": 0.957
+        }
+      },
+      "refusals": {
+        "mustRefuse": 51,
+        "refusedWithoutLanguageModel": 16,
+        "answerable": 225,
+        "answerableWronglyRefused": 1
+      },
+      "referenceMinusThis": {
+        "hitAt1": 0.24,
+        "hitAt1Ci95": [
+          0.182,
+          0.298
+        ],
+        "referenceBetterOn": 55,
+        "referenceWorseOn": 1,
+        "signTestP": 0.0
+      }
+    },
+    "bge-small": {
+      "hitAt1": 0.747,
+      "recallAt1": 0.702,
+      "recallAt3": 0.918,
+      "recallAt5": 0.96,
+      "mrrAt5": 0.842,
+      "allEvidenceAt3": 0.902,
+      "allEvidenceAt5": 0.947,
+      "hitAt1Ci95": [
+        0.689,
+        0.804
+      ],
+      "recallAt1Ci95": [
+        0.644,
+        0.758
+      ],
+      "mrrAt5Ci95": [
+        0.804,
+        0.879
+      ],
+      "byCategory": {
+        "broad": {
+          "cases": 8,
+          "hitAt1": 0.75,
+          "allEvidenceAt3": 0.875
+        },
+        "compositional": {
+          "cases": 24,
+          "hitAt1": 0.833,
+          "allEvidenceAt3": 0.667
+        },
+        "direct": {
+          "cases": 46,
+          "hitAt1": 0.826,
+          "allEvidenceAt3": 0.957
+        },
+        "embedded-injection": {
+          "cases": 1,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "follow-up": {
+          "cases": 22,
+          "hitAt1": 0.727,
+          "allEvidenceAt3": 0.909
+        },
+        "interviewer": {
+          "cases": 20,
+          "hitAt1": 0.75,
+          "allEvidenceAt3": 1.0
+        },
+        "negative": {
+          "cases": 10,
+          "hitAt1": 0.9,
+          "allEvidenceAt3": 1.0
+        },
+        "noisy": {
+          "cases": 23,
+          "hitAt1": 0.826,
+          "allEvidenceAt3": 0.957
+        },
+        "paraphrase": {
+          "cases": 48,
+          "hitAt1": 0.583,
+          "allEvidenceAt3": 0.875
+        },
+        "terse": {
+          "cases": 23,
+          "hitAt1": 0.696,
+          "allEvidenceAt3": 0.913
+        }
+      },
+      "refusals": {
+        "mustRefuse": 51,
+        "refusedWithoutLanguageModel": 0,
+        "answerable": 225,
+        "answerableWronglyRefused": 0
+      },
+      "referenceMinusThis": {
+        "hitAt1": 0.249,
+        "hitAt1Ci95": [
+          0.196,
+          0.307
+        ],
+        "referenceBetterOn": 56,
+        "referenceWorseOn": 0,
+        "signTestP": 0.0
+      }
+    },
+    "bge-base": {
+      "hitAt1": 0.742,
+      "recallAt1": 0.696,
+      "recallAt3": 0.947,
+      "recallAt5": 0.978,
+      "mrrAt5": 0.847,
+      "allEvidenceAt3": 0.933,
+      "allEvidenceAt5": 0.973,
+      "hitAt1Ci95": [
+        0.684,
+        0.796
+      ],
+      "recallAt1Ci95": [
+        0.638,
+        0.751
+      ],
+      "mrrAt5Ci95": [
+        0.811,
+        0.881
+      ],
+      "byCategory": {
+        "broad": {
+          "cases": 8,
+          "hitAt1": 0.75,
+          "allEvidenceAt3": 0.875
+        },
+        "compositional": {
+          "cases": 24,
+          "hitAt1": 0.875,
+          "allEvidenceAt3": 0.75
+        },
+        "direct": {
+          "cases": 46,
+          "hitAt1": 0.761,
+          "allEvidenceAt3": 0.978
+        },
+        "embedded-injection": {
+          "cases": 1,
+          "hitAt1": 1.0,
+          "allEvidenceAt3": 1.0
+        },
+        "follow-up": {
+          "cases": 22,
+          "hitAt1": 0.682,
+          "allEvidenceAt3": 0.909
+        },
+        "interviewer": {
+          "cases": 20,
+          "hitAt1": 0.9,
+          "allEvidenceAt3": 0.95
+        },
+        "negative": {
+          "cases": 10,
+          "hitAt1": 0.8,
+          "allEvidenceAt3": 1.0
+        },
+        "noisy": {
+          "cases": 23,
+          "hitAt1": 0.739,
+          "allEvidenceAt3": 1.0
+        },
+        "paraphrase": {
+          "cases": 48,
+          "hitAt1": 0.625,
+          "allEvidenceAt3": 0.938
+        },
+        "terse": {
+          "cases": 23,
+          "hitAt1": 0.696,
+          "allEvidenceAt3": 0.957
+        }
+      },
+      "refusals": {
+        "mustRefuse": 51,
+        "refusedWithoutLanguageModel": 0,
+        "answerable": 225,
+        "answerableWronglyRefused": 0
+      },
+      "referenceMinusThis": {
+        "hitAt1": 0.253,
+        "hitAt1Ci95": [
+          0.196,
+          0.311
+        ],
+        "referenceBetterOn": 57,
+        "referenceWorseOn": 0,
+        "signTestP": 0.0
+      }
+    }
+  }
+}

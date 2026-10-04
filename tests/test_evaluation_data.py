@@ -88,7 +88,7 @@ def test_every_factual_qrel_matches_the_current_deterministic_corpus(pipeline) -
         for chunk in chunk_document(document, pipeline)
     ]
 
-    for case in load_cases(["dev", "heldout", "challenge-v2"]):
+    for case in load_cases(["dev", "heldout", "challenge-v2", "challenge-v3"]):
         ranks = evidence_group_ranks(case["required_evidence"], chunks)
         assert all(rank is not None for rank in ranks), json.dumps(
             {"case": case["id"], "ranks": ranks}

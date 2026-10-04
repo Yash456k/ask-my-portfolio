@@ -19,6 +19,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from evaluation.eval_lib import (  # noqa: E402
+    CONTRACT_SPLITS,
     EVALUATION_ROOT,
     SPLITS,
     EvaluationDataError,
@@ -372,7 +373,7 @@ def run(args: argparse.Namespace) -> int:
     if not 5 <= args.timeout_seconds <= 300:
         raise EvaluationDataError("--timeout-seconds must be between 5 and 300")
 
-    splits = list(SPLITS) if args.split == "all" else [args.split]
+    splits = list(CONTRACT_SPLITS) if args.split == "all" else [args.split]
     cases = select_cases(
         load_cases(splits, args.evaluation_dir),
         case_ids=args.case,
