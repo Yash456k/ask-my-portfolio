@@ -124,3 +124,14 @@ def test_qrels_remap_to_each_chunking_mode(pipeline, split: str, honor_manual: b
                     )
                 ]
                 assert option["chunk_indexes"] == sorted(matches)
+
+
+def test_judge_agreement_is_perfect_when_grades_match_and_zero_at_chance() -> None:
+    from scripts.judge_agreement import GRADES, kappa
+
+    same = [("good", "good"), ("ok", "ok"), ("bad", "bad"), ("good", "good")]
+    assert kappa(same, GRADES) == 1.0
+    # Each grade pairs equally often with every grade: no better than chance.
+    chance = [(a, b) for a in GRADES for b in GRADES]
+    assert kappa(chance, GRADES) == 0.0
+    assert kappa(chance, GRADES, weighted=True) == 0.0

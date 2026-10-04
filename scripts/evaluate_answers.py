@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import random
 import re
 import sys
 import time
@@ -358,6 +359,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--delay-seconds", type=float, default=0.1)
     parser.add_argument("--timeout-seconds", type=float, default=90.0)
     parser.add_argument("--request-budget", type=int, default=50)
+    parser.add_argument(
+        "--shuffle-seed",
+        type=int,
+        help="Ask the cases in a seeded random order, so the newest logged answers are a "
+        "random sample for hand grading",
+    )
     parser.add_argument("--evaluation-dir", type=Path, default=EVALUATION_ROOT)
     parser.add_argument("--output-dir", type=Path, default=Path("evaluation/results"))
     parser.add_argument("--no-gate", action="store_true")
@@ -379,6 +386,8 @@ def run(args: argparse.Namespace) -> int:
         case_ids=args.case,
         categories=args.category,
     )
+    if args.shuffle_seed is not None:
+        random.Random(args.shuffle_seed).shuffle(cases)  # noqa: S311 (ordering, not security)
     gate_config = load_gates(args.evaluation_dir)["answer"]
     global_forbidden = gate_config.get("globalForbiddenClaims", [])
 

@@ -87,7 +87,7 @@ if [[ "$gate" != passed ]]; then
 fi
 
 echo "[3/4] Ingesting on the server"
-"${ssh_cmd[@]}" "cd '$DEPLOY_PATH' && ./scripts/ingest.sh $force" 2>&1 | tr -d '\r' | sed 's/^/      /'
+"${ssh_cmd[@]}" "cd '$DEPLOY_PATH' && ./scripts/ingest.sh $force" 2>&1 | sed -u -e 's/\r$//' -e 's/^/      /'
 
 echo "[4/4] Checking what is live"
 live="$("${ssh_cmd[@]}" "git -C '$DEPLOY_PATH' rev-parse HEAD" | tr -d '\r')"
