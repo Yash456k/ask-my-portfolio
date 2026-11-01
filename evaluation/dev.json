@@ -233,7 +233,7 @@
                 0
               ],
               "content_any_of": [
-                "B.Tech in Computer Engineering[\\s\\S]*9\\.66"
+                "B.Tech in Computer Engineering[\\s\\S]*9\\.71"
               ]
             }
           ]
@@ -258,7 +258,7 @@
           {
             "label": "CGPA",
             "any_of": [
-              "9\\.66(?: out of 10|/10)?"
+              "9\\.71(?: out of 10|/10)?"
             ]
           }
         ],
