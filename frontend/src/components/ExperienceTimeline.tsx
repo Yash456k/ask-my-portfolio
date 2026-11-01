@@ -137,7 +137,7 @@ export function ExperienceTimeline({ project, projectOpen }: Props) {
               <div className="career-card-meta"><span>{chapter.organization}</span>{chapter.current && <span className="career-current">Current</span>}</div>
               <h3>{chapter.title}</h3><time>{chapter.period}</time>
               <p>{chapter.detail}</p>
-              {index !== 2 && <div className="career-proof">{index === 1 ? '9.66 / 10 CGPA' : '100K+ analytics records · 1,000+ roles / day'}</div>}
+              {index !== 2 && <div className="career-proof">{index === 1 ? '9.71 / 10 CGPA' : '100K+ analytics records · 1,000+ roles / day'}</div>}
             </div>
           </article>
         })}

@@ -1,7 +1,7 @@
 <!-- rag-chunk: profile-education | Profile, education, location, and engineering focus -->
 # About Yash Khambhatta
 
-Yash Khambhatta is a software developer based in Ahmedabad, Gujarat, India. He completed a B.Tech in Computer Engineering at Indus Institute of Technology and Engineering (2022 to 2026), graduating in June 2026 with a CGPA of 9.66 out of 10.
+Yash Khambhatta is a software developer based in Ahmedabad, Gujarat, India. He completed a B.Tech in Computer Engineering at Indus Institute of Technology and Engineering (2022 to 2026), graduating in June 2026 with a CGPA of 9.71 out of 10.
 
 Yash focuses on clean architecture, maintainable code, production reliability, performance, and calm, intuitive user experiences. His technical interests span full-stack product engineering, real-time systems, search and analytics, and applied AI.
 

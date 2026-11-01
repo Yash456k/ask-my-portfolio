@@ -37,7 +37,7 @@ export const experienceItems: readonly ExperienceItem[] = [
     summary: 'Learning the theory. Building beyond it.',
     detail: 'Completed my degree while building and shipping production software. The classroom supplied the foundations; real projects put them to work.',
     proof: [
-      { value: '9.66 / 10', label: 'Graduating CGPA' },
+      { value: '9.71 / 10', label: 'Graduating CGPA' },
       { value: '2022–26', label: 'Computer Engineering' },
     ],
   },

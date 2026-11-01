@@ -15,7 +15,7 @@ const experience = [
     period: '2022 — 2026',
     role: 'B.Tech, Computer Engineering',
     company: 'Indus University',
-    detail: 'Graduated in June 2026 with a 9.66/10 CGPA while building production software beyond the classroom.',
+    detail: 'Graduated in June 2026 with a 9.71/10 CGPA while building production software beyond the classroom.',
   },
 ] as const
 
