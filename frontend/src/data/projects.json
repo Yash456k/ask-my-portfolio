@@ -71,7 +71,7 @@
     "points": [
       "Agents list notes by name and description, then open only the ones their task needs.",
       "An agent claims a task so no one else picks it up, and others can wait for it to finish.",
-      "A rewrite based on an old version is refused, so agents never overwrite each other."
+      "An edit based on outdated text is refused, and every earlier version can be restored."
     ],
     "hooks": [
       "Claude, Codex, Hermes",
