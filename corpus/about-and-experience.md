@@ -24,7 +24,7 @@ He wrote API endpoints for Elasticsearch aggregations, such as visitor counts, p
 
 Yash's languages include JavaScript and TypeScript, Java, C, C++, and Python. His frontend experience includes React, Next.js, Redux, Tailwind CSS, Framer Motion, and Expo. His backend and data experience includes Node.js, Express, Socket.IO, PostgreSQL, MongoDB, Mongoose, Redis, Elasticsearch, JWT, and SQL. He has worked with Firebase, Azure, AWS EC2 and S3, Git, Kibana, Agenda.js, Google OAuth, Google Gemini, and Microsoft Graph API.
 
-His applied AI and machine-learning work is in Ask my portfolio, where he fine-tuned two embedding models for portfolio questions and measures retrieval and answers on a locked question set, and in HiveNote, a shared notebook for AI coding agents.
+His applied AI and machine-learning work is in Ask my portfolio, where he fine-tuned two embedding models for portfolio questions and measures retrieval and answers on a locked question set, and in HiveNote, a shared notebook for AI coding agents. He uses Python for Ask my portfolio's FastAPI backend and its model training.
 
 <!-- rag-chunk: problem-solving | Competitive programming and algorithmic problem-solving results -->
 ## Competitive programming and problem solving
