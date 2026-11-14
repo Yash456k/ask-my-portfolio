@@ -1,23 +1,25 @@
 <!-- rag-chunk: rag-project-overview | Ask my portfolio (formerly RAG Playground) product, inspectability, architecture, and repository -->
 # Selected projects by Yash Khambhatta
 
+Yash's portfolio covers four projects: Ask my portfolio, NSK (a booking platform for Nashik Sports Klub), HiveNote and a real-time MERN chat platform.
+
 ## Ask my portfolio - portfolio question answering
 
-Ask my portfolio, first built as RAG Playground, is the chat on Yash's portfolio site that answers grounded questions about Yash. Yash started building it in July 2026 and continues to develop it. Its corpus contains curated resume facts and project writeups. Jev, a TypeSafe decision model that reads passages as plain text, is the default retriever; six embedding routes are also available. DeepSeek V4.1 Flash writes answers by default, with Groq-hosted models as options.
+Ask my portfolio, first built as RAG Playground, is the chat on Yash's portfolio site that answers grounded questions about Yash. Yash started building it in July 2026 and continues to develop it. Its corpus contains curated resume facts and project writeups. Jev, a TypeSafe decision model, is the default retriever; six embedding routes are also available. DeepSeek V4.1 Flash writes answers by default, with Groq-hosted models as options.
 
-The interface streams answers token by token and makes the retrieval process visible. Every response shows the selected retriever and language model, the retrieved source chunks with their scores, and each stage's latency, and small tags show what the visitor is asking for and how they seem to feel. The backend uses FastAPI, PostgreSQL with pgvector, one vector column per embedding space, strict corpus-only prompting, daily per-IP and global rate limits, provider fallback, and query logging. The frontend is a Vite and React TypeScript single-page application.
+The interface streams answers token by token and makes the retrieval process visible. Every response shows the selected retriever and language model, the retrieved source chunks with their scores, and each stage's latency. The backend uses FastAPI, PostgreSQL with pgvector, strict corpus-only prompting, rate limits, provider fallback, and query logging. The frontend is a Vite and React TypeScript single-page application.
 
 Repository: https://github.com/Yash456k/ask-my-portfolio
 
 <!-- rag-chunk: nsk-concurrency | Nashik Sports Klub booking scope, race prevention, and concurrency proof -->
 ## NSK - Nashik Sports Klub booking platform
 
-Yash developed a multi-tenant facility-booking platform for Nashik Sports Klub, starting in August 2025. It manages Pickleball and Cricket inventory with distinct workflows for administrators, walk-in staff, and users. Administrators can manage a 40-day schedule.
+Yash developed a multi-tenant facility-booking platform for Nashik Sports Klub, starting in August 2025. The site is live and takes real bookings for pickleball, cricket and padel courts, with distinct workflows for administrators, walk-in staff, and users. Administrators can manage a 40-day schedule.
 
-The booking flow uses temporary slot reservations, MongoDB sessions, compound indexes, and atomic transactions for bulk bookings to prevent races. A k6 test sent 500 concurrent users toward one slot; exactly one booking committed, preserving 100 percent data integrity with 226 ms average latency in the reported test.
+The booking flow uses temporary slot reservations, MongoDB sessions, compound indexes, and atomic transactions for bulk bookings to prevent races. A k6 test sent 500 concurrent users toward one slot; exactly one booking committed, preserving 100 percent data integrity with 226 ms average latency in the reported test. In that test 472 requests were turned away with 409 Conflict, and about 27 timed out against the test machine's connection-pool limit.
 
 <!-- rag-chunk: nsk-security-delivery | Nashik Sports Klub access control, authentication, realtime delivery, hosting, and links -->
-The platform includes role-based access control, MSG91 OTP verification, JWT authentication in HttpOnly cookies, real-time availability, a GitHub Actions delivery pipeline, AWS EC2 hosting, and Nginx TLS and secure WebSocket proxying.
+The platform includes role-based access control, phone-number sign-in verified through Phone.Email, JWT authentication in HttpOnly cookies, online booking-fee payments through Razorpay, real-time availability, a GitHub Actions delivery pipeline, AWS EC2 hosting, and Nginx TLS and secure WebSocket proxying. Its frontend uses React 19, TypeScript and Vite; its backend uses Node.js, Express 5, Mongoose and Agenda on MongoDB.
 
 - Live site: https://www.nashiksportsklub.com
 - Public repository: https://github.com/Yash456k/NSK-Project-Public
