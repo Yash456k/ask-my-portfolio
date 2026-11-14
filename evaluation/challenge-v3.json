@@ -243,7 +243,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "He earned a B.Tech in Computer Engineering at Indus Institute of Technology and Engineering (2022 to 2026) with a 9.71 CGPA. He worked at AIVID Techvision as an intern from 2024 to 2025 and is now a full-time full-stack engineer there."
+        "reference_answer": "He earned a B.Tech in Computer Engineering at Indus Institute of Technology and Engineering (2022 to 2026) with a 9.71 CGPA. He worked at AIVID Techvision as an intern from 2024 to 2025 and is now a full-time Software Engineer there."
       }
     },
     {
@@ -304,7 +304,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "Yash graduated with a 9.71 CGPA and now works full-time at AIVID, where he shipped more than 20 React and TypeScript features and systems handling 100,000 records per day. He has a LeetCode rating of 1619 and built a booking platform that stayed correct under 500 concurrent users."
+        "reference_answer": "Yash graduated with a 9.71 CGPA and now works full-time at AIVID as a Software Engineer, where he built the mobile alert server alone; in his internship there he shipped more than 20 React and TypeScript features. He has a LeetCode rating of 1619 and built a booking platform that stayed correct under 500 concurrent users."
       }
     },
     {
@@ -386,7 +386,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "Yash Khambhatta is a software developer in Ahmedabad who graduated in Computer Engineering in June 2026 with a CGPA of 9.71. He works full-time as a full-stack engineer at AIVID Techvision, working across frontend, backend and platform reliability, in JavaScript, TypeScript, Java, C, C++ and Python."
+        "reference_answer": "Yash Khambhatta is a software developer in Ahmedabad who graduated in Computer Engineering in June 2026 with a CGPA of 9.71. He works full-time as a Software Engineer at AIVID Techvision, working full-stack across frontend, backend and platform reliability, in JavaScript, TypeScript, Java, C, C++ and Python."
       }
     },
     {
@@ -662,7 +662,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "He rejoined AIVID in March 2026 as an intern. In his earlier internship (September 2024 to September 2025) he built an Expo and Node.js push-notification system and a Microsoft Graph OneDrive upload workflow."
+        "reference_answer": "He rejoined AIVID in March 2026 as an intern. In his earlier internship (September 2024 to September 2025) he started the company's first Expo phone app for camera alerts, with push-token storage and notification-access sync (a colleague wrote the Node.js sender), and built a Microsoft Graph OneDrive upload workflow."
       }
     },
     {
@@ -708,7 +708,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "The chat app supports more than 100 users and has handled more than 500 messages. At AIVID he shipped features handling more than 100,000 database records per day."
+        "reference_answer": "The chat app supports more than 100 users and has handled more than 500 messages. The portfolio gives no record volume for his AIVID analytics work, so the two cannot be compared on scale."
       }
     },
     {
@@ -1030,7 +1030,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "NSK uses MSG91 OTP verification and JWT authentication in HttpOnly cookies. The chat app integrates Google OAuth 2.0 and Firebase authentication."
+        "reference_answer": "NSK uses phone-number sign-in verified through Phone.Email and JWT authentication in HttpOnly cookies. The chat app integrates Google OAuth 2.0 and Firebase authentication."
       }
     },
     {
@@ -1372,7 +1372,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "At AIVID he built a scalable Expo and Node.js push-notification system for more than 1,000 user roles per day. His frontend experience also includes React, Next.js, Redux, Tailwind CSS and Framer Motion."
+        "reference_answer": "At AIVID he started the company's first Expo phone app for camera alerts, with push-token storage and notification-access sync, and later rebuilt the React Native alerts app on Expo SDK 55. His frontend experience also includes React, Next.js, Redux, Tailwind CSS and Framer Motion."
       }
     },
     {
@@ -1913,7 +1913,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "Yash currently works at AIVID Techvision as a full-stack engineer."
+        "reference_answer": "Yash currently works at AIVID Techvision as a Software Engineer."
       }
     },
     {
@@ -2894,7 +2894,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "MSG91 OTP verification."
+        "reference_answer": "Phone-number sign-in verified through Phone.Email."
       }
     },
     {
@@ -3293,7 +3293,7 @@
         },
         {
           "role": "assistant",
-          "content": "He built a push-notification system, a Microsoft Graph OneDrive upload workflow, and end-to-end features handling over 100,000 records per day."
+          "content": "He started the first Expo phone app for camera alerts, built a Microsoft Graph OneDrive upload workflow, and wrote Elasticsearch aggregation endpoints."
         }
       ],
       "required_evidence": [
@@ -3463,7 +3463,7 @@
         },
         {
           "role": "assistant",
-          "content": "With MSG91 OTP verification and JWT authentication in HttpOnly cookies."
+          "content": "With phone-number sign-in verified through Phone.Email and JWT authentication in HttpOnly cookies."
         }
       ],
       "required_evidence": [
@@ -3713,7 +3713,7 @@
         },
         {
           "role": "assistant",
-          "content": "Yash works at AIVID Techvision as a full-stack engineer."
+          "content": "Yash works at AIVID Techvision as a Software Engineer."
         }
       ],
       "required_evidence": [
@@ -4081,7 +4081,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "His Microsoft Graph workflow managed Azure access tokens while uploading images to OneDrive, and his Expo and Node.js push system targeted delivery across more than 1,000 user roles per day in a multi-tenant organization."
+        "reference_answer": "His Microsoft Graph workflow managed Azure access tokens while uploading images to OneDrive. For alerts he built push-token storage and notification-access sync in two web backends for the first Expo app; a colleague wrote the Node.js sender, and the portfolio gives no delivery-volume figure."
       }
     },
     {
@@ -6438,7 +6438,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "He programmed a scalable Expo and Node.js push-notification system for targeted delivery across more than 1,000 user roles per day in a multi-tenant organization."
+        "reference_answer": "In his internship he started AIVID's first Expo phone app for camera alerts, with push-token storage and notification-access sync in two web backends; a colleague wrote the Node.js service that sent the notifications. The portfolio does not give a daily reach figure."
       }
     },
     {
@@ -6531,7 +6531,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "They handled more than 100,000 database records per day."
+        "reference_answer": "The portfolio does not give a daily data volume for that internship. It documents what he built: Elasticsearch aggregation endpoints such as visitor counts, people in and out, and uniform attendance, customizable Kibana dashboards, and more than 20 React and TypeScript features."
       }
     },
     {
@@ -7470,7 +7470,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "Pickleball and Cricket."
+        "reference_answer": "It takes bookings for three sports, not two: pickleball, cricket and padel courts."
       }
     },
     {
@@ -8630,7 +8630,7 @@
         "claim_groups": [],
         "forbidden_claims": [],
         "min_citations": 1,
-        "reference_answer": "Yash currently works at AIVID Techvision as a full-stack engineer."
+        "reference_answer": "Yash currently works at AIVID Techvision as a Software Engineer."
       }
     },
     {

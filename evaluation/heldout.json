@@ -10,7 +10,7 @@
       "history": [],
       "required_evidence": [
         {
-          "label": "AIVID notification scale",
+          "label": "AIVID internship delivery counts",
           "any_of": [
             {
               "source": "about-and-experience.md",
@@ -18,21 +18,23 @@
                 2
               ],
               "content_any_of": [
-                "1,000 user roles per day"
+                "more than 20 React and TypeScript frontend features"
               ]
             }
           ]
         },
         {
-          "label": "AIVID data scale",
+          "label": "AIVID current-work scope",
           "any_of": [
             {
-              "source": "about-and-experience.md",
+              "source": "aivid-current-work.md",
               "chunk_indexes": [
-                2
+                0,
+                1
               ],
               "content_any_of": [
-                "100,000 database records per day"
+                "built the company's mobile alert server alone",
+                "staged alert escalation across 6 repositories"
               ]
             }
           ]
@@ -42,15 +44,14 @@
         "refusal": false,
         "claim_groups": [
           {
-            "label": "notification scale",
+            "label": "current-work scope",
             "any_of": [
-              "(?:more than|over) 1,?000 user roles per day"
-            ]
-          },
-          {
-            "label": "data scale",
-            "any_of": [
-              "(?:more than|over) 100,?000 database records per day"
+              "6 repositories",
+              "5 repositories",
+              "six repositories",
+              "five repositories",
+              "mobile alert server",
+              "alerts app"
             ]
           },
           {
@@ -61,7 +62,12 @@
             ]
           }
         ],
-        "forbidden_claims": [],
+        "forbidden_claims": [
+          {
+            "label": "unpublished AIVID daily volume",
+            "pattern": "1,?000\\+? user roles|100,?000\\+? (?:database )?records"
+          }
+        ],
         "min_citations": 1
       }
     },
