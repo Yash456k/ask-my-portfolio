@@ -1,7 +1,7 @@
 <!-- rag-chunk: aivid-mobile-alerts | AIVID Techvision current work: the mobile alert server, the React Native alerts app, and mobile access security -->
 # Yash's current work at AIVID Techvision
 
-AIVID Techvision's platform raises alerts from camera detections. Since March 2026, first as an intern and as a Software Engineer since June 2026, Yash built the company's mobile alert server alone, from an empty repository, on Fastify, Prisma and PostgreSQL. It pushes each camera alert to phones first and attaches the alert's images in a follow-up call, so slow image reads cannot hold up the alert.
+AIVID Techvision's platform raises alerts from camera detections. Since March 2026, first as an intern and as a Software Engineer since June 2026, Yash built the company's mobile alert server alone, from an empty repository, on Fastify, Prisma and PostgreSQL. It pushes each camera alert to phones first and attaches the alert's images in a follow-up call.
 
 He also wrote the React Native alerts app as its only developer, rebuilding it on Expo SDK 55 with a filtered alert feed, images, and acknowledge, reject or silence actions. He secured mobile access with per-tenant, per-user and per-camera checks, SHA-256 hashed single-device tokens, and HMAC-SHA256 signed sync with Redis replay protection.
 
