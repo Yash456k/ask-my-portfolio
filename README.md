@@ -15,7 +15,7 @@
 
 <br>
 
-The site at [yash456k.com](https://www.yash456k.com) holds my experience, my projects, and a chat you can ask about any of it. The home page pairs a short introduction with a graph of my daily coding activity, refreshed every night from Codex, Claude Code and GitHub, where you can switch between the last three months and the full year.
+The site at [yash456k.com](https://www.yash456k.com) holds my experience, my projects, and a chat you can ask about any of it. On 276 test questions, the chat's retriever put a right passage first on all 225 it can answer, 20 points ahead of the best embedding model ([numbers](#how-it-works)). The home page pairs a short introduction with a graph of my daily coding activity, refreshed every night from Codex, Claude Code and GitHub, where you can switch between the last three months and the full year.
 
 ## Experience and projects
 
