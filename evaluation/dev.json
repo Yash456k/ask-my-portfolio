@@ -10,7 +10,7 @@
       "history": [],
       "required_evidence": [
         {
-          "label": "AIVID scope and delivery metrics",
+          "label": "AIVID internship delivery",
           "any_of": [
             {
               "source": "about-and-experience.md",
@@ -18,8 +18,8 @@
                 2
               ],
               "content_any_of": [
-                "AIVID Techvision[\\s\\S]*1,000 user roles",
-                "100,000 database records"
+                "AIVID Techvision[\\s\\S]*more than 20 React and TypeScript frontend features",
+                "10 analytics module pages"
               ]
             }
           ]
@@ -29,10 +29,13 @@
         "refusal": false,
         "claim_groups": [
           {
-            "label": "high-scale delivery",
+            "label": "documented AIVID systems",
             "any_of": [
-              "(?:more than|over) 1,?000 user roles",
-              "(?:more than|over) 100,?000 database records"
+              "Elasticsearch aggregations?",
+              "Kibana",
+              "OneDrive",
+              "10 (?:analytics )?module pages",
+              "push-token"
             ]
           },
           {
@@ -47,6 +50,10 @@
           {
             "label": "invented million-user scale",
             "pattern": "(?:million|1,?000,?000) users"
+          },
+          {
+            "label": "unpublished AIVID daily volume",
+            "pattern": "1,?000\\+? user roles|100,?000\\+? (?:database )?records"
           }
         ],
         "min_citations": 1
@@ -476,7 +483,7 @@
       "history": [],
       "required_evidence": [
         {
-          "label": "AIVID notification system despite typos",
+          "label": "AIVID alerts app despite typos",
           "any_of": [
             {
               "source": "about-and-experience.md",
@@ -484,13 +491,13 @@
                 2
               ],
               "content_any_of": [
-                "push-notification system[\\s\\S]*1,000 user roles"
+                "first Expo phone app for camera alerts"
               ]
             }
           ]
         },
         {
-          "label": "AIVID data scale despite typos",
+          "label": "AIVID volume is not published",
           "any_of": [
             {
               "source": "about-and-experience.md",
@@ -498,7 +505,7 @@
                 2
               ],
               "content_any_of": [
-                "100,000 database records"
+                "does not give traffic, user or record volumes"
               ]
             }
           ]
@@ -508,21 +515,28 @@
         "refusal": false,
         "claim_groups": [
           {
-            "label": "notification system",
+            "label": "alerts work",
             "any_of": [
-              "Expo and Node\\.js push-notification system",
-              "push-notification system"
+              "Expo (?:phone )?app",
+              "push-token",
+              "alert server",
+              "alerts app"
             ]
           },
           {
-            "label": "scale",
+            "label": "no published traffic figure",
             "any_of": [
-              "(?:more than|over) 1,?000 user roles",
-              "(?:more than|over) 100,?000 database records"
+              "(?:does not|doesn't|do not|don't|not) (?:publish|state|document|list|give|include|mention|say)",
+              "no (?:published|documented|stated) (?:traffic|volume|counts?|numbers?|figures?)"
             ]
           }
         ],
-        "forbidden_claims": [],
+        "forbidden_claims": [
+          {
+            "label": "unpublished AIVID daily volume",
+            "pattern": "1,?000\\+? user roles|100,?000\\+? (?:database )?records"
+          }
+        ],
         "min_citations": 1
       }
     },
@@ -593,7 +607,7 @@
                 1
               ],
               "content_any_of": [
-                "currently works at AIVID Techvision as a full-stack engineer"
+                "currently works at AIVID Techvision as a Software Engineer"
               ]
             }
           ]

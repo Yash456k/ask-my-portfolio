@@ -119,15 +119,15 @@
       "history": [],
       "required_evidence": [
         {
-          "label": "AIVID record scale and analytics stack",
+          "label": "AIVID search and analytics stack",
           "any_of": [
             {
               "source": "about-and-experience.md",
-              "content_any_of": [
-                "100,000 database records per day[\\s\\S]*Elasticsearch aggregations[\\s\\S]*Kibana dashboards"
-              ],
               "chunk_indexes": [
                 2
+              ],
+              "content_any_of": [
+                "Elasticsearch aggregations[\\s\\S]*Kibana dashboards"
               ]
             }
           ]
@@ -137,12 +137,6 @@
         "refusal": false,
         "claim_groups": [
           {
-            "label": "record scale",
-            "any_of": [
-              "(?:more than|over) 100,?000 database records per day"
-            ]
-          },
-          {
             "label": "analytics stack",
             "any_of": [
               "Elasticsearch aggregations?[\\s\\S]*Kibana",
@@ -150,7 +144,12 @@
             ]
           }
         ],
-        "forbidden_claims": [],
+        "forbidden_claims": [
+          {
+            "label": "unpublished AIVID daily volume",
+            "pattern": "1,?000\\+? user roles|100,?000\\+? (?:database )?records"
+          }
+        ],
         "min_citations": 1
       }
     },
@@ -718,11 +717,11 @@
           "any_of": [
             {
               "source": "projects.md",
-              "content_any_of": [
-                "MSG91 OTP verification[\\s\\S]*JWT authentication[\\s\\S]*GitHub Actions[\\s\\S]*AWS EC2"
-              ],
               "chunk_indexes": [
                 2
+              ],
+              "content_any_of": [
+                "Phone\\.Email[\\s\\S]*JWT authentication[\\s\\S]*GitHub Actions[\\s\\S]*AWS EC2"
               ]
             }
           ]
@@ -734,7 +733,7 @@
           {
             "label": "authentication",
             "any_of": [
-              "MSG91 OTP",
+              "Phone\\.Email",
               "JWT authentication[\\s\\S]*HttpOnly cookies"
             ]
           },
@@ -746,7 +745,12 @@
             ]
           }
         ],
-        "forbidden_claims": [],
+        "forbidden_claims": [
+          {
+            "label": "replaced OTP provider",
+            "pattern": "MSG91"
+          }
+        ],
         "min_citations": 1
       }
     },
